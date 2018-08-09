@@ -1,0 +1,4 @@
+---
+#- name: launch tests
+#  import_tasks: tests/ltp/playbook.yml
+#  ignore_errors: true

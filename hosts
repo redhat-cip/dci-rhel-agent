@@ -1,0 +1,8 @@
+[beaker-lab]
+localhost ansible_connection=local
+
+[localhost]
+localhost ansible_connection=local
+
+[beaker-host]
+localhost

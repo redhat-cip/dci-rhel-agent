@@ -1,0 +1,21 @@
+---
+#- name: Import the last build
+#  host: beaker-lab
+#  shell: beaker-import http://{{ IP AGENT }}/rhel/
+
+- name: launch beaker install
+  shell: 'bkr job-submit /etc/dci-rhel-agent/job.xml'
+  register: bkr_jobid
+
+- debug:
+    msg: '{{ bkr_jobid }}'
+
+- name: Register Beaker Job ID
+  set_fact:
+    bkrjobid: "{{ bkr_jobid.stdout | regex_replace(\".*\\s\\[\\'(.*)\\'\\]\",'\\1') }}"
+
+#- name: attach to job
+#  shell: 'bkr job-watch {{ bkrjobid }}'
+
+- name: Wait system to be reserved
+  shell: "{{ playbook_dir }}/hooks/wait.py {{ bkrjobid }}"
