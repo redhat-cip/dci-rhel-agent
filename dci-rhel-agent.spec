@@ -46,7 +46,7 @@ install -p -D -m 644 dci/release.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/
 install -p -D -m 644 job.xml %{buildroot}%{_sysconfdir}/dci-rhel-agent/job.xml
 install -p -D -m 644 dci/test.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/test.yml
 install -p -D -m 644 settings.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/settings.yml
-install -p -D -m 644 dci-rhel-agent.sudo %{buildroot}%{_sysconfdir}/sudoers.d/dci-rhel-agent
+install -p -D -m 440 dci-rhel-agent.sudo %{buildroot}%{_sysconfdir}/sudoers.d/dci-rhel-agent
 install -p -d -m 755 %{buildroot}/%{_sharedstatedir}/dci-rhel-agent
 
 %clean
