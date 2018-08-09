@@ -1,0 +1,42 @@
+---
+- name: List all files
+  shell: 'bkr job-logs {{ bkrjobid }}'
+  register: bkr_files
+
+- name: Ensure directory exist
+  file:
+    path: /tmp/joblogs
+    state: directory
+
+- name: Ansible delete file glob
+  find:
+    paths: /tmp/joblogs
+    patterns: '*'
+  register: files_to_delete
+
+- name: Ansible remove file glob
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ files_to_delete.files }}"
+
+- name: Grab logs from beaker
+  get_url:
+    url: "{{ item }}"
+    dest: /tmp/joblogs/
+  with_items: "{{ bkr_files.stdout_lines }}"
+
+- name: List all files to be uploaded
+  command: "ls /tmp/joblogs/"
+  register: dir_out
+
+- name: Upload listed files to DCI
+  dci_file:
+    path: '/tmp/joblogs/{{ item }}'
+    name: '{{ item }}'
+    job_id: '{{ job_id }}'
+  with_items: "{{ dir_out.stdout_lines }}"
+
+- name: A failure happened
+  fail:
+    msg: 'Something went wrong during the job. Please check the log'

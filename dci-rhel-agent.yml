@@ -1,0 +1,122 @@
+---
+- name: NEW JOB
+  hosts: localhost
+  tasks:
+    - name: schedule a new job
+      dci_job:
+        topic: '{{ TOPIC_NAME }}'
+      register: job_informations
+
+    - name: set global variables
+      set_fact:
+        job_id: "{{ job_informations['job']['id'] }}"
+        remoteci_id: "{{ job_informations['job']['remoteci_id'] }}"
+        component: "{{ job_informations['job']['components'][0] }}"
+        product: "{{ job_informations['job']['topic']['product_id'] }}"
+  tags:
+      - new_job
+
+
+- name: Retrieve keys and components
+  hosts: localhost
+  vars:
+    dci_retrieve_component_local_repo: '{{ local_repo }}'
+    dci_retrieve_component_component_id: '{{ component.id }}'
+    dci_import_keys_remoteci_id: '{{ remoteci_id }}'
+  tasks:
+    - block:
+      - include_role:
+          name: dci-import-keys
+
+      - include_role:
+          name: dci-retrieve-component
+
+      - name: Ensure images/ and LiveOS/ folder exist
+        file:
+          path: '{{ local_repo }}/RHEL/{{ item }}'
+          recurse: yes
+          state: directory
+        with_items:
+          - LiveOS
+          - images/pxeboot
+
+      - name: Retrieve latest images
+        get_url:
+          url: '{{ repo_url }}/{{ product }}/{{ component.topic_id }}/{{ component.id }}/{{ item.path }}/{{ item.name }}'
+          dest: '{{ local_repo }}/RHEL/{{ item.path }}/{{ item.name }}'
+          force: yes
+          client_cert: /etc/ssl/repo/dci.crt
+          client_key: /etc/ssl/repo/dci.key
+        with_items:
+          - {'name': 'squashfs.img', 'path': 'LiveOS'}
+          - {'name': 'boot.iso', 'path': 'images'}
+          - {'name': 'efiboot.img', 'path': 'images'}
+          - {'name': 'initrd.img', 'path': 'images/pxeboot'}
+          - {'name': 'upgrade.img', 'path': 'images/pxeboot'}
+          - {'name': 'vmlinuz', 'path': 'images/pxeboot'}
+      rescue:
+        - include_tasks: dci/failure.yml
+  tags:
+    - new_job
+
+
+- name: PREPARE LAB
+  hosts: beaker-lab
+  vars:
+    dci_status: 'pre-run'
+  tasks:
+    - block:
+        - include_tasks: hooks/import.yml
+      rescue:
+        - include_tasks: dci/failure.yml
+  tags:
+      - preapre_lab
+
+
+- name: LAUNCH INSTALL
+  hosts: localhost
+  vars:
+    dci_status: 'running'
+  tasks:
+    - block:
+        - include_tasks: hooks/install.yml
+      rescue:
+        - include_tasks: dci/failure.yml
+  tags:
+      - install
+
+
+- name: TESTS
+  hosts: beaker-host
+  vars:
+    dci_status: 'post-run'
+  tasks:
+    - block:
+        - include_tasks: dci/test.yml
+      rescue:
+        - include: dci/failure.yml
+          delegate_to: localhost
+  tags:
+      - test
+
+
+- name: RELEASE SERVER
+  hosts: beaker-host
+  vars:
+    dci_status: 'post-run'
+  tasks:
+    - block:
+        - include_tasks: dci/release.yml
+      rescue:
+        - include: dci/failure.yml
+          delegate_to: localhost
+
+
+- name: SUCCESS
+  hosts: localhost
+  vars:
+    dci_status: 'success'
+  tasks:
+    - include_tasks: dci/success.yml
+  tags:
+      - success
