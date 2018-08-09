@@ -4,7 +4,7 @@
   tasks:
     - name: schedule a new job
       dci_job:
-        topic: '{{ TOPIC_NAME }}'
+        topic: '{{ topic }}'
       register: job_informations
 
     - name: set global variables

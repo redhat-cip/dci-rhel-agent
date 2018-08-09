@@ -1,4 +1,4 @@
 repo_url: https://repo.distributed-ci.io/
 local_repo: /repo
 local_repo_ip: localhost
-TOPIC_NAME: RHEL-7
+topic: RHEL-7
