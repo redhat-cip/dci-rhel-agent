@@ -1,0 +1,3 @@
+---
+- name: Import the last build
+  shell: beaker-import http://{{local_repo_ip}}/ --family RedHatEnterpriseLinux7 --name RedHatEnterpriseLinux7 --arch x86_64 --version {{component.name}} --initrd=images/pxeboot/initrd.img  --kernel=images/pxeboot/vmlinuz

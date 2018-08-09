@@ -1,0 +1,6 @@
+---
+- name: wait return to beaker
+  wait_for:
+    path: /usr/bin/return2beaker.sh
+- name: return to beaker
+  shell: /usr/bin/return2beaker.sh

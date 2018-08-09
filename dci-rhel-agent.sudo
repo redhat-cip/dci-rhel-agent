@@ -1,0 +1,3 @@
+dci-rhel-agent ALL=(ALL) NOPASSWD:ALL
+
+Defaults:dci-rhel-agent !requiretty
