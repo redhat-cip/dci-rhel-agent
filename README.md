@@ -51,6 +51,7 @@ The agent comes in form of a RPM called `dci-rhel-agent`. In order to install
 it one needs to install the `dci-release` package.
 
 ```bash
+#> yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 #> yum -y install https://packages.distributed-ci.io/dci-release.el7.noarch.rpm
 #> yum -y install dci-rhel-agent
 ```
