@@ -10,6 +10,7 @@ Source0:          dci-rhel-agent-%{version}.tar.gz
 BuildRequires:    systemd
 BuildRequires:    systemd-units
 Requires:         dci-ansible
+Requires:         python-lxml
 Requires:         python-netaddr
 Requires:         ansible-role-dci-import-keys
 Requires:         ansible-role-dci-retrieve-component
