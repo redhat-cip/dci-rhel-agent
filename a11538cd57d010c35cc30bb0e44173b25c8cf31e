@@ -1,0 +1,8 @@
+Code-Review+2: Gonéri Le Bouder <goneri@lebouder.net>
+Workflow+1: Yanis Guenane <yguenane@gmail.com>
+Verified+2: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-by: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-at: Mon, 13 Aug 2018 07:42:25 +0000
+Reviewed-on: https://softwarefactory-project.io/r/13392
+Project: dci-rhel-agent
+Branch: refs/heads/master
