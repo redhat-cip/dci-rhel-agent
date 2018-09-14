@@ -12,6 +12,8 @@
         job_id: "{{ job_informations['job']['id'] }}"
         remoteci_id: "{{ job_informations['job']['remoteci_id'] }}"
         component: "{{ job_informations['job']['components'][0] }}"
+        hwcert: "{{ job_informations['job']['components'][1] }}"
+        extraos: "{{ job_informations['job']['components'][2] }}"
         product: "{{ job_informations['job']['topic']['product_id'] }}"
   tags:
       - new_job
@@ -85,6 +87,18 @@
   tags:
       - install
 
+- name: PREPARE TESTS
+  hosts: localhost
+  vars:
+    dci_status: 'post-run'
+  tasks:
+    - block:
+        - include_tasks: dci/prepare-test.yml
+      rescue:
+        - include: dci/failure.yml
+  tags:
+      - test
+
 
 - name: TESTS
   hosts: beaker-host
@@ -95,6 +109,10 @@
         - include_tasks: dci/test.yml
       rescue:
         - include: dci/failure.yml
+        - include: dci/release.yml
+        - name: A failure happened
+          fail:
+            msg: 'Something went wrong during the job. Please check the log'
           delegate_to: localhost
   tags:
       - test
