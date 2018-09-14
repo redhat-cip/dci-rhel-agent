@@ -45,6 +45,7 @@ install -p -D -m 644 dci/success.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/
 install -p -D -m 644 dci/failure.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/failure.yml
 install -p -D -m 644 dci/release.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/release.yml
 install -p -D -m 644 job.xml %{buildroot}%{_sysconfdir}/dci-rhel-agent/job.xml
+install -p -D -m 644 hosts %{buildroot}%{_sysconfdir}/dci-rhel-agent/hosts
 install -p -D -m 644 dci/test.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/test.yml
 install -p -D -m 644 settings.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/settings.yml
 install -p -D -m 440 dci-rhel-agent.sudo %{buildroot}%{_sysconfdir}/sudoers.d/dci-rhel-agent
@@ -82,6 +83,7 @@ exit 0
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/dcirc.sh
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/settings.yml
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/job.xml
+%config(noreplace) %{_sysconfdir}/dci-rhel-agent/hosts
 %dir %{_sharedstatedir}/dci-rhel-agent
 %attr(0755, %{name}, %{name}) %{_sharedstatedir}/dci-rhel-agent
 /etc/sudoers.d/dci-rhel-agent

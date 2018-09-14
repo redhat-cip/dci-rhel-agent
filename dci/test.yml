@@ -1,4 +1,30 @@
 ---
-#- name: launch tests
-#  import_tasks: tests/ltp/playbook.yml
-#  ignore_errors: true
+- name: Install HWCert repos
+  yum_repository:
+    name: hwcert
+    description: hwcert YUM repo
+    baseurl: http://{{local_repo_ip}}/hwcert
+
+- name: Install extraOS
+  yum_repository:
+    name: extraOS
+    description: extraos YUM repo
+    baseurl: http://{{local_repo_ip}}/extraos
+
+- name: Copy HWcert
+  copy:
+    src: /usr/share/dci-rhel-agent/hwcert-sti
+    dest: /opt/
+
+- name: Install needed packages
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - standard-test-roles
+    - http://file.rdu.redhat.com/~jkinsman/rpms/redhat-certification-hardware-spicegate-0.1-20180720.el7.noarch.rpm
+
+- name: Launch test
+  command: ansible-playbook --tags classic tests.yml
+  args:
+    chdir: /opt/hwcert-sti

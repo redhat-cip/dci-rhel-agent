@@ -12,6 +12,8 @@
         job_id: "{{ job_informations['job']['id'] }}"
         remoteci_id: "{{ job_informations['job']['remoteci_id'] }}"
         component: "{{ job_informations['job']['components'][0] }}"
+        hwcert: "{{ job_informations['job']['components'][1] }}"
+        extraos: "{{ job_informations['job']['components'][2] }}"
         product: "{{ job_informations['job']['topic']['product_id'] }}"
   tags:
       - new_job
@@ -84,6 +86,19 @@
         - include_tasks: dci/failure.yml
   tags:
       - install
+
+
+- name: PREPARE TESTS
+  hosts: localhost
+  vars:
+    dci_status: 'post-run'
+  tasks:
+    - block:
+        - include_tasks: dci/prepare-test.yml
+      rescue:
+        - include: dci/failure.yml
+  tags:
+      - test
 
 
 - name: TESTS
