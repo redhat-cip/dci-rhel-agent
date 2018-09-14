@@ -1,0 +1,19 @@
+#- name: launch tests
+#  import_tasks: tests/ltp/playbook.yml
+#  ignore_errors: true
+#
+- name: Grab hwcert
+  vars:
+    dci_retrieve_component_local_repo: '{{ local_repo }}'
+    dci_retrieve_component_component_id: '{{ hwcert.id }}'
+    dci_retrieve_component_name: 'hwcert'
+  include_role:
+    name: dci-retrieve-component
+
+- name: Grab extraos
+  vars:
+    dci_retrieve_component_local_repo: '{{ local_repo }}'
+    dci_retrieve_component_component_id: '{{ extraos.id }}'
+    dci_retrieve_component_name: 'extraos'
+  include_role:
+    name: dci-retrieve-component

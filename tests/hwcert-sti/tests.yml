@@ -1,0 +1,15 @@
+---
+# Tests that run in classic context
+- hosts: localhost
+  roles:
+  - role: standard-test-basic
+    tags:
+    - classic
+    tests:
+    - dci-hwcert:
+        dir: "/usr/bin"
+        run: dci-hwcert
+    - check_results
+    - submit_logs2beaker
+    required_packages:
+    - redhat-certification-hardware-spicegate
