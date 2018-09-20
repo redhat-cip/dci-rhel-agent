@@ -29,6 +29,7 @@
 - name: Install needed packages
   yum:
     name: "{{ packages }}"
+    disable_gpg_check: yes
   vars:
     packages:
     - /opt/yum-plugin-copr.noarch.rpm
