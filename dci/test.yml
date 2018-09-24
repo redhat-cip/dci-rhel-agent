@@ -4,12 +4,14 @@
     name: hwcert
     description: hwcert YUM repo
     baseurl: http://{{local_repo_ip}}/hwcert
+    gpgcheck: no
 
 - name: Install extraOS
   yum_repository:
     name: extraOS
     description: extraos YUM repo
     baseurl: http://{{local_repo_ip}}/extraos
+    gpgcheck: no
 
 - name: Copy HWcert
   copy:
