@@ -4,12 +4,21 @@
     name: hwcert
     description: hwcert YUM repo
     baseurl: http://{{local_repo_ip}}/hwcert
+    gpgcheck: no
 
 - name: Install extraOS
   yum_repository:
     name: extraOS
     description: extraos YUM repo
     baseurl: http://{{local_repo_ip}}/extraos
+    gpgcheck: no
+
+- name: Install EPEL
+  yum_repository:
+      name: EPEL
+      description: EPEL repo
+      baseurl: http://download.fedoraproject.org/pub/epel/7/x86_64
+      gpgcheck: no
 
 - name: Copy HWcert
   copy:
@@ -34,8 +43,29 @@
     packages:
     - /opt/yum-plugin-copr.noarch.rpm
     - /opt/redhat-certification-hardware-spicegate.noarch.rpm
+    - ansible
+    - standard-test-basic
 
 - name: Launch test
   command: ansible-playbook --tags classic tests.yml
   args:
     chdir: /opt/hwcert-sti
+  ignore_errors: yes
+
+- name: List all files to be uploaded
+  command: "ls /tmp/artifacts/"
+  register: dir_out
+
+- name: grab files from tests
+  fetch:
+    src: /tmp/artifacts/{{item}}
+    dest: /tmp/joblogs-artifacts/
+  with_items: dir_out.stdout_lines
+
+- name: Upload listed files to DCI
+  dci_file:
+    path: '/tmp/joblogs-artifacts/{{ item }}'
+    name: '{{ item }}'
+    job_id: '{{ hostvars.localhost.job_id }}'
+  with_items: "{{ dir_out.stdout_lines }}"
+  delegate_to: localhost
