@@ -76,17 +76,40 @@
   command: "ls /tmp/artifacts/"
   register: dir_out
 
-- name: grab files from tests
+- name: Logs files from tests
   fetch:
     src: /tmp/artifacts/{{item}}
     dest: /tmp/joblogs-artifacts/
     flat: yes
   with_items: {{ dir_out.stdout_lines }}
 
-- name: Upload listed files to DCI
+- name: Junits files from tests
+  command: "ls *.xml"
+  args:
+      chdir: /tmp/joblogs-artifacts/
+  register: junits
+  delegate_to: localhost
+
+- name: Logs files from tests
+  command: "ls *.log"
+  args:
+      chdir: /tmp/joblogs-artifacts/
+  register: logs
+  delegate_to: localhost
+
+- name: Upload junit files to DCI
   dci_file:
     path: '/tmp/joblogs-artifacts/{{ item }}'
     name: '{{ item }}'
     job_id: '{{ hostvars.localhost.job_id }}'
-  with_items: "{{ dir_out.stdout_lines }}"
+    mime: 'application/junit'
+  with_items: "{{ junits.stdout_lines }}"
+  delegate_to: localhost
+
+- name: Upload logs files to DCI
+  dci_file:
+    path: '/tmp/joblogs-artifacts/{{ item }}'
+    name: '{{ item }}'
+    job_id: '{{ hostvars.localhost.job_id }}'
+  with_items: "{{ logs.stdout_lines }}"
   delegate_to: localhost
