@@ -44,7 +44,7 @@
     - /opt/yum-plugin-copr.noarch.rpm
     - /opt/redhat-certification-hardware-spicegate.noarch.rpm
     - ansible
-    - standard-test-basic
+    - standard-test-roles
 
 - name: Launch test
   command: ansible-playbook --tags classic tests.yml
@@ -81,17 +81,17 @@
     src: /tmp/artifacts/{{item}}
     dest: /tmp/joblogs-artifacts/
     flat: yes
-  with_items: {{ dir_out.stdout_lines }}
+  with_items: "{{ dir_out.stdout_lines }}"
 
 - name: Junits files from tests
-  command: "ls *.xml"
+  shell: "ls *.xml"
   args:
       chdir: /tmp/joblogs-artifacts/
   register: junits
   delegate_to: localhost
 
 - name: Logs files from tests
-  command: "ls *.log"
+  shell: "ls *.log"
   args:
       chdir: /tmp/joblogs-artifacts/
   register: logs
