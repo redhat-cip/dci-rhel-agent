@@ -17,7 +17,7 @@
   yum_repository:
       name: EPEL
       description: EPEL repo
-      baseurl: http://download.fedoraproject.org/pub/epel/7/x86_64
+      baseurl: {{ epel_url }}
       gpgcheck: no
 
 - name: Copy HWcert
@@ -83,27 +83,11 @@
     flat: yes
   with_items: "{{ dir_out.stdout_lines }}"
 
-- name: Junits files from tests
-  shell: "ls *.xml"
-  args:
-      chdir: /tmp/joblogs-artifacts/
-  register: junits
-  delegate_to: localhost
-
 - name: Logs files from tests
-  shell: "ls *.log"
+  shell: "ls *"
   args:
       chdir: /tmp/joblogs-artifacts/
   register: logs
-  delegate_to: localhost
-
-- name: Upload junit files to DCI
-  dci_file:
-    path: '/tmp/joblogs-artifacts/{{ item }}'
-    name: '{{ item }}'
-    job_id: '{{ hostvars.localhost.job_id }}'
-    mime: 'application/junit'
-  with_items: "{{ junits.stdout_lines }}"
   delegate_to: localhost
 
 - name: Upload logs files to DCI
@@ -112,4 +96,20 @@
     name: '{{ item }}'
     job_id: '{{ hostvars.localhost.job_id }}'
   with_items: "{{ logs.stdout_lines }}"
+  delegate_to: localhost
+
+- name: Junits files from tests
+  shell: "ls *.xml"
+  args:
+      chdir: /tmp/joblogs-artifacts/
+  register: junits
+  delegate_to: localhost
+
+- name: Upload specific junit files to DCI
+  dci_file:
+    path: '/tmp/joblogs-artifacts/{{ item }}'
+    name: '{{ item }}'
+    job_id: '{{ hostvars.localhost.job_id }}'
+    mime: 'application/junit'
+  with_items: "{{ junits.stdout_lines }}"
   delegate_to: localhost
