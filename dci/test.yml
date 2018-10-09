@@ -17,7 +17,7 @@
   yum_repository:
       name: EPEL
       description: EPEL repo
-      baseurl: {{ epel_url }}
+      baseurl: "{{ epel_url }}"
       gpgcheck: no
 
 - name: Copy HWcert
