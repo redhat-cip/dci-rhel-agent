@@ -45,6 +45,11 @@
     - /opt/redhat-certification-hardware-spicegate.noarch.rpm
     - ansible
     - standard-test-roles
+    - python2-behave
+    - python-xvfbwrapper
+    - python2-pyyaml
+    - python-paramiko
+    - python-six
 
 - name: Launch test
   command: ansible-playbook --tags classic tests.yml
