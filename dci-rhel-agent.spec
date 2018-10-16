@@ -47,6 +47,8 @@ install -p -D -m 644 dci/release.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/
 install -p -D -m 644 job.xml %{buildroot}%{_sysconfdir}/dci-rhel-agent/job.xml
 install -p -D -m 644 rpms/redhat-certification-hardware-spicegate-0.1-20180720.el7.noarch.rpm %{buildroot}%{_datadir}/dci-rhel-agent/redhat-certification-hardware-spicegate.noarch.rpm
 install -p -D -m 644 rpms/yum-plugin-copr-1.1.31-45.el7.noarch.rpm %{buildroot}%{_datadir}/dci-rhel-agent/yum-plugin-copr.noarch.rpm
+install -p -D -m 644 rpms/selenium-3.14.1.tar.gz %{buildroot}%{_datadir}/dci-rhel-agent/selenium-3.14.1.tar.gz
+install -p -D -m 644 rpms/importlib-1.0.4.zip %{buildroot}%{_datadir}/dci-rhel-agent/importlib-1.0.4.zip
 install -p -D -m 644 hosts %{buildroot}%{_sysconfdir}/dci-rhel-agent/hosts
 install -p -D -m 644 dci/prepare-test.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/prepare-test.yml
 install -p -D -m 644 dci/test.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/test.yml
