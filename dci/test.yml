@@ -35,6 +35,16 @@
     src: /usr/share/dci-rhel-agent/yum-plugin-copr.noarch.rpm
     dest: /opt/
 
+- name: Copy selenium tarball
+  copy:
+    src: /usr/share/dci-rhel-agent/selenium-3.14.1.tar.gz
+    dest: /opt/
+
+- name: Copy importlib tarball
+  copy:
+    src: /usr/share/dci-rhel-agent/importlib-1.0.4.zip
+    dest: /opt/
+
 - name: Install needed packages
   yum:
     name: "{{ packages }}"
@@ -50,6 +60,29 @@
     - python2-pyyaml
     - python-paramiko
     - python-six
+    - unzip
+
+- name: Extract Selenium
+  unarchive:
+    src: /opt/selenium-3.14.1.tar.gz
+    dest: /opt/
+    remote_src: yes
+
+- name: Extract importlib
+  unarchive:
+    src: /opt/importlib-1.0.4.zip
+    dest: /opt/
+    remote_src: yes
+
+- name: Install selenium
+  command: python setup.py install
+  args:
+    chdir: /opt/selenium-3.14.1
+
+- name: Install selenium
+  command: python setup.py install
+  args:
+    chdir: /opt/importlib-1.0.4
 
 - name: Launch test
   command: ansible-playbook --tags classic tests.yml
