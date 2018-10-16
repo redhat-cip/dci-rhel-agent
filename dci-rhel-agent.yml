@@ -96,7 +96,7 @@
     - block:
         - include_tasks: dci/prepare-test.yml
       rescue:
-        - include: dci/failure.yml
+        - include_tasks: dci/failure.yml
   tags:
       - test
 
@@ -109,8 +109,8 @@
     - block:
         - include_tasks: dci/test.yml
       rescue:
-        - include: dci/failure.yml
-        - include: dci/release.yml
+        - include_tasks: dci/failure.yml
+        - include_tasks: dci/release.yml
         - name: A failure happened
           fail:
             msg: 'Something went wrong during the job. Please check the log'
@@ -127,8 +127,7 @@
     - block:
         - include_tasks: dci/release.yml
       rescue:
-        - include: dci/failure.yml
-          delegate_to: localhost
+        - include_tasks: dci/failure.yml
 
 
 - name: SUCCESS
