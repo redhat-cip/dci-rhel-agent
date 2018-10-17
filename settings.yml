@@ -3,3 +3,4 @@ local_repo: /repo
 local_repo_ip: localhost
 topic: RHEL-7
 epel_url: http://download.fedoraproject.org/pub/epel/7/x86_64
+dci_rhel_agent_sslverify: yes
