@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "25d9f692_60098b9a",
+        "filename": "dci-rhel-agent.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 28
+      },
+      "writtenOn": "2018-10-18T07:49:40Z",
+      "side": 0,
+      "message": "You\u0027re removing the delegate_to here,\ncould you make sure that the dci/failure.yml play delegates to localhost if required ?",
+      "revId": "879db0f19a9a9c2bda149374579b38840aadcce5",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
