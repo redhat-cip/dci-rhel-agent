@@ -16,6 +16,24 @@
       "revId": "879db0f19a9a9c2bda149374579b38840aadcce5",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "64f0acc9_9aa8be62",
+        "filename": "dci-rhel-agent.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2018-10-18T14:19:37Z",
+      "side": 0,
+      "message": "it\u0027s already using delegate_to in the failure.yml file\nhttps://softwarefactory-project.io/cgit/dci-rhel-agent/tree/dci/failure.yml#n41",
+      "parentUuid": "25d9f692_60098b9a",
+      "revId": "879db0f19a9a9c2bda149374579b38840aadcce5",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
