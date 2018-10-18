@@ -49,6 +49,7 @@
           force: yes
           client_cert: /etc/ssl/repo/dci.crt
           client_key: /etc/ssl/repo/dci.key
+          validate_certs: '{{ dci_rhel_agent_sslverify|default("yes") }}'
         with_items:
           - {'name': 'squashfs.img', 'path': 'LiveOS'}
           - {'name': 'boot.iso', 'path': 'images'}
