@@ -73,7 +73,7 @@
       rescue:
         - include_tasks: dci/failure.yml
   tags:
-      - preapre_lab
+      - prepare_lab
 
 
 - name: LAUNCH INSTALL
