@@ -79,7 +79,7 @@
   args:
     chdir: /opt/selenium-3.14.1
 
-- name: Install selenium
+- name: Install importlib
   command: python setup.py install
   args:
     chdir: /opt/importlib-1.0.4
@@ -114,7 +114,7 @@
   command: "ls /tmp/artifacts/"
   register: dir_out
 
-- name: Logs files from tests
+- name: Fetch files from tests
   fetch:
     src: /tmp/artifacts/{{item}}
     dest: /tmp/joblogs-artifacts/
