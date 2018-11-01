@@ -121,7 +121,7 @@
   with_items: "{{ files_to_delete.files }}"
   delegate_to: localhost
 
-- name: Logs files from tests
+- name: Fetch files from tests
   fetch:
     src: "{{ item }}"
     dest: /tmp/joblogs-artifacts/
