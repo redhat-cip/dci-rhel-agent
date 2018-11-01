@@ -79,7 +79,7 @@
   args:
     chdir: /opt/selenium-3.14.1
 
-- name: Install selenium
+- name: Install importlib
   command: python setup.py install
   args:
     chdir: /opt/importlib-1.0.4
@@ -110,7 +110,7 @@
   with_items: "{{ files_to_delete.files }}"
   delegate_to: localhost
 
-- name: Logs files from tests
+- name: Fetch files from tests
   fetch:
     src: "{{ item }}"
     dest: /tmp/joblogs-artifacts/
