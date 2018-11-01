@@ -110,44 +110,27 @@
   with_items: "{{ files_to_delete.files }}"
   delegate_to: localhost
 
-- name: List all files to be uploaded
-  command: "ls /tmp/artifacts/"
-  register: dir_out
-
 - name: Logs files from tests
   fetch:
-    src: /tmp/artifacts/{{item}}
+    src: "{{ item }}"
     dest: /tmp/joblogs-artifacts/
     flat: yes
-  with_items: "{{ dir_out.stdout_lines }}"
-
-- name: Logs files from tests
-  shell: "ls *"
-  args:
-      chdir: /tmp/joblogs-artifacts/
-  register: logs
-  delegate_to: localhost
+  with_fileglob: "/tmp/artifacts/*"
 
 - name: Upload logs files to DCI
   dci_file:
-    path: '/tmp/joblogs-artifacts/{{ item }}'
-    name: '{{ item }}'
+    path: '{{ item }}'
+    name: '{{ item | basename }}'
     job_id: '{{ hostvars.localhost.job_id }}'
   with_items: "{{ logs.stdout_lines }}"
-  delegate_to: localhost
-
-- name: Junits files from tests
-  shell: "ls *.xml"
-  args:
-      chdir: /tmp/joblogs-artifacts/
-  register: junits
+  with_fileglob: "/tmp/joblogs-artifacts/*"
   delegate_to: localhost
 
 - name: Upload specific junit files to DCI
   dci_file:
-    path: '/tmp/joblogs-artifacts/{{ item }}'
+    path: '{{ item }}'
     name: "{{ item | regex_replace('.*.cli.(.*).xml','\\1') }}"
     job_id: '{{ hostvars.localhost.job_id }}'
     mime: 'application/junit'
-  with_items: "{{ junits.stdout_lines }}"
+  with_fileglob: "/tmp/joblogs-artifacts/*.xml"
   delegate_to: localhost
