@@ -79,10 +79,21 @@
   args:
     chdir: /opt/selenium-3.14.1
 
-- name: Install selenium
+- name: Install importlib
   command: python setup.py install
   args:
     chdir: /opt/importlib-1.0.4
+
+- name: Create directory for libvirt
+  file:
+    path: /etc/libvirt/qemu/
+    recurse: yes
+    state: directory
+
+- name: Create libvirt file to avoid download
+  file:
+    path: /etc/libvirt/qemu/hwcert-x86_64.xml
+    state: touch
 
 - name: Launch test
   command: ansible-playbook --tags classic tests.yml
