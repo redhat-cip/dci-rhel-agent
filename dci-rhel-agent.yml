@@ -45,18 +45,26 @@
           - LiveOS
           - images/pxeboot
 
-      - name: Retrieve latest images
+      - name: Retrieve the .treeinfo file
         get_url:
-          url: '{{ repo_url }}/{{ product }}/{{ component.topic_id }}/{{ component.id }}/{{ item.path }}/{{ item.name }}'
-          dest: '{{ local_repo }}/RHEL/{{ item.path }}/{{ item.name }}'
+          url: '{{ repo_url }}/{{ product }}/{{ component.topic_id }}/{{ component.id }}/.treeinfo'
+          dest: '{{ local_repo }}/RHEL/.treeinfo'
           force: yes
           client_cert: /etc/ssl/repo/dci.crt
           client_key: /etc/ssl/repo/dci.key
           validate_certs: '{{ dci_rhel_agent_sslverify|default("yes") }}'
+
+      - name: Retrieve latest images
+        get_url:
+          url: '{{ repo_url }}/{{ product }}/{{ component.topic_id }}/{{ component.id }}/{{ item.path }}/{{ item.name }}'
+          dest: '{{ local_repo }}/RHEL/{{ item.path }}/{{ item.name }}'
+          client_cert: /etc/ssl/repo/dci.crt
+          client_key: /etc/ssl/repo/dci.key
+          validate_certs: '{{ dci_rhel_agent_sslverify|default("yes") }}'
+          checksum: "{{ lookup('ini', '{{ item.path }}/{{ item.name }} section=checksums file={{ local_repo }}/RHEL/.treeinfo') }}"
         with_items:
           - {'name': 'squashfs.img', 'path': 'LiveOS'}
           - {'name': 'boot.iso', 'path': 'images'}
-          - {'name': 'efiboot.img', 'path': 'images'}
           - {'name': 'initrd.img', 'path': 'images/pxeboot'}
           - {'name': 'upgrade.img', 'path': 'images/pxeboot'}
           - {'name': 'vmlinuz', 'path': 'images/pxeboot'}
