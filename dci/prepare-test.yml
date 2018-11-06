@@ -6,7 +6,7 @@
   vars:
     dci_retrieve_component_local_repo: '{{ local_repo }}'
     dci_retrieve_component_component_id: '{{ hwcert.id }}'
-    dci_retrieve_component_name: 'hwcert'
+    dci_retrieve_component_component_name: 'hwcert'
   include_role:
     name: dci-retrieve-component
 
@@ -14,6 +14,6 @@
   vars:
     dci_retrieve_component_local_repo: '{{ local_repo }}'
     dci_retrieve_component_component_id: '{{ extraos.id }}'
-    dci_retrieve_component_name: 'extraos'
+    dci_retrieve_component_component_name: 'extraos'
   include_role:
     name: dci-retrieve-component
