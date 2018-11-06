@@ -26,13 +26,9 @@
     dest: /tmp/joblogs/
   with_items: "{{ bkr_files.stdout_lines }}"
 
-- name: List all files to be uploaded
-  command: "ls /tmp/joblogs/"
-  register: dir_out
-
 - name: Upload listed files to DCI
   dci_file:
-    path: '/tmp/joblogs/{{ item }}'
-    name: '{{ item }}'
+    path: '{{ item }}'
+    name: '{{ item | basename }}'
     job_id: '{{ job_id }}'
-  with_items: "{{ dir_out.stdout_lines }}"
+  with_fileglob: "/tmp/joblogs/*"
