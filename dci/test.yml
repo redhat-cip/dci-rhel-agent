@@ -133,7 +133,6 @@
     path: '{{ item }}'
     name: '{{ item | basename }}'
     job_id: '{{ hostvars.localhost.job_id }}'
-  with_items: "{{ logs.stdout_lines }}"
   with_fileglob: "/tmp/joblogs-artifacts/*"
   delegate_to: localhost
 
