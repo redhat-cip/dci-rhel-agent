@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ed4a2801_a01ceabc",
+        "filename": "dci-rhel-agent.spec",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2018-11-19T14:38:43Z",
+      "side": 1,
+      "message": "should be 2 instead right ?",
+      "range": {
+        "startLine": 2,
+        "startChar": 22,
+        "endLine": 2,
+        "endChar": 23
+      },
+      "revId": "5038235d77f31cd551a1f397f0eb04d3e68bb949",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
