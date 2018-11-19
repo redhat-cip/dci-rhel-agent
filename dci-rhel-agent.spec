@@ -1,5 +1,5 @@
 Name:             dci-rhel-agent
-Version:          0.1.1
+Version:          0.1.2
 Release:          1.VERS%{?dist}
 Summary:          The RHEL's DCI agent
 License:          ASL 2.0
@@ -14,6 +14,7 @@ Requires:         python-lxml
 Requires:         python-netaddr
 Requires:         ansible-role-dci-import-keys
 Requires:         ansible-role-dci-retrieve-component
+Requires:         ansible-role-dci-rhel-certification
 
 Requires:         sudo
 
@@ -45,17 +46,11 @@ install -p -D -m 644 dci/success.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/
 install -p -D -m 644 dci/failure.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/failure.yml
 install -p -D -m 644 dci/release.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/release.yml
 install -p -D -m 644 job.xml %{buildroot}%{_sysconfdir}/dci-rhel-agent/job.xml
-install -p -D -m 644 rpms/redhat-certification-hardware-spicegate-0.1-20181029.el7.noarch.rpm %{buildroot}%{_datadir}/dci-rhel-agent/redhat-certification-hardware-spicegate.noarch.rpm
-install -p -D -m 644 rpms/yum-plugin-copr-1.1.31-45.el7.noarch.rpm %{buildroot}%{_datadir}/dci-rhel-agent/yum-plugin-copr.noarch.rpm
-install -p -D -m 644 rpms/selenium-3.14.1.tar.gz %{buildroot}%{_datadir}/dci-rhel-agent/selenium-3.14.1.tar.gz
-install -p -D -m 644 rpms/importlib-1.0.4.zip %{buildroot}%{_datadir}/dci-rhel-agent/importlib-1.0.4.zip
 install -p -D -m 644 hosts %{buildroot}%{_sysconfdir}/dci-rhel-agent/hosts
 install -p -D -m 644 dci/prepare-test.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/prepare-test.yml
-install -p -D -m 644 dci/test.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/test.yml
 install -p -D -m 644 settings.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/settings.yml
 install -p -D -m 440 dci-rhel-agent.sudo %{buildroot}%{_sysconfdir}/sudoers.d/dci-rhel-agent
 install -p -d -m 755 %{buildroot}/%{_sharedstatedir}/dci-rhel-agent
-cp -a tests/hwcert-sti %{buildroot}%{_datadir}/dci-rhel-agent/
 
 %clean
 
@@ -95,6 +90,8 @@ exit 0
 /etc/sudoers.d/dci-rhel-agent
 
 %changelog
+* Tue Sep 19 2018 Cedric Lecomte <clecomte@redhat.com> - 0.1.2-1
+- Put Certification tests in different ansible role
 * Tue Sep 19 2018 Cedric Lecomte <clecomte@redhat.com> - 0.1.1-1
 - Add certification tests
 - Ability to download multiple components

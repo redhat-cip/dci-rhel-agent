@@ -118,7 +118,9 @@
     dci_status: 'post-run'
   tasks:
     - block:
-        - include_tasks: dci/test.yml
+        - name: Launch RHEL Certification Test
+          include_role:
+            name: dci-rhel-certification
       rescue:
         - include_tasks: dci/failure.yml
         - include_tasks: dci/release.yml
