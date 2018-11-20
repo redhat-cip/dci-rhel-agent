@@ -5,16 +5,16 @@
     - name: schedule a new job
       dci_job:
         topic: '{{ topic }}'
-      register: job_informations
+      register: job_info
 
     - name: set global variables
       set_fact:
-        job_id: "{{ job_informations['job']['id'] }}"
-        remoteci_id: "{{ job_informations['job']['remoteci_id'] }}"
-        component: "{{ job_informations['job']['components'][0] }}"
-        hwcert: "{{ job_informations['job']['components'][1] }}"
-        extraos: "{{ job_informations['job']['components'][2] }}"
-        product: "{{ job_informations['job']['topic']['product_id'] }}"
+        job_id: "{{ job_info['job']['id'] }}"
+        remoteci_id: "{{ job_info['job']['remoteci_id'] }}"
+        component: "{{ job_info['job']['components'][0] }}"
+        hwcert: "{{ job_info['job']['components'][1] }}"
+        extraos: "{{ job_info['job']['components'][2] }}"
+        product: "{{ job_info['job']['topic']['product_id'] }}"
   tags:
       - new_job
 
