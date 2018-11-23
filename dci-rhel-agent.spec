@@ -51,6 +51,7 @@ install -p -D -m 644 dci/prepare-test.yml %{buildroot}%{_datadir}/dci-rhel-agent
 install -p -D -m 644 settings.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/settings.yml
 install -p -D -m 440 dci-rhel-agent.sudo %{buildroot}%{_sysconfdir}/sudoers.d/dci-rhel-agent
 install -p -d -m 755 %{buildroot}/%{_sharedstatedir}/dci-rhel-agent
+cp -r group_vars %{buildroot}/%{_datadir}/dci-rhel-agent
 
 %clean
 

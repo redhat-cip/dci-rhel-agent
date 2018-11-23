@@ -1,0 +1,5 @@
+repo_url: https://repo.distributed-ci.io/
+local_repo: /repo
+local_repo_ip: localhost
+epel_url: http://download.fedoraproject.org/pub/epel/7/x86_64
+dci_rhel_agent_sslverify: yes
