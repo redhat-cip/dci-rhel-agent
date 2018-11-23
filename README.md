@@ -91,6 +91,11 @@ export DCI_API_SECRET
 | local_repo_ip | True | IP | TO WRITE |
 
 
+### Red Hat Certification: How to skip its execution
+
+Some users might want to skip the certification tests suite. This can be done via the settings file by adding `dci_rhel_agent_cert: false` to `settings.yml` file.
+
+
 ## Usage
 
 To run the agent, one needs to run `systemctl start dci-rhel-agent`

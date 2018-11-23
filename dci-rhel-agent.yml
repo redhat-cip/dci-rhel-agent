@@ -121,6 +121,7 @@
         - name: Launch RHEL Certification Test
           include_role:
             name: dci-rhel-certification
+          when: dci_rhel_agent_cert|bool
       rescue:
         - include_tasks: dci/failure.yml
         - include_tasks: dci/release.yml
