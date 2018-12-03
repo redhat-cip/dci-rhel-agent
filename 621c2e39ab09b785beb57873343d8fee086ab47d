@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6db92e82_3341f7e1",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2018-12-03T17:41:10Z",
+      "side": 1,
+      "message": "higher ?",
+      "range": {
+        "startLine": 21,
+        "startChar": 40,
+        "endLine": 21,
+        "endChar": 45
+      },
+      "revId": "621c2e39ab09b785beb57873343d8fee086ab47d",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1e20c535_c9ad654c",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2018-12-03T17:41:10Z",
+      "side": 1,
+      "message": "it\u0027s not ideally, it\u0027s a requirement.",
+      "range": {
+        "startLine": 32,
+        "startChar": 2,
+        "endLine": 32,
+        "endChar": 30
+      },
+      "revId": "621c2e39ab09b785beb57873343d8fee086ab47d",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "02502876_88181c24",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2018-12-03T17:41:10Z",
+      "side": 1,
+      "message": "typo: rhel",
+      "range": {
+        "startLine": 61,
+        "startChar": 5,
+        "endLine": 61,
+        "endChar": 9
+      },
+      "revId": "621c2e39ab09b785beb57873343d8fee086ab47d",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dc3f7d05_3f37fd09",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2018-12-03T17:41:10Z",
+      "side": 1,
+      "message": "every user needs ?",
+      "range": {
+        "startLine": 65,
+        "startChar": 0,
+        "endLine": 65,
+        "endChar": 16
+      },
+      "revId": "621c2e39ab09b785beb57873343d8fee086ab47d",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
