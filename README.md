@@ -8,8 +8,6 @@ engineers can troubleshoot together.
 ## Table of Contents
 
 - [Requirements](#requirements)
-  * [Distributed-CI account](#distributed-ci-account)
-  * [RemoteCI credentials](#remoteci-credentials)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
@@ -17,17 +15,59 @@ engineers can troubleshoot together.
 - [Contact](#contact)
 
 ## Requirements
+### Setup Requirements
+
+#### Assumptions
+* Partner/Customer will use RHEL 7.6 or above.
+* Partner/Customer has a valid configuration to install RHEL using DHCP/PXE/Kickstart.
+* Partner/Customer has minimal hardware lab to be installed and wiped through DCI workflow.
+
+#### Jumpbox
+
+Jumpbox can be a physical server or a virtual machine.
+In any case, it must:
+
+* Be running the latest stable RHEL release and registered via RHSM.
+* Have at least 160GB of free space available in `/var`
+* (Ideally) access to Internet
+* Be able to connect following Web urls:
+  * DCI API, https://api.distributed-ci.io
+  * DCI Packages, https://packages.distributed-ci.io
+  * DCI Repository, https://repo.distributed-ci.io
+  * EPEL, https://dl.fedoraproject.org/pub/epel/
+* Have a stable internal IP
+* Be able to reach the lab servers using (mandadory, but not limited to):
+  * SSH
+  * IPMI
+  * Serial-Over-LAN or other remote console (details & software to be provided by the partner)
+* Be reachable by the lab servers using:
+  * DHCP
+  * PXE
+  * HTTP/HTTPS
+
+##### Bandwidth requirement
+
+DCI needs to download RHEL new snapshots regularly (=~ 4GB each).
+
+##### Remote access
+
+We strongly advise the partner to give access to the jumpbox to Red Hat team.
+This way, Red Hat engineers will be able to help to do the initial setup and troubleshoot potential issues.
+
+##### Additional remarks
+
+Please note that the Jumpbox acts as a `controller node`, therefore it is NOT wiped/deployed after each `dci-rhel-agent` run (unlike hardware lab servers).
+
+`dci-hrel-agent` use [Beaker](https://beaker-project.org) service to deploy RHEL automatically.
 
 ### Distributed-CI account
 
-You need to create your user account in the system. Please connect to
-https://www.distributed-ci.io with your redhat.com SSO account.
+Every users need to create their own account in DCI by connecting to
+`https://www.distributed-ci.io` using @redhat.com SSO account.
 
-Your user account will be created in our database the first time you connect.
+User account will be created in DCI database at the first connection.
 
-There is no reliable way to automatically know your team. So please
-[contact](#contact) us back when you reach this step, we will manually move
-your user in the correct organisation.
+**Please [contact](#contact) us back when you reach this step, to be assigned in the correct organisation.**
 
 ### RemoteCI credentials
 
@@ -64,41 +104,38 @@ There are two main configuration files: `/etc/dci-rhel-agent/dcirc.sh` and
 
   * `/etc/dci-rhel-agent/dcirc.sh`
 
-This is the file that allows one to authenticate against the DCI API. As
+This file contents your lab credential (also kwnown as RemoteCI in DCI web interface). As
 explained in [RemoteCI credential](#remoteci-credentials), an admin of the
-team should have created a RemoteCI and one should have downloaded the
-`remotecirc.sh` and renamed it. The file should look like:
+team should have created a Remote CI, downloaded the relative `remotecirc.sh` file and renamed it locally on the Jumpbox to `/etc/dci-rhel-agent/dcirc.sh`.
+
+The file content should looks like:
 
 ```bash
 #!/usr/bin/env bash
-
 DCI_CS_URL="https://api.distributed-ci.io/"
 DCI_CLIENT_ID=remoteci/<remoteci_id>
 DCI_API_SECRET=>remoteci_api_secret>
-
 export DCI_CS_URL
 export DCI_CLIENT_ID
 export DCI_API_SECRET
 ```
 
-
-  * `/etc/dci-rhel-agent/settings.yml`
-
+* `/etc/dci-rhel-agent/settings.yml`
+```
 | Variable | Required | Type | Description |
 |----------|----------|------|-------------|
 | topic | True | String | Name of the topic the agent should run |
 | local_repo | True | Path | Path to directory where components will be stored |
 | local_repo_ip | True | IP | TO WRITE |
-
+```
 
 ### Red Hat Certification: How to skip its execution
 
-Some users might want to skip the certification tests suite. This can be done via the settings file by adding `dci_rhel_agent_cert: false` to `settings.yml` file.
-
+Some users might want to skip the certification tests suite. This can be done via `settings.yml` file by adding `dci_rhel_agent_cert: false`.
 
 ## Usage
 
-To run the agent, one needs to run `systemctl start dci-rhel-agent`
+To start `dci-rhel-agent`, please use `systemctl start dci-rhel-agent`.
 
 
 ## License
