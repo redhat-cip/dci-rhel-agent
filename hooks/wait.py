@@ -21,7 +21,7 @@ while status != "Completed":
         logging.debug('Waiting for 5s ...')
         time.sleep(5)
         status = get_task_status('/distribution/install', sys.argv[1])
-        if status == "Cancelled":
+        if status in ["Aborted", "Cancelled"]:
                 exit(1)
  
 exit(0)
