@@ -34,4 +34,8 @@
         name: '{{ item | basename }}'
         job_id: '{{ hostvars.localhost.job_id }}'
       with_fileglob: "/tmp/joblogs/*"
+
+    - name: Fail properly
+      fail:
+        msg: 'Something went wrong during the {{ dci_status }}. Review the log at: https://www.distributed-ci.io/jobs/{{ hostvars.localhost.job_info.job.id }}/jobStates'
   delegate_to: localhost
