@@ -121,13 +121,12 @@ export DCI_API_SECRET
 ```
 
 * `/etc/dci-rhel-agent/settings.yml`
-```
+
 | Variable | Required | Type | Description |
 |----------|----------|------|-------------|
 | topic | True | String | Name of the topic the agent should run |
 | local_repo | True | Path | Path to directory where components will be stored |
 | local_repo_ip | True | IP | TO WRITE |
-```
 
 ### Red Hat Certification: How to skip its execution
 
