@@ -1,0 +1,31 @@
+---
+- name: Collect and Upload logs
+  delegate_to: localhost
+  block:
+    - name: List all files
+      shell: 'bkr job-logs {{ hostvars.localhost.bkrjobid }}'
+      register: bkr_files
+
+    - name: Grab logs from beaker
+      get_url:
+        url: "{{ item }}"
+        dest: /tmp/joblogs/
+      with_items: "{{ bkr_files.stdout_lines }}"
+
+    - name: Upload logs files to DCI
+      dci_file:
+        path: '{{ item }}'
+        name: '{{ item | basename }}'
+        job_id: '{{ hostvars.localhost.job_id }}'
+      with_fileglob:
+        - "/tmp/joblogs/*"
+        - "/tmp/joblogs-artifacts/*.log"
+
+    - name: Upload junit files to DCI
+      dci_file:
+        path: '{{ item }}'
+        name: "{{ item | regex_replace('.*.cli.(.*).xml','\\1') }}"
+        job_id: '{{ hostvars.localhost.job_id }}'
+        mime: 'application/junit'
+      with_fileglob: "/tmp/joblogs-artifacts/*.xml"
+      when: dci_rhel_agent_cert|bool

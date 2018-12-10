@@ -15,6 +15,8 @@
         hwcert: "{{ job_info['job']['components'][1] }}"
         extraos: "{{ job_info['job']['components'][2] }}"
         product: "{{ job_info['job']['topic']['product_id'] }}"
+
+    - include_tasks: hooks/clean.yml
   tags:
       - new_job
 

@@ -1,1 +1,22 @@
 ---
+- name: Ensure directories exist
+  file:
+    path: /tmp/joblogs
+    state: directory
+  with_items:
+    - /tmp/joblogs
+    - /tmp/joblogs-artifacts
+
+- name: Ansible delete file glob
+  find:
+    paths:
+      - /tmp/joblogs
+      - /tmp/joblogs-artifacts
+    patterns: '*'
+  register: files_to_delete
+
+- name: Ansible remove file glob
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ files_to_delete.files }}"

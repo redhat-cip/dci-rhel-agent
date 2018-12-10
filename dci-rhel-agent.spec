@@ -45,6 +45,7 @@ install -p -D -m 755 hooks/wait.py %{buildroot}%{_datadir}/dci-rhel-agent/hooks/
 install -p -D -m 644 dci/success.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/success.yml
 install -p -D -m 644 dci/failure.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/failure.yml
 install -p -D -m 644 dci/release.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/release.yml
+install -p -D -m 644 dci/logs.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/logs.yml
 install -p -D -m 644 job.xml %{buildroot}%{_sysconfdir}/dci-rhel-agent/job.xml
 install -p -D -m 644 hosts %{buildroot}%{_sysconfdir}/dci-rhel-agent/hosts
 install -p -D -m 644 dci/prepare-test.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/prepare-test.yml
