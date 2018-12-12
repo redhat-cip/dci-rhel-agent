@@ -12,6 +12,13 @@
         dest: /tmp/joblogs/
       with_items: "{{ bkr_files.stdout_lines }}"
 
+    - name: Grab beaker junit results
+      shell: bkr job-results --format=junit-xml {{ hostvars.localhost.bkrjobid }} > {{ beaker_results }}
+      args:
+        creates: '{{ beaker_results }}'
+      vars:
+        beaker_results: /tmp/joblogs-artifacts/beaker-results.xml
+
     - name: Upload logs files to DCI
       dci_file:
         path: '{{ item }}'
@@ -24,8 +31,7 @@
     - name: Upload junit files to DCI
       dci_file:
         path: '{{ item }}'
-        name: "{{ item | regex_replace('.*.cli.(.*).xml','\\1') }}"
+        name: "{{ item | basename | regex_replace('^(.*\\.cli\\.)?(.*).xml$','\\2') }}"
         job_id: '{{ hostvars.localhost.job_id }}'
         mime: 'application/junit'
       with_fileglob: "/tmp/joblogs-artifacts/*.xml"
-      when: dci_rhel_agent_cert|bool
