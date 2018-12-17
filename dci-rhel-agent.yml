@@ -125,12 +125,8 @@
             name: dci-rhel-certification
           when: dci_rhel_agent_cert|bool
       rescue:
-        - include_tasks: dci/failure.yml
         - include_tasks: dci/release.yml
-        - name: A failure happened
-          fail:
-            msg: 'Something went wrong during the job. Please check the log'
-          delegate_to: localhost
+        - include_tasks: dci/failure.yml
   tags:
       - test
 
