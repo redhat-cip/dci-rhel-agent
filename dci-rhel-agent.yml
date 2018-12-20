@@ -35,12 +35,13 @@
         vars:
           dci_retrieve_component_local_repo: '{{ local_repo }}'
           dci_retrieve_component_component_id: '{{ component.id }}'
+          dci_retrieve_component_component_name: '{{ topic }}'
         include_role:
           name: dci-retrieve-component
 
       - name: Ensure images/ and LiveOS/ folder exist
         file:
-          path: '{{ local_repo }}/RHEL/{{ item }}'
+          path: '{{ local_repo }}/{{ topic }}/{{ item }}'
           recurse: yes
           state: directory
         with_items:
@@ -50,7 +51,7 @@
       - name: Retrieve the .treeinfo file
         get_url:
           url: '{{ repo_url }}/{{ product }}/{{ component.topic_id }}/{{ component.id }}/.treeinfo'
-          dest: '{{ local_repo }}/RHEL/.treeinfo'
+          dest: '{{ local_repo }}/{{ topic }}/.treeinfo'
           force: yes
           client_cert: /etc/ssl/repo/dci.crt
           client_key: /etc/ssl/repo/dci.key
@@ -59,11 +60,11 @@
       - name: Retrieve latest images
         get_url:
           url: '{{ repo_url }}/{{ product }}/{{ component.topic_id }}/{{ component.id }}/{{ item.path }}/{{ item.name }}'
-          dest: '{{ local_repo }}/RHEL/{{ item.path }}/{{ item.name }}'
+          dest: '{{ local_repo }}/{{ topic }}/{{ item.path }}/{{ item.name }}'
           client_cert: /etc/ssl/repo/dci.crt
           client_key: /etc/ssl/repo/dci.key
           validate_certs: '{{ dci_rhel_agent_sslverify }}'
-          checksum: "{{ lookup('ini', '{{ item.path }}/{{ item.name }} section=checksums file={{ local_repo }}/RHEL/.treeinfo') }}"
+          checksum: "{{ lookup('ini', '{{ item.path }}/{{ item.name }} section=checksums file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
         with_items:
           - {'name': 'squashfs.img', 'path': 'LiveOS'}
           - {'name': 'boot.iso', 'path': 'images'}
