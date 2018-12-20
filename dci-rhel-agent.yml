@@ -39,14 +39,12 @@
         include_role:
           name: dci-retrieve-component
 
-      - name: Ensure images/ and LiveOS/ folder exist
+      - name: Ensure image directories exist
         file:
-          path: '{{ local_repo }}/{{ topic }}/{{ item }}'
+          path: '{{ local_repo }}/{{ topic }}/{{ item.path }}'
           recurse: yes
           state: directory
-        with_items:
-          - LiveOS
-          - images/pxeboot
+        with_items: '{{ dci_rhel_agent_images }}'
 
       - name: Retrieve the .treeinfo file
         get_url:
@@ -65,12 +63,7 @@
           client_key: /etc/ssl/repo/dci.key
           validate_certs: '{{ dci_rhel_agent_sslverify }}'
           checksum: "{{ lookup('ini', '{{ item.path }}/{{ item.name }} section=checksums file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
-        with_items:
-          - {'name': 'squashfs.img', 'path': 'LiveOS'}
-          - {'name': 'boot.iso', 'path': 'images'}
-          - {'name': 'initrd.img', 'path': 'images/pxeboot'}
-          - {'name': 'upgrade.img', 'path': 'images/pxeboot'}
-          - {'name': 'vmlinuz', 'path': 'images/pxeboot'}
+        with_items: '{{ dci_rhel_agent_images }}'
       rescue:
         - include_tasks: dci/failure.yml
   tags:

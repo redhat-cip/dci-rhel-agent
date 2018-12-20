@@ -4,3 +4,16 @@ local_repo_ip: localhost
 epel_url: http://download.fedoraproject.org/pub/epel/7/x86_64
 dci_rhel_agent_sslverify: yes
 dci_rhel_agent_cert: true
+dci_rhel_agent_images: >-
+  [
+   {'name': 'boot.iso', 'path': 'images'},
+   {'name': 'initrd.img', 'path': 'images/pxeboot'},
+   {'name': 'vmlinuz', 'path': 'images/pxeboot'},
+   {% if topic == 'RHEL-7' %}
+   {'name': 'squashfs.img', 'path': 'LiveOS'},
+   {'name': 'upgrade.img', 'path': 'images/pxeboot'}
+   {% elif topic == 'RHEL-8' %}
+   {'name': 'install.img', 'path': 'images'},
+   {'name': 'efiboot.img', 'path': 'images'}
+   {% endif %}
+  ]
