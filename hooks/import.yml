@@ -1,3 +1,11 @@
 ---
+- name: Allow user to use beaker commands
+  acl:
+    path: /etc/beaker/client.conf
+    entity: '{{ ansible_user_id }}'
+    etype: user
+    permissions: r
+    state: present
+
 - name: Import the last build
   shell: beaker-import http://{{ local_repo_ip }}/{{ topic }}/

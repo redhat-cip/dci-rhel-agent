@@ -20,6 +20,7 @@
     recurse: yes
     state: directory
   with_items: '{{ dci_rhel_agent_images }}'
+  become: true
 
 - name: Retrieve the .treeinfo file
   get_url:
@@ -29,6 +30,7 @@
     client_cert: /etc/ssl/repo/dci.crt
     client_key: /etc/ssl/repo/dci.key
     validate_certs: '{{ dci_rhel_agent_sslverify }}'
+  become: true
 
 - name: Retrieve latest images
   get_url:
@@ -39,3 +41,4 @@
     validate_certs: '{{ dci_rhel_agent_sslverify }}'
     checksum: "{{ lookup('ini', '{{ item.path }}/{{ item.name }} section=checksums file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
   with_items: '{{ dci_rhel_agent_images }}'
+  become: true
