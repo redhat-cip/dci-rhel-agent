@@ -16,6 +16,24 @@
       "revId": "1d6f5734175c62658e7fdbbe863c4ecd0fd4c12b",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "016240a4_1fb69657",
+        "filename": "dci/prepare.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-01-21T18:38:34Z",
+      "side": 1,
+      "message": "\u003e Could you in addition adjust the ownership of the directories?\n\nI can but we will have different owner/group between images and packages directories.\n\n\u003e This was we can skip the two becomes below.\n\nUnfortunately no, because the become is about how we access to the ssl cert/key (because owned by root)",
+      "parentUuid": "558e5dc5_a4f3b5a7",
+      "revId": "1d6f5734175c62658e7fdbbe863c4ecd0fd4c12b",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
