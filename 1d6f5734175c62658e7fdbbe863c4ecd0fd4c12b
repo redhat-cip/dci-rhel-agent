@@ -34,6 +34,24 @@
       "revId": "1d6f5734175c62658e7fdbbe863c4ecd0fd4c12b",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f8259305_157c0132",
+        "filename": "dci/prepare.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 30
+      },
+      "writtenOn": "2019-01-21T18:55:51Z",
+      "side": 1,
+      "message": "Thanks for the swift answer!",
+      "parentUuid": "016240a4_1fb69657",
+      "revId": "1d6f5734175c62658e7fdbbe863c4ecd0fd4c12b",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
