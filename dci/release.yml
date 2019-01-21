@@ -1,6 +1,11 @@
 ---
-- name: wait return to beaker
-  wait_for:
-    path: /usr/bin/return2beaker.sh
+- name: wait beaker job to finish
+  command:  /bin/bkr job-list --unfinished
+  register: job_list
+# Check every minute max is 5h
+  retries: 300
+  delay: 60
+  until: job_list == "[]"
 - name: return to beaker
-  shell: /usr/bin/return2beaker.sh
+  shell: /bin/bkr system-release {{ 'item' }}
+  with_items: "{{ groups['beaker-host'] }}"

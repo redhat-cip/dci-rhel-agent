@@ -74,7 +74,7 @@
 
 
 - name: RELEASE SERVER
-  hosts: beaker-host
+  hosts: localhost
   vars:
     dci_status: 'post-run'
   tasks:
