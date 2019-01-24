@@ -6,6 +6,7 @@
     etype: user
     permissions: r
     state: present
+  become: true
 
 - name: Import the last build
   shell: beaker-import http://{{ local_repo_ip }}/{{ topic }}/
