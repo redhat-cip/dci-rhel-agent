@@ -1,6 +1,7 @@
 ---
 - name: Collect and Upload logs
   delegate_to: localhost
+  when: hostvars.localhost.bkrjobid is defined
   block:
     - name: List all files
       shell: 'bkr job-logs {{ hostvars.localhost.bkrjobid }}'
