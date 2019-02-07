@@ -4,6 +4,7 @@
   tasks:
     - name: schedule a new job
       dci_job:
+        components: '{{ dci_components }}'
         topic: '{{ topic }}'
       register: job_info
 

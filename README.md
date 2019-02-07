@@ -128,6 +128,54 @@ export DCI_API_SECRET
 | local_repo | True | Path | Path to directory where components will be stored |
 | local_repo_ip | True | IP | TO WRITE |
 
+### Test specific components
+
+By default the agent will use the latest component (build) available.
+If you need to test an old component then you need to specify its ID in the
+agent configuration (/etc/dci-rhel-agent/settings.yml).
+
+First, get the topic ID
+
+```console
+$ dcictl topic-list --where name:RHEL-7
++--------------------------------------+--------+--------+-------------------------------------+----------------+---------------+--------------------------------------+
+|                  id                  |  name  | state  |           component_types           | export_control | next_topic_id |              product_id              |
++--------------------------------------+--------+--------+-------------------------------------+----------------+---------------+--------------------------------------+
+| 9e170c05-6bbf-46f7-9a0e-a64a66decc44 | RHEL-7 | active | [u'Compose', u'hwcert', u'extraos'] |      True      |      None     | 7adbc8c4-8c9e-4366-aca3-158dfce036c9 |
++--------------------------------------+--------+--------+-------------------------------------+----------------+---------------+--------------------------------------+
+```
+
+Then you can list the components associated to that topic and get the IDs (for each component_types).
+```console
+$ dcictl component-list --topic-id 9e170c05-6bbf-46f7-9a0e-a64a66decc44 --where type:Compose
++--------------------------------------+-----------------------+--------+------------------------+----------------+---------+-------+--------------------------------------+---------+--------------------------------------------------------------------------+
+|                  id                  |          name         | state  | canonical_project_name | export_control | message | title |               topic_id               |   type  |                                   url                                    |
++--------------------------------------+-----------------------+--------+------------------------+----------------+---------+-------+--------------------------------------+---------+--------------------------------------------------------------------------+
+| cb35c4bc-d4b0-4d3f-9c89-9f5c1969854d | RHEL-7.6-20180906.n.0 | active | RHEL-7.6-20180906.n.0  |      True      |   None  |  None | 9e170c05-6bbf-46f7-9a0e-a64a66decc44 | Compose | http://download-node-02.eng.bos.redhat.com/nightly/RHEL-7.6-20180906.n.0 |
+| 1ea259ad-cca4-4c96-aada-78b9909212bb | RHEL-7.6-20180905.n.0 | active | RHEL-7.6-20180905.n.0  |      True      |   None  |  None | 9e170c05-6bbf-46f7-9a0e-a64a66decc44 | Compose | http://download-node-02.eng.bos.redhat.com/nightly/RHEL-7.6-20180905.n.0 |
+| 9d30b332-d6d4-4a05-b54f-b26b38f1f71c | RHEL-7.6-20180904.n.0 | active | RHEL-7.6-20180904.n.0  |      True      |   None  |  None | 9e170c05-6bbf-46f7-9a0e-a64a66decc44 | Compose | http://download-node-02.eng.bos.redhat.com/nightly/RHEL-7.6-20180904.n.0 |
++--------------------------------------+-----------------------+--------+------------------------+----------------+---------+-------+--------------------------------------+---------+--------------------------------------------------------------------------+
+$ dcictl component-list --topic-id 9e170c05-6bbf-46f7-9a0e-a64a66decc44 --where type:extraos
++--------------------------------------+--------------------+--------+------------------------+----------------+---------+-------+--------------------------------------+---------+------+
+|                  id                  |        name        | state  | canonical_project_name | export_control | message | title |               topic_id               |   type  | url  |
++--------------------------------------+--------------------+--------+------------------------+----------------+---------+-------+--------------------------------------+---------+------+
+| a40bc44b-df2f-406a-96e5-e0dfe7b36bda | extraos-1525269455 | active |          None          |      True      |   None  |  None | 9e170c05-6bbf-46f7-9a0e-a64a66decc44 | extraos | None |
++--------------------------------------+--------------------+--------+------------------------+----------------+---------+-------+--------------------------------------+---------+------+
+$ dcictl component-list --topic-id 9e170c05-6bbf-46f7-9a0e-a64a66decc44 --where type:hwcert
++--------------------------------------+-------------------+--------+------------------------+----------------+---------+-------+--------------------------------------+--------+------+
+|                  id                  |        name       | state  | canonical_project_name | export_control | message | title |               topic_id               |  type  | url  |
++--------------------------------------+-------------------+--------+------------------------+----------------+---------+-------+--------------------------------------+--------+------+
+| 427f6e45-5c49-4c3a-a92b-232d985761f0 | hwcert-1536148774 | active |          None          |      True      |   None  |  None | 9e170c05-6bbf-46f7-9a0e-a64a66decc44 | hwcert | None |
++--------------------------------------+-------------------+--------+------------------------+----------------+---------+-------+--------------------------------------+--------+------+
+```
+
+Finally update the `settings.yml` file via the dci_components variable.
+
+dci_components:
+  - 9d30b332-d6d4-4a05-b54f-b26b38f1f71c
+  - a40bc44b-df2f-406a-96e5-e0dfe7b36bda
+  - 427f6e45-5c49-4c3a-a92b-232d985761f0
+
 ### Red Hat Certification: How to skip its execution
 
 Some users might want to skip the certification tests suite. This can be done via `settings.yml` file by adding `dci_rhel_agent_cert: false`.
