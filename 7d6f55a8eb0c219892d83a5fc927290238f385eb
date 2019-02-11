@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "83d450b4_54fd9bec",
+        "filename": "dci-rhel-agent.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-02-11T22:50:30Z",
+      "side": 1,
+      "message": "aren\u0027t the user tests supposed to be executed on the beaker-host instead of the beaker-lab ?",
+      "range": {
+        "startLine": 89,
+        "startChar": 9,
+        "endLine": 89,
+        "endChar": 19
+      },
+      "revId": "7d6f55a8eb0c219892d83a5fc927290238f385eb",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
