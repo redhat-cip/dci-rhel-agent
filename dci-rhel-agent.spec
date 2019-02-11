@@ -41,6 +41,7 @@ install -p -D -m 644 dcirc.sh %{buildroot}%{_sysconfdir}/dci-rhel-agent/dcirc.sh
 install -p -D -m 644 hooks/clean.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/clean.yml
 install -p -D -m 644 hooks/import.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/import.yml
 install -p -D -m 644 hooks/install.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/install.yml
+install -p -D -m 644 hooks/user-tests.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
 install -p -D -m 755 hooks/wait.py %{buildroot}%{_datadir}/dci-rhel-agent/hooks/wait.py
 install -p -D -m 644 dci/success.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/success.yml
 install -p -D -m 644 dci/failure.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/failure.yml
@@ -87,6 +88,7 @@ exit 0
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/settings.yml
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/job.xml
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/hosts
+%config(noreplace) %{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
 %dir %{_sharedstatedir}/dci-rhel-agent
 %attr(0755, %{name}, %{name}) %{_sharedstatedir}/dci-rhel-agent
 /etc/sudoers.d/dci-rhel-agent
