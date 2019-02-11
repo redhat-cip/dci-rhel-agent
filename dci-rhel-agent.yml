@@ -43,7 +43,19 @@
         - include_tasks: dci/failure.yml
   tags:
       - prepare_lab
+      - pre-run
 
+- name: 'Launch customizable pre-run'
+  hosts: beaker-lab
+  vars:
+    dci_status: 'pre-run'
+  tasks:
+    - block:
+        - include_tasks: hooks/pre-run.yml
+      rescue:
+        - include_tasks: dci/failure.yml
+  tags:
+      - pre-run
 
 - name: LAUNCH INSTALL
   hosts: localhost
@@ -73,6 +85,17 @@
   tags:
       - test
 
+- name: 'Launch customizable tests'
+  hosts: beaker-lab
+  vars:
+    dci_status: 'post-run'
+  tasks:
+    - block:
+        - include_tasks: hooks/user-tests.yml
+      rescue:
+        - include_tasks: dci/failure.yml
+  tags:
+    - post-run
 
 - name: RELEASE SERVER
   hosts: beaker-host
@@ -83,7 +106,8 @@
         - include_tasks: dci/release.yml
       rescue:
         - include_tasks: dci/failure.yml
-
+  tags:
+    - post-run
 
 - name: SUCCESS
   hosts: localhost
