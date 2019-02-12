@@ -20,7 +20,7 @@ engineers can troubleshoot together.
 #### Assumptions
 * Partner/Customer will use RHEL 7.6 or higher.
 * Partner/Customer has a valid configuration to install RHEL using DHCP/PXE/Kickstart.
-* Partner/Customer has minimal hardware lab to be installed and wiped through DCI workflow.
+* Partner/Customer has a physical or virtual lab to be installed and wiped through DCI workflow.
 
 #### Jumpbox
 
