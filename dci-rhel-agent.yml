@@ -44,7 +44,6 @@
   tags:
       - prepare_lab
 
-
 - name: LAUNCH INSTALL
   hosts: localhost
   vars:
@@ -74,6 +73,17 @@
   tags:
       - test
 
+- name: 'Launch customizable tests'
+  hosts: beaker-host
+  vars:
+    dci_status: 'post-run'
+  tasks:
+    - block:
+        - include_tasks: '{{ dci_config_dir }}/hooks/user-tests.yml'
+      rescue:
+        - include_tasks: dci/failure.yml
+  tags:
+    - post-run
 
 - name: RELEASE SERVER
   hosts: beaker-host
@@ -84,7 +94,8 @@
         - include_tasks: dci/release.yml
       rescue:
         - include_tasks: dci/failure.yml
-
+  tags:
+    - post-run
 
 - name: SUCCESS
   hosts: localhost
