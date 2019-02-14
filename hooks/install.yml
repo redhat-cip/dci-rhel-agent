@@ -3,8 +3,36 @@
 #  host: beaker-lab
 #  shell: beaker-import http://{{ IP AGENT }}/rhel/
 
+- name: create temporary file
+  tempfile:
+    state: file
+    suffix: xml
+  register: job_xml
+
+- name: get information from treeinfo
+  set_fact:
+    distro_name: "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
+
+- name: get arch from treeinfo
+  set_fact:
+    distro_arch: "{{ lookup('ini', 'arch section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
+
+- name: create job.xml file
+  template:
+    src: /usr/share/dci-rhel-agent/templates/job.xml.j2
+    dest: "{{ job_xml.path }}"
+
+- name: upload job.xml to DCI
+  dci_file:
+    path: '{{ item }}'
+    name: 'job.xml'
+    mime: 'text/xml'
+    job_id: '{{ hostvars.localhost.job_id }}'
+  with_items:
+    - "{{ job_xml.path }}"
+
 - name: launch beaker install
-  shell: 'bkr job-submit /etc/dci-rhel-agent/job.xml'
+  shell: "bkr job-submit {{ job_xml.path }}"
   register: bkr_jobid
 
 - debug:
