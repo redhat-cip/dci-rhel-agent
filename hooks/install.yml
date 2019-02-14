@@ -3,8 +3,22 @@
 #  host: beaker-lab
 #  shell: beaker-import http://{{ IP AGENT }}/rhel/
 
+- name: create temporary file
+  tempfile:
+    state: file
+    suffix: temp
+  register: temp_config
+
+- name: create job.xml file
+  template:
+    src: /usr/share/dci-rhel-agent/templates/job.xml.j2
+    dest: "{{ temp_config.path }}"
+    owner: dci-rhel-agent
+    group: dci-rhel-agent
+    mode: 0644
+
 - name: launch beaker install
-  shell: 'bkr job-submit /etc/dci-rhel-agent/job.xml'
+  shell: "bkr job-submit {{ temp_config.path }}"
   register: bkr_jobid
 
 - debug:
