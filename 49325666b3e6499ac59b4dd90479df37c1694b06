@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8bbcd524_d395c874",
+        "filename": "dci-rhel-agent.spec",
+        "patchSetId": 5
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-02-14T20:41:38Z",
+      "side": 1,
+      "message": "not sure if it\u0027s needed because we\u0027re already defining the top directory via %{_datadir}/dci-rhel-agent (l86)",
+      "range": {
+        "startLine": 91,
+        "startChar": 0,
+        "endLine": 91,
+        "endChar": 47
+      },
+      "revId": "49325666b3e6499ac59b4dd90479df37c1694b06",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4141ac64_8bc749e4",
+        "filename": "hooks/install.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-02-14T20:41:38Z",
+      "side": 1,
+      "message": "not sure if it\u0027s really useful. Maybe something like \u0027.xml\u0027 has more meaning. wdyt ?",
+      "range": {
+        "startLine": 9,
+        "startChar": 4,
+        "endLine": 9,
+        "endChar": 16
+      },
+      "revId": "49325666b3e6499ac59b4dd90479df37c1694b06",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f8bab103_f75b88d2",
+        "filename": "hooks/install.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-02-14T20:41:38Z",
+      "side": 1,
+      "message": "we\u0027re run the agent as dci-rhel-agent so the template will be created with this user/group/mode by default",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 14
+      },
+      "revId": "49325666b3e6499ac59b4dd90479df37c1694b06",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b72c9f47_a43d4084",
+        "filename": "templates/job.xml.j2",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-02-14T20:41:38Z",
+      "side": 1,
+      "message": "If we\u0027re not able to use a static file anymore we need to be flexible with this kind of value. Because with this review we won\u0027t be able to test RHEL8.\nInstead you should get the value from the .treeinfo file via the ini lookup",
+      "range": {
+        "startLine": 7,
+        "startChar": 47,
+        "endLine": 7,
+        "endChar": 69
+      },
+      "revId": "49325666b3e6499ac59b4dd90479df37c1694b06",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4673daa7_a30b75b9",
+        "filename": "templates/job.xml.j2",
+        "patchSetId": 5
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-02-14T20:41:38Z",
+      "side": 1,
+      "message": "same here",
+      "range": {
+        "startLine": 8,
+        "startChar": 47,
+        "endLine": 8,
+        "endChar": 53
+      },
+      "revId": "49325666b3e6499ac59b4dd90479df37c1694b06",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "42de23da_e7694df6",
+        "filename": "templates/job.xml.j2",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-02-14T20:41:38Z",
+      "side": 1,
+      "message": "We can remove this section (that\u0027s my thought) because beaker is supposed to add the repositories from the beaker-import to the host deployed automaticaly or at least we should replace IP by the local_repo_ip + topic variables",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 20
+      },
+      "revId": "49325666b3e6499ac59b4dd90479df37c1694b06",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
