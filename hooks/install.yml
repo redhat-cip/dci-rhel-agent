@@ -3,8 +3,20 @@
 #  host: beaker-lab
 #  shell: beaker-import http://{{ IP AGENT }}/rhel/
 
+- name: generate a unique ID for job.xml
+  shell: uuidgen
+  register: uuid
+
+- name: create job.xml file
+  template:
+    src: /usr/share/dci-rhel-agent/templates/job.xml.j2
+    dest: "/tmp/job-{{ uuid }}.xml"
+    owner: dci-rhel-agent
+    group: dci-rhel-agent
+    mode: 0644
+
 - name: launch beaker install
-  shell: 'bkr job-submit /etc/dci-rhel-agent/job.xml'
+  shell: "bkr job-submit /tmp/job-{{ uuid }}.xml"
   register: bkr_jobid
 
 - debug:
@@ -13,6 +25,11 @@
 - name: Register Beaker Job ID
   set_fact:
     bkrjobid: "{{ bkr_jobid.stdout | regex_replace(\".*\\s\\[\\'(.*)\\'\\]\",'\\1') }}"
+
+- name: delete job.xml file
+  file:
+    path: "/tmp/job-{{ uuid }}.xml"
+    state: absent
 
 #- name: attach to job
 #  shell: 'bkr job-watch {{ bkrjobid }}'
