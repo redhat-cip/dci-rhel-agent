@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "56aea06b_572f783d",
+        "filename": "hooks/install.yml",
+        "patchSetId": 11
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-02-15T17:13:47Z",
+      "side": 1,
+      "message": "this can be group in one set_fact task",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 106
+      },
+      "revId": "c622b1b0e2485adffeeec52673565395b8f844eb",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aca1d52e_6ebead31",
+        "filename": "hooks/install.yml",
+        "patchSetId": 11
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-02-15T17:13:47Z",
+      "side": 1,
+      "message": "shortcut: job_id",
+      "range": {
+        "startLine": 30,
+        "startChar": 16,
+        "endLine": 30,
+        "endChar": 41
+      },
+      "revId": "c622b1b0e2485adffeeec52673565395b8f844eb",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "568b5741_41e16f5f",
+        "filename": "hooks/install.yml",
+        "patchSetId": 11
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-02-15T17:13:47Z",
+      "side": 1,
+      "message": "do we really need this ? because there\u0027s only one file to upload",
+      "range": {
+        "startLine": 31,
+        "startChar": 2,
+        "endLine": 32,
+        "endChar": 26
+      },
+      "revId": "c622b1b0e2485adffeeec52673565395b8f844eb",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
