@@ -1,1 +1,3 @@
 topic: RHEL-7
+dci_tags:
+  - debug

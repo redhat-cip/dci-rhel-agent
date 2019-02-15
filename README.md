@@ -185,6 +185,13 @@ Some users might want to skip the certification tests suite. This can be done vi
 To start `dci-rhel-agent`, please use `systemctl start dci-rhel-agent`.
 
 
+## Use tags
+
+If you want to associate tags to jobs you can edit the file `/etc/dci-rhel-agent/settings.yml` and add your tags in the `dci_tags` list.
+By default the tag "debug" is associated with all jobs, you should keep it like this until the integration of the agent is done.
+The debug tag will prevent jobs to be count in the statistics.
+
+
 ## License
 
 Apache License, Version 2.0 (see [LICENSE](LICENSE) file)

@@ -16,6 +16,12 @@
         components: "{{ job_info['job']['components'] }}"
         product: "{{ job_info['job']['topic']['product_id'] }}"
 
+    - name: Set the tags
+      dci_job:
+        id: "{{ job_id }}"
+        tags: '{{ dci_tags }}'
+      when: dci_tags
+
     - include_tasks: hooks/clean.yml
   tags:
       - new_job
