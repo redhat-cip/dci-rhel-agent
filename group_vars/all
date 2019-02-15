@@ -3,6 +3,7 @@ local_repo: /repo
 local_repo_ip: localhost
 epel_url: http://download.fedoraproject.org/pub/epel/7/x86_64
 dci_components: []
+dci_tags: ['debug']
 dci_config_dir: /etc/dci-rhel-agent
 dci_rhel_agent_sslverify: yes
 dci_rhel_agent_cert: true
