@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4c7fdd0e_e04abb13",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-02-15T15:02:38Z",
+      "side": 1,
+      "message": "No you should never edit group_vars/all.\nCustomization should go in the settings.yml file. the group_vars/all is only used for default configuration.",
+      "range": {
+        "startLine": 190,
+        "startChar": 38,
+        "endLine": 190,
+        "endChar": 76
+      },
+      "revId": "10996e84fd86d4ce25890021aadd9a8d7b0577f6",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a67b66c6_f0de6bd8",
+        "filename": "dci-rhel-agent.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 56
+      },
+      "writtenOn": "2019-02-15T15:02:38Z",
+      "side": 1,
+      "message": "shortcut: job_id",
+      "range": {
+        "startLine": 21,
+        "startChar": 16,
+        "endLine": 21,
+        "endChar": 31
+      },
+      "revId": "10996e84fd86d4ce25890021aadd9a8d7b0577f6",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
