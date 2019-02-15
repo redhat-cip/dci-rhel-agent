@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "246c19e2_e9ee426e",
+        "filename": "hooks/install.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-02-15T17:01:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4141ac64_8bc749e4",
+      "range": {
+        "startLine": 9,
+        "startChar": 4,
+        "endLine": 9,
+        "endChar": 16
+      },
+      "revId": "49325666b3e6499ac59b4dd90479df37c1694b06",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f8bab103_f75b88d2",
         "filename": "hooks/install.yml",
         "patchSetId": 5
@@ -59,6 +83,30 @@
       "writtenOn": "2019-02-14T20:41:38Z",
       "side": 1,
       "message": "we\u0027re run the agent as dci-rhel-agent so the template will be created with this user/group/mode by default",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 14
+      },
+      "revId": "49325666b3e6499ac59b4dd90479df37c1694b06",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0ea94399_061cb58c",
+        "filename": "hooks/install.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-02-15T17:01:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f8bab103_f75b88d2",
       "range": {
         "startLine": 16,
         "startChar": 0,
@@ -94,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "fae4dfa2_e60fc9bf",
+        "filename": "templates/job.xml.j2",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-02-15T17:01:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b72c9f47_a43d4084",
+      "range": {
+        "startLine": 7,
+        "startChar": 47,
+        "endLine": 7,
+        "endChar": 69
+      },
+      "revId": "49325666b3e6499ac59b4dd90479df37c1694b06",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4673daa7_a30b75b9",
         "filename": "templates/job.xml.j2",
         "patchSetId": 5
@@ -117,6 +189,30 @@
     },
     {
       "key": {
+        "uuid": "69bb0179_313a7793",
+        "filename": "templates/job.xml.j2",
+        "patchSetId": 5
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-02-15T17:01:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4673daa7_a30b75b9",
+      "range": {
+        "startLine": 8,
+        "startChar": 47,
+        "endLine": 8,
+        "endChar": 53
+      },
+      "revId": "49325666b3e6499ac59b4dd90479df37c1694b06",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "42de23da_e7694df6",
         "filename": "templates/job.xml.j2",
         "patchSetId": 5
@@ -128,6 +224,30 @@
       "writtenOn": "2019-02-14T20:41:38Z",
       "side": 1,
       "message": "We can remove this section (that\u0027s my thought) because beaker is supposed to add the repositories from the beaker-import to the host deployed automaticaly or at least we should replace IP by the local_repo_ip + topic variables",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 20
+      },
+      "revId": "49325666b3e6499ac59b4dd90479df37c1694b06",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d43a6511_835be26c",
+        "filename": "templates/job.xml.j2",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-02-15T17:01:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "42de23da_e7694df6",
       "range": {
         "startLine": 12,
         "startChar": 0,
