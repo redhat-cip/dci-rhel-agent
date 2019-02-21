@@ -171,10 +171,37 @@ $ dcictl component-list --topic-id 9e170c05-6bbf-46f7-9a0e-a64a66decc44 --where 
 
 Finally update the `settings.yml` file via the dci_components variable.
 
+```
 dci_components:
   - 9d30b332-d6d4-4a05-b54f-b26b38f1f71c
   - a40bc44b-df2f-406a-96e5-e0dfe7b36bda
   - 427f6e45-5c49-4c3a-a92b-232d985761f0
+```
+
+### Target a specific server registred in Beaker
+
+If you need to assign the job to a specific server which is registered in Beaker, you can use ONE of the following options.
+
+#### Using FQDN
+
+This will match a single server by checking the hostname.
+
+```
+hostRequires:
+  fqdn: my.host.example.com
+```
+
+#### Using hardware requirements
+
+This will return the first server available that match the hardware requirement.
+
+```
+hostRequires:
+  network: Extreme Gigabit Ethernet
+  video: VD 0190
+```
+
+The various elements along with their attributes and the values they can take are described in the RELAX NG schema described in the file [beaker-job.rng](https://beaker-project.org/docs/_downloads/beaker-job.rng).
 
 ### Red Hat Certification: How to skip its execution
 
