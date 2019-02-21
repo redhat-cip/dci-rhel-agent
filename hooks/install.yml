@@ -37,8 +37,21 @@
   set_fact:
     bkrjobid: "{{ bkr_jobid.stdout | regex_replace(\".*\\s\\[\\'(.*)\\'\\]\",'\\1') }}"
 
+- name: Get Beaker job details
+  shell: "bkr job-results {{ bkrjobid }}"
+  register: bkr_job_results
+
 #- name: attach to job
 #  shell: 'bkr job-watch {{ bkrjobid }}'
 
 - name: Wait system to be reserved
   shell: "{{ playbook_dir }}/hooks/wait.py {{ bkrjobid }}"
+
+- name: Parse XML to find where job is scheduled
+  xml:
+    xmlstring: '{{ bkr_job_results.stdout }}'
+    xpath: /job/recipeSet/recipe/roles/role/system/@value
+  register: bkr_host
+
+- debug:
+    msg: '{{ bkr_host }}'
