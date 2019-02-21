@@ -8,13 +8,27 @@
                     <distro_arch op="=" value="{{ distro_arch }}"/>
                 </and>
             </distroRequires>
+            {% if hostRequires %}
+                {% if hostRequires.fqdn is defined %}
+                    <hostRequires force="my.host.example.com" />
+                {% else %}
+                    <hostRequires>
+                    <and>
+                        {% for key,value in hostRequires.items() %}
+                        <device op="=" type="{{ key }}" description="{{ value }}" />
+                        {% endfor %}
+                    </and>
+                    </hostRequires>
+                {% endif %}
+            {% else %}
             <hostRequires/>
+            {% endif %}
             <partitions/>
             <task name="/distribution/install" role="STANDALONE">
                 <params>
                 </params>
             </task>
-	    <task name="/distribution/reservesys"/>
+            <task name="/distribution/reservesys"/>
         </recipe>
     </recipeSet>
 </job>
