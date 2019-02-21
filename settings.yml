@@ -1,1 +1,18 @@
 topic: RHEL-7
+# Comment will be move to doc before merge.
+
+# <device op="=" type="key" description="value" />
+#
+# Example in XML:
+#   <device op="=" type="network" description="Extreme Gigabit Ethernet" />
+#   <device op="=" type="video" description="VD 0190" />
+#
+# Example in settings.yml:
+# hostRequires:
+#   network: Extreme Gigabit Ethernet
+#   video: VD 0190
+
+# <hostRequires force="my.host.example.com" />
+#
+# hostRequires:
+#   fqdn: my.host.example.com
