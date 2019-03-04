@@ -1,0 +1,8 @@
+Code-Review+2: Cédric Lecomte <ced.lecomte@gmail.com>
+Workflow+1: Cédric Lecomte <ced.lecomte@gmail.com>
+Verified+2: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-by: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-at: Mon, 04 Mar 2019 11:26:04 +0000
+Reviewed-on: https://softwarefactory-project.io/r/15077
+Project: dci-rhel-agent
+Branch: refs/heads/master
