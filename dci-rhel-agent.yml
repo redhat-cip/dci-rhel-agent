@@ -37,6 +37,22 @@
   tags:
     - new_job
 
+- name: ADD BEAKER_HOST
+  hosts: localhost
+  tasks:
+    - block:
+        - name: ADD BEAKER HOST TO GROUP
+          add_host:
+            hostname: "{{ hostRequires.fqdn }}"
+            ansible_ssh_host: "{{ hostRequires.fqdn }}"
+            ansible_ssh_port: "{{ beaker_host_port | default('22') }}"
+            ansible_user: "{{ beaker_host_user | default('root') }}"
+            ansible_password: "{{ beaker_host_password | default('beaker') }}"
+            groups:
+              - beaker-host
+      rescue:
+        - include_tasks: dci/failure.yml
+      when: hostRequires.fqdn is defined
 
 - name: PREPARE LAB
   hosts: beaker-lab
