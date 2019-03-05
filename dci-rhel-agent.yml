@@ -62,6 +62,22 @@
   tags:
       - install
 
+- name: ASSIGN BEAKER_HOST IF hostRequires.fqdn
+  set_fact:
+    beaker_host = "{{ hostRequires.fqdn }}"
+  when: hostRequires.fqdn is defined
+
+- name: ADD BEAKER_HOST TO GROUP
+  add_host:
+    hostname: "{{ beaker_host }}"
+    ansible_ssh_host: "{{ beaker_host }}"
+    ansible_ssh_port: "{{ beaker_host_port | default('22') }}"
+    ansible_user: "{{ beaker_host_user | default('root') }}"
+    ansible_password: "{{ beaker_host_password | default('beaker') }}"
+    groups:
+      - beaker-host
+  when: hostRequires.fqdn is defined
+
 - name: TESTS
   hosts: beaker-host
   vars:
