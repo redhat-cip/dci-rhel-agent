@@ -71,7 +71,9 @@
         - name: Launch RHEL Certification Test
           import_role:
             name: dci-rhel-certification
-          when: dci_rhel_agent_cert|bool
+          when:
+            - topic.startswith('RHEL-7')|bool
+            - dci_rhel_agent_cert|bool
           become: true
       rescue:
         - include_tasks: dci/release.yml
