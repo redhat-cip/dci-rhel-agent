@@ -50,6 +50,24 @@
   tags:
       - prepare_lab
 
+- name: ADD BEAKER_HOST
+  tasks:
+    - block:
+        - name: SET BEAKER_HOST VARIABLE
+          set_fact: beaker_host = "{{ hostRequires.fqdn }}"
+        - name: ADD BEAKER_HOST TO GROUP
+          add_host:
+            hostname: "{{ beaker_host }}"
+            ansible_ssh_host: "{{ beaker_host }}"
+            ansible_ssh_port: "{{ beaker_host_port | default('22') }}"
+            ansible_user: "{{ beaker_host_user | default('root') }}"
+            ansible_password: "{{ beaker_host_password | default('beaker') }}"
+            groups:
+              - beaker-host
+      rescue:
+        - include_tasks: dci/failure.yml
+  when: hostRequires.fqdn is defined        
+
 - name: LAUNCH INSTALL
   hosts: localhost
   vars:
