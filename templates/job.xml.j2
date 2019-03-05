@@ -10,7 +10,7 @@
             </distroRequires>
             {% if hostRequires is defined %}
                 {% if hostRequires.fqdn is defined %}
-                    <hostRequires force="my.host.example.com" />
+                    <hostRequires force="{{ hostRequires.fqdn }}" />
                 {% else %}
                     <hostRequires>
                     <and>
