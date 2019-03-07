@@ -1,9 +1,5 @@
 # DCI RHEL Agent
-
-This is the README of the DCI RHEL agent. It will allow one to schedule a job,
-run the appropriate installation steps, run the specified tests and finally
-return the tests results back to the DCI API. So both Partners and Red Hat
-engineers can troubleshoot together.
+`dci-rhel-agent` provides Red Hat Enterprise Linux (RHEL) in Red Hat Distributed CI service.
 
 ## Table of Contents
 
@@ -11,104 +7,98 @@ engineers can troubleshoot together.
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
+- [How to run your own set of tests](#how-to-run-your-own-set-of-tests)
+- [Create your DCI account on distributed-ci.io](#create-your-dci-account-on-distributed-ciio)
 - [License](#license)
 - [Contact](#contact)
 
 ## Requirements
-### Setup Requirements
+### Systems requirements
 
-#### Assumptions
-* Partner/Customer will use RHEL 7.6 or higher.
-* Partner/Customer has a valid configuration to install RHEL using DHCP/PXE/Kickstart.
-* Partner/Customer has a physical or virtual lab to be installed and wiped through DCI workflow.
+The simplest working setup must be composed of at least 2 systems:
 
-#### Jumpbox
+- The first one is **DCI Jumpbox**. This system acts as a `controller node` and will run mandatory services such as DHCP server, local DNS resolver and Beaker.
 
-Jumpbox can be a physical server or a virtual machine.
+- The second one is the **target** (also known as a **lab server**). This system will be deployed with **RHEL from DCI**  and execute all the tests on top of it. This system is installed and wiped at each `dci-rhel-agent` job.
+
+Please note that you can have only one **DCI Jumpbox** per lab, but it makes sense to have multiple **targets** (for instance: systems with different hardware profiles).
+
+#### Jumpbox requirements
+
+The Jumpbox can be a physical server or a virtual machine.
 In any case, it must:
 
-* Be running the latest stable RHEL release and registered via RHSM.
+* Be running the latest stable RHEL release (**7.6 or higher**) and registered via RHSM.
 * Have at least 160GB of free space available in `/var`
-* Access to Internet
-* Be able to connect following Web urls:
+* Have access to Internet
+* Be able to connect the following Web urls:
   * DCI API, https://api.distributed-ci.io
   * DCI Packages, https://packages.distributed-ci.io
   * DCI Repository, https://repo.distributed-ci.io
   * EPEL, https://dl.fedoraproject.org/pub/epel/
 * Have a stable internal IP
-* Be able to reach the lab servers using (mandadory, but not limited to):
+* Be able to reach all lab servers using (mandadory, but not limited to):
   * SSH
   * IPMI
-  * Serial-Over-LAN or other remote console (details & software to be provided by the partner)
+  * Serial-Over-LAN or other remote consoles (details & software to be provided by the partner)
 * Be reachable by the lab servers using:
   * DHCP
   * PXE
   * HTTP/HTTPS
 
-##### Bandwidth requirement
+#### Lab server requirements
 
-DCI needs to download RHEL new snapshots regularly (=~ 4GB each).
+The lab server can be a physical server or a virtual machine. It will be **installed** through DCI workflow with each job.
+As the files on this system are NOT persistent between each `dci-rhel-agent` job, every customization has to be automated from the DCI Jumpbox. 
 
-##### Remote access
+### Lab network requirements
+* The lab network must allow network booting protocols such as DHCP/PXE.
+* The lab network should be fully isolated, to prevent conflicts with other networks.
+* The lab network bandwidth can be impaired since the `dci-rhel-agent` will download RHEL snapshots (=~ 4GB each) once in a while.
 
-We strongly advise the partner to give access to the jumpbox to Red Hat team.
-This way, Red Hat engineers will be able to help to do the initial setup and troubleshoot potential issues.
+#### Optional
 
-##### Additional remarks
-
-Please note that the Jumpbox acts as a `controller node`, therefore it is NOT wiped/deployed after each `dci-rhel-agent` run (unlike hardware lab servers).
-
-`dci-rhel-agent` use [Beaker](https://beaker-project.org) service to deploy RHEL automatically.
-
-### Distributed-CI account
-
-Every user needs to create his account in DCI by connecting to
-`https://www.distributed-ci.io` using @redhat.com SSO account.
-
-User account will be created in DCI database at the first connection.
-
-**Please [contact](#contact) us back when you reach this step, to be assigned in the correct organisation.**
-
-### RemoteCI credentials
-
-A RemoteCI in DCI terms is a platform and its jumpbox.
-
-One simply specifies a label, and a resource will be created with an ID and an
-API_TOKEN that will let one authenticate to run jobs.
-
-Only the admins of a team can create a RemoteCI. If you are not an admin of
-your team, please contact her to ensure the RemoteCI is adequately created.
-
-Once the remoteci is ready, one can download its authentication file on the
-Download rc file column in the RemoteCI section in the UI.
-
-The file is called `remotecirc.sh`, please rename it to `dcirc.sh` for the
-next step.
+* We strongly advise the partners to provide Red Hat DCI's team an access to their jumpbox. This way, Red Hat engineers can help with the initial setup and some troubleshooting.
 
 ## Installation
 
-The agent comes in form of a RPM called `dci-rhel-agent`. In order to install
-it one needs to install the `dci-release` and `epel-release` packages.
+The `dci-rhel-agent` is packaged and available as a RPM files.
+However,`dci-release` and `epel-release` must be installed first:
 
 ```bash
-#> yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-#> yum -y install https://packages.distributed-ci.io/dci-release.el7.noarch.rpm
-#> yum -y install dci-rhel-agent
+# yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+# yum -y install https://packages.distributed-ci.io/dci-release.el7.noarch.rpm
+# yum -y install dci-rhel-agent
 ```
+
+Next, install [Beaker](https://beaker-project.org/). Red Hat DCI maintains a [dedicated Ansible role](https://docs.distributed-ci.io/ansible-playbook-dci-beaker/) to help with this task.
+
+```bash
+# subscription-manager repos --enable=rhel-7-server-extras-rpms
+# subscription-manager repos --enable=rhel-7-server-optional-rpms
+# su - dci-rhel-agent
+$ git clone https://github.com/redhat-cip/ansible-playbook-dci-beaker
+$ cd ansible-playbook-dci-beaker/
+$ ansible-galaxy install -r requirements.yml -p roles/
+$ vi group_vars/all
+[...]
+$ ansible-playbook -i inventory playbook.yml
+```
+
+If the **target** is a virtual machine, read this [notice](https://github.com/redhat-cip/ansible-playbook-dci-beaker#note-about-virtual-machines).
+
+When you install `dci-rhel-agent` on a fresh system (or if you need to update cached Beaker Harness packages), execute the `beaker-repo-update` command.
+For more details, read the official [documentation]((https://beaker-project.org/docs/admin-guide/man/beaker-repo-update.html).
 
 ## Configuration
 
-There are two main configuration files: `/etc/dci-rhel-agent/dcirc.sh` and
-`/etc/dci-rhel-agent/settings.yml`.
-
+There are two configuration files for `dci-rhel-agent`: `/etc/dci-rhel-agent/dcirc.sh` and `/etc/dci-rhel-agent/settings.yml`.
 
   * `/etc/dci-rhel-agent/dcirc.sh`
 
-This file contents your lab credential (also kwnown as RemoteCI in DCI web interface). As
-explained in [RemoteCI credential](#remoteci-credentials), an admin of the
-team should have created a Remote CI, downloaded the relative `remotecirc.sh` file and renamed it locally on the Jumpbox to `/etc/dci-rhel-agent/dcirc.sh`.
+This file has the credential associated to the lab (also kwnown as a `RemoteCI` in the [DCI web dashboard](https://www.distributed-ci.io). The partner team administrator has to create a Remote CI in the DCI web dashboard, download the relative `remotecirc.sh` file and rename it locally on the Jumpbox to `/etc/dci-rhel-agent/dcirc.sh`.
 
-The file content should looks like:
+This file should NOT be edited:
 
 ```bash
 #!/usr/bin/env bash
@@ -122,19 +112,31 @@ export DCI_API_SECRET
 
 * `/etc/dci-rhel-agent/settings.yml`
 
+This YAML file includes the configuration for a `dci-rhel-agent` Job.
+The possible values are:
+
 | Variable | Required | Type | Description |
 |----------|----------|------|-------------|
-| topic | True | String | Name of the topic the agent should run |
-| local_repo | True | Path | Path to directory where components will be stored |
-| local_repo_ip | True | IP | TO WRITE |
+| topic | True | String | Name of the topic. |
+| local_repo | True | Path | Path to directory where components will be stored; Must be exposed by httpd. |
+| local_repo_ip | True | IP | DCI Jumpbox lab static network IP. |
+| dci_rhel_agent_cert | True | True/False | Enable or disable the certification tests suite. |
 
-### Test specific components
+Example:
 
-By default the agent will use the latest component (build) available.
-If you need to test an old component then you need to specify its ID in the
-agent configuration (/etc/dci-rhel-agent/settings.yml).
+```console
+topic: RHEL-7
+local_repo_ip: 172.23.100.100
+local_repo: /var/www/html
+dci_rhel_agent_cert: false
+```
 
-First, get the topic ID
+### Advanced settings 
+#### How to use a specific DCI component (a specific RHEL build) ?
+
+By default the agent will use the latest component (RHEL build) available. If you need to test an old component, then you need to specify its ID in the agent configuration (`/etc/dci-rhel-agent/settings.yml`).
+
+First, get the topic ID:
 
 ```console
 $ dcictl topic-list --where name:RHEL-7
@@ -145,7 +147,8 @@ $ dcictl topic-list --where name:RHEL-7
 +--------------------------------------+--------+--------+-------------------------------------+----------------+---------------+--------------------------------------+
 ```
 
-Then you can list the components associated to that topic and get the IDs (for each component_types).
+Then you can list the components associated to that topic and get the IDs (for each component_types):
+
 ```console
 $ dcictl component-list --topic-id 9e170c05-6bbf-46f7-9a0e-a64a66decc44 --where type:Compose
 +--------------------------------------+-----------------------+--------+------------------------+----------------+---------+-------+--------------------------------------+---------+--------------------------------------------------------------------------+
@@ -169,7 +172,7 @@ $ dcictl component-list --topic-id 9e170c05-6bbf-46f7-9a0e-a64a66decc44 --where 
 +--------------------------------------+-------------------+--------+------------------------+----------------+---------+-------+--------------------------------------+--------+------+
 ```
 
-Finally update the `settings.yml` file via the dci_components variable.
+Finally update the `settings.yml` file via the `dci_components` variable:
 
 ```
 dci_components:
@@ -178,12 +181,10 @@ dci_components:
   - 427f6e45-5c49-4c3a-a92b-232d985761f0
 ```
 
-### Target a specific server registred in Beaker
+#### How to target a specific system in Beaker ?
+If you have registred several systems in Beaker, you might want to configure where the DCI job will be executed. You can use ONE of the following options:
 
-If you need to assign the job to a specific server which is registered in Beaker, you can use ONE of the following options.
-
-#### Using FQDN
-
+##### Option A: Using FQDN
 This will match a single server by checking the hostname.
 
 ```
@@ -191,9 +192,8 @@ hostRequires:
   fqdn: my.host.example.com
 ```
 
-#### Using hardware requirements
-
-This will return the first server available that match the hardware requirement.
+##### Or option B: Using hardware requirements
+This will return the first server available that matches the hardware requirement.
 
 ```
 hostRequires:
@@ -201,29 +201,69 @@ hostRequires:
   video: VD 0190
 ```
 
-The various elements along with their attributes and the values they can take are described in the RELAX NG schema described in the file [beaker-job.rng](https://beaker-project.org/docs/_downloads/beaker-job.rng).
+The various elements along with their attributes (and their possible values) are described in the RELAX NG schema [beaker-job.rng](https://beaker-project.org/docs/_downloads/beaker-job.rng).
 
-### Red Hat Certification: How to skip its execution
-
+#### How to skip Red Hat Certification tests ?
 Some users might want to skip the certification tests suite. This can be done via `settings.yml` file by adding `dci_rhel_agent_cert: false`.
 
-## Usage
 
-To start `dci-rhel-agent`, please use `systemctl start dci-rhel-agent`.
-
-
-## Use tags
-
+#### How to add tags to a job ?
 If you want to associate tags to jobs you can edit the file `/etc/dci-rhel-agent/settings.yml` and add your tags in the `dci_tags` list.
-By default the tag "debug" is associated with all jobs, you should keep it like this until the integration of the agent is done.
-The debug tag will prevent jobs to be count in the statistics.
+By default, the tag "debug" is associated with every jobs. It should be kept 'as is' until the integration of the agent is done.
+The debug tag prevents jobs results to be compiled in DCI trends.
 
+## Usage
+To start a single job `dci-rhel-agent`, please use `systemctl start dci-rhel-agent`.
+
+For troubleshooting purposes, launch `dci-rhel-agent` foreground:
+
+```bash
+# su - dci-rhel-agent
+$ cd /usr/share/dci-rhel-agent
+$ source /etc/dci-rhel-agent/dcirc.sh
+$ /usr/bin/ansible-playbook -vv /usr/share/dci-rhel-agent/dci-rhel-agent.yml -e @/etc/dci-rhel-agent/settings.yml -i /etc/dci-rhel-agent/hosts
+```
+
+## How to run your own set of tests ?
+By default, `dci-rhel-agent` provides an empty Ansible playbook located at `/etc/dci-rhel-agent/hooks/user-tests.yml`.
+It can be modified to include any task needed to run on the lab server that was provisionned for the job.
+
+This file will not be replaced when the `dci-rhel-agent` RPM will be updated.
+
+Please note, that it is possible at this point to use DCI Ansible bindings (see `/usr/share/dci/modules/`) in tasks.  
+In the following example, the task uploads Junit files (your tests results) into DCI Web dashboard.
+
+```
+- name: Copy tests results from lab server to jumpbox it-self
+  fetch:
+    src: '{{ item }}'
+    dest: '{{ item }}'
+    flat: yes
+  with_items:
+    - /tmp/result-1.xml
+    - /tmp/result-2.xml
+
+- name: Upload files from the jumpbox to DCI
+  dci_file:
+    path: '{{ item }}'
+    name: '{{ item }}'
+    job_id: '{{ hostvars.localhost.job_id }}'
+    mime: "application/junit"
+  delegate_to: localhost
+  with_items:
+    - /tmp/result-1.xml
+    - /tmp/result-2.xml
+```
+
+## Create your DCI account on distributed-ci.io
+Every user needs to create his personnal account by connecting to `https://www.distributed-ci.io` using a Red Hat SSO account.
+
+The account will be created in the DCI database at the first connection. For now, there is no reliable way to know your team automatically.
+Please contact the DCI team when this step has been reached, to be assigned in the correct organisation.
 
 ## License
-
 Apache License, Version 2.0 (see [LICENSE](LICENSE) file)
 
 ## Contact
-
 Email: Distributed-CI Team  <distributed-ci@redhat.com>
 IRC: #distributed-ci on Freenode
