@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2d392d12_0dbaa820",
+        "filename": "README.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-03-08T13:42:55Z",
+      "side": 1,
+      "message": "trailing space",
+      "range": {
+        "startLine": 52,
+        "startChar": 143,
+        "endLine": 52,
+        "endChar": 144
+      },
+      "revId": "9c33b32193f659d7ddd140ca92947210808b6793",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bb2a1945_d81edf9b",
+        "filename": "README.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-03-08T13:42:55Z",
+      "side": 1,
+      "message": "can help you with initial setup and troubleshooting",
+      "range": {
+        "startLine": 61,
+        "startChar": 152,
+        "endLine": 61,
+        "endChar": 177
+      },
+      "revId": "9c33b32193f659d7ddd140ca92947210808b6793",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f1e8cd21_0de0e6b6",
+        "filename": "README.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-03-08T13:42:55Z",
+      "side": 1,
+      "message": "trailing space",
+      "range": {
+        "startLine": 134,
+        "startChar": 21,
+        "endLine": 134,
+        "endChar": 22
+      },
+      "revId": "9c33b32193f659d7ddd140ca92947210808b6793",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4fac74bd_cf3b7a80",
+        "filename": "README.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-03-08T13:42:55Z",
+      "side": 1,
+      "message": "trailing space",
+      "range": {
+        "startLine": 233,
+        "startChar": 116,
+        "endLine": 233,
+        "endChar": 118
+      },
+      "revId": "9c33b32193f659d7ddd140ca92947210808b6793",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
