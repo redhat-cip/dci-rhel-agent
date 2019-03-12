@@ -88,7 +88,7 @@ $ ansible-playbook -i inventory playbook.yml
 If the **target** is a virtual machine, read this [notice](https://github.com/redhat-cip/ansible-playbook-dci-beaker#note-about-virtual-machines).
 
 When you install `dci-rhel-agent` on a fresh system (or if you need to update cached Beaker Harness packages), execute the `beaker-repo-update` command.
-For more details, read the official [documentation]((https://beaker-project.org/docs/admin-guide/man/beaker-repo-update.html).
+For more details, read the official [documentation](https://beaker-project.org/docs/admin-guide/man/beaker-repo-update.html).
 
 ## Configuration
 
