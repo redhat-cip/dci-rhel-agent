@@ -1,6 +1,6 @@
 Name:             dci-rhel-agent
 Version:          0.1.2
-Release:          1.VERS%{?dist}
+Release:          2.VERS%{?dist}
 Summary:          The RHEL's DCI agent
 License:          ASL 2.0
 URL:              https://github.com/redhat-cip/dci-rhel-agent
@@ -38,7 +38,7 @@ install -p -D -m 644 systemd/dci-update.timer %{buildroot}%{_unitdir}/dci-update
 install -p -D -m 644 ansible.cfg %{buildroot}%{_datadir}/dci-rhel-agent/ansible.cfg
 install -p -D -m 644 dci-rhel-agent.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci-rhel-agent.yml
 install -p -D -m 644 dcirc.sh %{buildroot}%{_sysconfdir}/dci-rhel-agent/dcirc.sh
-install -p -D -m 644 hooks/clean.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/clean.yml
+install -p -D -m 644 hooks/create_temp_dir.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/create_temp_dir.yml
 install -p -D -m 644 hooks/import.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/import.yml
 install -p -D -m 644 hooks/install.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/install.yml
 install -p -D -m 755 hooks/wait.py %{buildroot}%{_datadir}/dci-rhel-agent/hooks/wait.py
@@ -94,6 +94,11 @@ exit 0
 /etc/sudoers.d/dci-rhel-agent
 
 %changelog
+* Wed Apr 19 2018 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-2
+- Isolate logs is tmp dir
+- Make documentation more helpful
+- Move static Bkr xml to Ansible template
+- Add custom hooks for user-tests at post-run
 * Tue Sep 19 2018 Cedric Lecomte <clecomte@redhat.com> - 0.1.2-1
 - Put Certification tests in different ansible role
 * Tue Sep 19 2018 Cedric Lecomte <clecomte@redhat.com> - 0.1.1-1
