@@ -22,7 +22,7 @@
         tags: '{{ dci_tags }}'
       when: dci_tags
 
-    - include_tasks: hooks/clean.yml
+    - include_tasks: hooks/create_temp_dir.yml
   tags:
       - new_job
 
