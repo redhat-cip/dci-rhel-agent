@@ -38,7 +38,7 @@ install -p -D -m 644 systemd/dci-update.timer %{buildroot}%{_unitdir}/dci-update
 install -p -D -m 644 ansible.cfg %{buildroot}%{_datadir}/dci-rhel-agent/ansible.cfg
 install -p -D -m 644 dci-rhel-agent.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci-rhel-agent.yml
 install -p -D -m 644 dcirc.sh %{buildroot}%{_sysconfdir}/dci-rhel-agent/dcirc.sh
-install -p -D -m 644 hooks/clean.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/clean.yml
+install -p -D -m 644 hooks/create_temp_dir.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/create_temp_dir.yml
 install -p -D -m 644 hooks/import.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/import.yml
 install -p -D -m 644 hooks/install.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/install.yml
 install -p -D -m 755 hooks/wait.py %{buildroot}%{_datadir}/dci-rhel-agent/hooks/wait.py
