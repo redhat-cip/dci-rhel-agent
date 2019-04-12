@@ -10,7 +10,7 @@
     - name: Grab logs from beaker
       get_url:
         url: "{{ item }}"
-        dest: /tmp/joblogs/
+        dest: "{{ job_logs.path }}""
       with_items: "{{ bkr_files.stdout_lines }}"
 
     - name: Grab beaker junit results
@@ -26,7 +26,7 @@
         name: '{{ item | basename }}'
         job_id: '{{ hostvars.localhost.job_id }}'
       with_fileglob:
-        - "/tmp/joblogs/*"
+        - '{{ job_logs.path }}/*'
         - "/tmp/joblogs-artifacts/*.log"
 
     - name: Upload junit files to DCI
