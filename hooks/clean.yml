@@ -1,22 +1,12 @@
 ---
-- name: Ensure directories exist
-  file:
-    path: '{{ item }}'
+- name: Create a temporary directory for job_logs
+  tempfile:
     state: directory
-  with_items:
-    - /tmp/joblogs
-    - /tmp/joblogs-artifacts
+    suffix: logs
+  register: job_logs
 
-- name: Ansible delete file glob
-  find:
-    paths:
-      - /tmp/joblogs
-      - /tmp/joblogs-artifacts
-    patterns: '*'
-  register: files_to_delete
-
-- name: Ansible remove file glob
-  file:
-    path: "{{ item.path }}"
-    state: absent
-  with_items: "{{ files_to_delete.files }}"
+- name: Create a temporary directory for job_artifacts
+  tempfile:
+    state: directory
+    suffix: artifacts
+  register: job_artifacts
