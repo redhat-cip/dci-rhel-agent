@@ -3,7 +3,7 @@ Description=Update the DCI packages
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/yum update -y dci-ansible python-dciclient dci-rhel-agent ansible-role-dci-import-keys ansible-role-dci-retrieve-component
+ExecStart=/usr/bin/yum update -y dci-ansible python-dciclient dci-rhel-agent ansible-role-dci-import-keys ansible-role-dci-retrieve-component ansible-role-dci-rhel-certification
 SuccessExitStatus=0
 
 [Install]

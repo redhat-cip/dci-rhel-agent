@@ -5,6 +5,7 @@ Description=DCI Ansible Agent for RHEL
 Type=oneshot
 WorkingDirectory=/usr/share/dci-rhel-agent
 EnvironmentFile=/etc/dci-rhel-agent/dcirc.sh
+ExecStart=/usr/bin/yum update -y dci-ansible python-dciclient dci-rhel-agent ansible-role-dci-import-keys ansible-role-dci-retrieve-component ansible-role-dci-rhel-certification
 ExecStart=/usr/bin/ansible-playbook -vv /usr/share/dci-rhel-agent/dci-rhel-agent.yml -e @/etc/dci-rhel-agent/settings.yml -i /etc/dci-rhel-agent/hosts
 SuccessExitStatus=0
 User=dci-rhel-agent
