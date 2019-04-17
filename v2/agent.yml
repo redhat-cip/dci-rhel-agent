@@ -1,0 +1,17 @@
+---
+- name: agent.yml
+  hosts: localhost
+  tasks:
+    - name: Import remoteci SSL keys
+      vars:
+        dci_import_keys_remoteci_id: '{{ remoteci_id }}'
+      include_role:
+        name: dci-import-keys
+
+    - name: Retrieve components
+      vars:
+        dci_retrieve_component_local_repo: '{{ local_repo }}'
+        dci_retrieve_component_component_id: '{{ item }}'
+      include_role:
+        name: dci-retrieve-component
+      with_list: '{{ components_ids }}'
