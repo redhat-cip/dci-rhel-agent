@@ -7,8 +7,6 @@ URL:              https://github.com/redhat-cip/dci-rhel-agent
 BuildArch:        noarch
 Source0:          dci-rhel-agent-%{version}.tar.gz
 
-BuildRequires:    systemd
-BuildRequires:    systemd-units
 Requires:         dci-ansible
 Requires:         python-lxml
 Requires:         python-netaddr
@@ -17,11 +15,7 @@ Requires:         ansible-role-dci-retrieve-component
 Requires:         ansible-role-dci-rhel-certification
 
 Requires:         sudo
-
 Requires(pre):    shadow-utils
-Requires(post):   systemd
-Requires(preun):  systemd
-Requires(postun): systemd
 
 %description
 The RHEL's DCI agent
@@ -32,16 +26,13 @@ The RHEL's DCI agent
 %build
 
 %install
-install -p -D -m 644 systemd/%{name}.service %{buildroot}%{_unitdir}/%{name}.service
-install -p -D -m 644 systemd/%{name}.timer %{buildroot}%{_unitdir}/%{name}.timer
-install -p -D -m 644 systemd/dci-update.timer %{buildroot}%{_unitdir}/dci-update.timer
 install -p -D -m 644 ansible.cfg %{buildroot}%{_datadir}/dci-rhel-agent/ansible.cfg
 install -p -D -m 644 dci-rhel-agent.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci-rhel-agent.yml
 install -p -D -m 644 dcirc.sh %{buildroot}%{_sysconfdir}/dci-rhel-agent/dcirc.sh
-install -p -D -m 644 hooks/create_temp_dir.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/create_temp_dir.yml
-install -p -D -m 644 hooks/import.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/import.yml
-install -p -D -m 644 hooks/install.yml %{buildroot}%{_datadir}/dci-rhel-agent/hooks/install.yml
-install -p -D -m 755 hooks/wait.py %{buildroot}%{_datadir}/dci-rhel-agent/hooks/wait.py
+install -p -D -m 644 dci/create_temp_dir.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/create_temp_dir.yml
+install -p -D -m 644 dci/import.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/import.yml
+install -p -D -m 644 dci/install.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/install.yml
+install -p -D -m 755 dci/wait.py %{buildroot}%{_datadir}/dci-rhel-agent/dci/wait.py
 install -p -D -m 644 dci/success.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/success.yml
 install -p -D -m 644 dci/failure.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/failure.yml
 install -p -D -m 644 dci/release.yml %{buildroot}%{_datadir}/dci-rhel-agent/dci/release.yml
@@ -67,19 +58,10 @@ getent passwd %{name} >/dev/null || \
 exit 0
 
 %post
-%systemd_post %{name}.service
-%systemd_post dci-update.service
-%systemd_post %{name}.timer
-%systemd_post dci-update.timer
 
 %preun
-%systemd_preun %{name}.service
-%systemd_preun dci-update.service
-%systemd_preun %{name}.timer
-%systemd_preun dci-update.timer
 
 %postun
-%systemd_postun
 
 %files
 %{_unitdir}/*
@@ -94,6 +76,8 @@ exit 0
 /etc/sudoers.d/dci-rhel-agent
 
 %changelog
+* Thu Apr 18 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-3
+- Enable multi-servers support in dci-rhel-agent 
 * Wed Apr 17 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-2
 - Isolate logs is tmp dir
 - Make documentation more helpful

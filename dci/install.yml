@@ -1,8 +1,4 @@
 ---
-#- name: Import the last build
-#  host: beaker-lab
-#  shell: beaker-import http://{{ IP AGENT }}/rhel/
-
 - name: create temporary file
   tempfile:
     state: file
@@ -38,7 +34,7 @@
     bkrjobid: "{{ bkr_jobid.stdout | regex_replace(\".*\\s\\[\\'(.*)\\'\\]\",'\\1') }}"
 
 - name: Wait system to be installed
-  shell: "{{ playbook_dir }}/hooks/wait.py {{ bkrjobid }}"
+  shell: "{{ playbook_dir }}/dci/wait.py {{ bkrjobid }}"
 
 - name: Get Beaker job details
   shell: "bkr job-results {{ bkrjobid }}"
