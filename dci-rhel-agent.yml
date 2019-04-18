@@ -27,15 +27,15 @@
       - new_job
 
 
-- name: Retrieve keys and components
-  hosts: localhost
-  tasks:
-    - block:
-        - include_tasks: dci/prepare.yml
-      rescue:
-        - include_tasks: dci/failure.yml
-  tags:
-    - new_job
+# - name: Retrieve keys and components
+#   hosts: localhost
+#   tasks:
+#     - block:
+#         - include_tasks: dci/prepare.yml
+#       rescue:
+#         - include_tasks: dci/failure.yml
+#   tags:
+#     - new_job
 
 - name: ADD BEAKER_HOST
   hosts: localhost
