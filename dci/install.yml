@@ -1,8 +1,4 @@
 ---
-#- name: Import the last build
-#  host: beaker-lab
-#  shell: beaker-import http://{{ IP AGENT }}/rhel/
-
 - name: create temporary file
   tempfile:
     state: file
