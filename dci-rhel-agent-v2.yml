@@ -1,47 +1,9 @@
 ---
-- name: NEW JOB
-  hosts: localhost
-  tasks:
-    - name: schedule a new job
-      dci_job:
-        components: '{{ dci_components }}'
-        topic: '{{ topic }}'
-      register: job_info
-
-    - name: set global variables
-      set_fact:
-        job_id: "{{ job_info['job']['id'] }}"
-        topic_id: "{{ job_info['job']['topic_id'] }}"
-        remoteci_id: "{{ job_info['job']['remoteci_id'] }}"
-        components: "{{ job_info['job']['components'] }}"
-        product: "{{ job_info['job']['topic']['product_id'] }}"
-
-    - name: Set the tags
-      dci_job:
-        id: "{{ job_id }}"
-        tags: '{{ dci_tags }}'
-      when: dci_tags
-
-    - include_tasks: dci/create_temp_dir.yml
-  tags:
-      - new_job
-
-
-- name: Retrieve keys and components
-  hosts: localhost
-  tasks:
-    - block:
-        - include_tasks: dci/prepare.yml
-      rescue:
-        - include_tasks: dci/failure.yml
-  tags:
-    - new_job
-
 - name: ADD BEAKER_HOST
   hosts: localhost
   tasks:
     - block:
-        - name: ADD BEAKER HOST TO GROUP
+        - name: Add hostRequires.fqdn to beaker-host group
           add_host:
             hostname: "{{ hostRequires.fqdn }}"
             ansible_ssh_host: "{{ hostRequires.fqdn }}"
