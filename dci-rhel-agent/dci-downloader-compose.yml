@@ -1,0 +1,35 @@
+---
+- name: dci-downloader
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Import remoteci SSL keys
+      vars:
+        dci_import_keys_remoteci_id: '{{ remoteci_id }}'
+      include_role:
+        name: dci-import-keys
+  
+    - name: Retrieve topic-id from component
+      dci_component:
+        id: "035dc1fa-544f-4e74-be2e-14d0dc2bc631"
+      register: _component
+
+    - name: Retrieve topic information from topic
+      dci_topic:
+        id: '{{ _component.component.topic_id }}'
+        embed: product
+      register: _topic
+
+    - name: Configure local yum repository file
+      yum_repository:
+        name: '{{ _component.component.name }}-{{ item.1 }}-{{ item.0.arch  }}'
+        description: '{{ _component.component.name }}'
+        baseurl: 'https://repo.distributed-ci.io/{{ _topic.topic.product_id }}/{{ _topic.topic.id }}/{{ _component.component.id }}/{{ item.1 }}/{{  item.0.arch }}/{{  item.0.tree }}'
+        sslverify: true
+        sslclientcert: "/etc/ssl/repo/dci.crt"
+        sslclientkey: "/etc/ssl/repo/dci.key"
+        enabled: false
+      become: true
+      with_subelements:
+        - '{{ compose  }}'
+        - variant
