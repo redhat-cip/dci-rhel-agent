@@ -1,0 +1,21 @@
+---
+- name: PREPARE LAB
+  hosts: beaker-lab
+  vars:
+    dci_status: 'pre-run'
+  tasks:
+    - block:
+        - name: Allow user to use beaker commands
+          acl:
+            path: /etc/beaker/client.conf
+            entity: '{{ ansible_user_id }}'
+            etype: user
+            permissions: r
+            state: present
+          become: true
+        - name: Import the last build
+          shell: beaker-import http://{{ local_repo_ip }}/{{ topic }}/
+      rescue:
+        - include_tasks: failure.yml
+  tags:
+      - prepare_lab
