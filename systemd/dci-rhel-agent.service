@@ -2,12 +2,12 @@
 Description=DCI Ansible Agent for RHEL
 
 [Service]
-Type=oneshot
-WorkingDirectory=/usr/share/dci-rhel-agent
-EnvironmentFile=/etc/dci-rhel-agent/dcirc.sh
-ExecStart=/usr/bin/ansible-playbook -vv /usr/share/dci-rhel-agent/dci-rhel-agent.yml -e @/etc/dci-rhel-agent/settings.yml -i /etc/dci-rhel-agent/hosts
+Type=simple
+WorkingDirectory=/etc/dci-rhel-agent
+ExecStart=/bin/make run
+ExecStop=/bin/make stop
 SuccessExitStatus=0
-User=dci-rhel-agent
+User=root
 
 [Install]
 WantedBy=default.target
