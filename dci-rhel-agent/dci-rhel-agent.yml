@@ -22,20 +22,9 @@
         tags: '{{ dci_tags }}'
       when: dci_tags
 
-    - include_tasks: hooks/create_temp_dir.yml
+    - include_tasks: create_temp_dir.yml
   tags:
       - new_job
-
-
-- name: Retrieve keys and components
-  hosts: localhost
-  tasks:
-    - block:
-        - include_tasks: dci/prepare.yml
-      rescue:
-        - include_tasks: dci/failure.yml
-  tags:
-    - new_job
 
 - name: ADD BEAKER_HOST
   hosts: localhost
@@ -51,7 +40,7 @@
             groups:
               - beaker-host
       rescue:
-        - include_tasks: dci/failure.yml
+        - include_tasks: failure.yml
       when: hostRequires.fqdn is defined
 
 - name: PREPARE LAB
@@ -60,9 +49,9 @@
     dci_status: 'pre-run'
   tasks:
     - block:
-        - include_tasks: hooks/import.yml
+        - include_tasks: import.yml
       rescue:
-        - include_tasks: dci/failure.yml
+        - include_tasks: failure.yml
   tags:
       - prepare_lab
 
@@ -72,9 +61,9 @@
     dci_status: 'running'
   tasks:
     - block:
-        - include_tasks: hooks/install.yml
+        - include_tasks: install.yml
       rescue:
-        - include_tasks: dci/failure.yml
+        - include_tasks: failure.yml
   tags:
       - install
 
@@ -92,8 +81,8 @@
             - dci_rhel_agent_cert|bool
           become: true
       rescue:
-        - include_tasks: dci/release.yml
-        - include_tasks: dci/failure.yml
+        - include_tasks: release.yml
+        - include_tasks: failure.yml
   tags:
       - test
 
@@ -105,7 +94,7 @@
     - block:
         - include_tasks: '{{ dci_config_dir }}/hooks/user-tests.yml'
       rescue:
-        - include_tasks: dci/failure.yml
+        - include_tasks: failure.yml
   tags:
     - post-run
 
@@ -115,9 +104,9 @@
     dci_status: 'post-run'
   tasks:
     - block:
-        - include_tasks: dci/release.yml
+        - include_tasks: release.yml
       rescue:
-        - include_tasks: dci/failure.yml
+        - include_tasks: failure.yml
   tags:
     - post-run
 
@@ -126,6 +115,6 @@
   vars:
     dci_status: 'success'
   tasks:
-    - include_tasks: dci/success.yml
+    - include_tasks: success.yml
   tags:
       - success
