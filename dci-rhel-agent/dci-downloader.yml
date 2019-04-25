@@ -1,0 +1,48 @@
+---
+- name: dci-downloader
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Import remoteci SSL keys
+      vars:
+        dci_import_keys_remoteci_id: '{{ remoteci_id }}'
+      include_role:
+        name: dci-import-keys
+
+    - name: Retrieve components
+      vars:
+        dci_retrieve_component_local_repo: '{{ local_repo }}'
+        dci_retrieve_component_component_id: '{{ item.id }}'
+        dci_retrieve_component_component_name: '{% if item.type == "Compose" %}{{ topic }}{% else %}{{ item.type }}{% endif %}'
+      include_role:
+        name: dci-retrieve-component
+      with_list: '{{ components }}'
+
+    - name: Ensure image directories exist
+      file:
+        path: '{{ local_repo }}/{{ topic }}/{{ item.path }}'
+        recurse: yes
+        state: directory
+      with_items: '{{ dci_rhel_agent_images }}'
+      become: true
+
+    - name: Retrieve the .treeinfo file
+      get_url:
+        url: '{{ repo_url }}/{{ product }}/{{ topic_id }}/{{ components | json_query("[?type==`Compose`].id|[0]") }}/.treeinfo'
+        dest: '{{ local_repo }}/{{ topic }}/.treeinfo'
+        force: yes
+        client_cert: /etc/ssl/repo/dci.crt
+        client_key: /etc/ssl/repo/dci.key
+        validate_certs: '{{ dci_rhel_agent_sslverify }}'
+      become: true
+
+    - name: Retrieve latest images
+      get_url:
+        url: '{{ repo_url }}/{{ product }}/{{ topic_id }}/{{ components | json_query("[?type==`Compose`].id|[0]") }}/{{ item.path }}/{{ item.name }}'
+        dest: '{{ local_repo }}/{{ topic }}/{{ item.path }}/{{ item.name }}'
+        client_cert: /etc/ssl/repo/dci.crt
+        client_key: /etc/ssl/repo/dci.key
+        validate_certs: '{{ dci_rhel_agent_sslverify }}'
+        checksum: "{{ lookup('ini', '{{ item.path }}/{{ item.name }} section=checksums file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
+      with_items: '{{ dci_rhel_agent_images }}'
+      become: true
