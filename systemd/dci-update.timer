@@ -1,9 +1,0 @@
-[Unit]
-Description=Trigger the DCI update
-
-[Timer]
-OnBootSec=5min
-OnUnitActiveSec=4h
-
-[Install]
-WantedBy=timers.target
