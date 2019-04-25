@@ -38,7 +38,7 @@
     bkrjobid: "{{ bkr_jobid.stdout | regex_replace(\".*\\s\\[\\'(.*)\\'\\]\",'\\1') }}"
 
 - name: Wait system to be installed
-  shell: "{{ playbook_dir }}/hooks/wait.py {{ bkrjobid }}"
+  shell: "{{ playbook_dir }}/wait.py {{ bkrjobid }}"
 
 - name: Get Beaker job details
   shell: "bkr job-results {{ bkrjobid }}"
