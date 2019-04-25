@@ -8,18 +8,8 @@
                     <distro_arch op="=" value="{{ distro_arch }}"/>
                 </and>
             </distroRequires>
-            {% if hostRequires is defined %}
-                {% if hostRequires.fqdn is defined %}
-                    <hostRequires force="{{ hostRequires.fqdn }}" />
-                {% else %}
-                    <hostRequires>
-                    <and>
-                        {% for key,value in hostRequires.items() %}
-                        <device op="=" type="{{ key }}" description="{{ value }}" />
-                        {% endfor %}
-                    </and>
-                    </hostRequires>
-                {% endif %}
+            {% if fqdn is defined %}
+                    <hostRequires force="{{ fqdn }}" />
             {% else %}
             <hostRequires/>
             {% endif %}
