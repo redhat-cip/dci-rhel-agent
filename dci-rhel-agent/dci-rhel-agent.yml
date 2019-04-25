@@ -2,13 +2,13 @@
 - name: NEW JOB
   hosts: localhost
   tasks:
-    - name: schedule a new job
+    - name: Schedule a new job
       dci_job:
         components: '{{ dci_components }}'
         topic: '{{ topic }}'
       register: job_info
 
-    - name: set global variables
+    - name: Set global variables
       set_fact:
         job_id: "{{ job_info['job']['id'] }}"
         topic_id: "{{ job_info['job']['topic_id'] }}"
@@ -22,49 +22,26 @@
         tags: '{{ dci_tags }}'
       when: dci_tags
 
-    - include_tasks: hooks/create_temp_dir.yml
+    - include_tasks: create_temp_dir.yml
   tags:
       - new_job
-
-
-- name: Retrieve keys and components
-  hosts: localhost
-  tasks:
-    - block:
-        - include_tasks: dci/prepare.yml
-      rescue:
-        - include_tasks: dci/failure.yml
-  tags:
-    - new_job
 
 - name: ADD BEAKER_HOST
   hosts: localhost
   tasks:
     - block:
-        - name: ADD BEAKER HOST TO GROUP
+        - name: Add Beaker system to the Ansible group
           add_host:
-            hostname: "{{ hostRequires.fqdn }}"
-            ansible_ssh_host: "{{ hostRequires.fqdn }}"
+            hostname: "{{ fqdn }}"
+            ansible_ssh_host: "{{ fqdn }}"
             ansible_ssh_port: "{{ beaker_host_port | default('22') }}"
             ansible_user: "{{ beaker_host_user | default('root') }}"
             ansible_password: "{{ beaker_host_password | default('beaker') }}"
             groups:
               - beaker-host
       rescue:
-        - include_tasks: dci/failure.yml
-      when: hostRequires.fqdn is defined
-
-- name: PREPARE LAB
-  hosts: beaker-lab
-  vars:
-    dci_status: 'pre-run'
-  tasks:
-    - block:
-        - include_tasks: hooks/import.yml
-      rescue:
-        - include_tasks: dci/failure.yml
-  tags:
-      - prepare_lab
+        - include_tasks: failure.yml
+      when: fqdn is defined
 
 - name: LAUNCH INSTALL
   hosts: localhost
@@ -72,9 +49,9 @@
     dci_status: 'running'
   tasks:
     - block:
-        - include_tasks: hooks/install.yml
+        - include_tasks: install.yml
       rescue:
-        - include_tasks: dci/failure.yml
+        - include_tasks: failure.yml
   tags:
       - install
 
@@ -92,8 +69,8 @@
             - dci_rhel_agent_cert|bool
           become: true
       rescue:
-        - include_tasks: dci/release.yml
-        - include_tasks: dci/failure.yml
+        - include_tasks: release.yml
+        - include_tasks: failure.yml
   tags:
       - test
 
@@ -105,7 +82,7 @@
     - block:
         - include_tasks: '{{ dci_config_dir }}/hooks/user-tests.yml'
       rescue:
-        - include_tasks: dci/failure.yml
+        - include_tasks: failure.yml
   tags:
     - post-run
 
@@ -115,9 +92,9 @@
     dci_status: 'post-run'
   tasks:
     - block:
-        - include_tasks: dci/release.yml
+        - include_tasks: release.yml
       rescue:
-        - include_tasks: dci/failure.yml
+        - include_tasks: failure.yml
   tags:
     - post-run
 
@@ -126,6 +103,6 @@
   vars:
     dci_status: 'success'
   tasks:
-    - include_tasks: dci/success.yml
+    - include_tasks: success.yml
   tags:
       - success
