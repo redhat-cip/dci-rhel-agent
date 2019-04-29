@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5526106f_c7d4262b",
+        "filename": "systemd/dci-rhel-agent.service",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 166
+      },
+      "writtenOn": "2019-04-29T13:40:56Z",
+      "side": 1,
+      "message": "Same issue as https://softwarefactory-project.io/r/#/c/15397/",
+      "revId": "531fcd17e44f62f067aae93570747447517387e8",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
