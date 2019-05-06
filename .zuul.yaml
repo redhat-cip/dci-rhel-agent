@@ -1,0 +1,36 @@
+---
+- job:
+    name: dci-build-container-job
+    parent: base
+    description: Build container
+    run: zuul-playbooks/build.yaml
+    vars:
+      registry: quay.io
+      tag: "distributedci/dci-rhel-agent"
+      version: latest
+    nodeset:
+      nodes:
+        - name: testrunner
+          label: dib-dci-centos-7
+
+- job:
+    name: dci-push-container-job
+    parent: base
+    description: Push container
+    pre-run: zuul-playbooks/build.yaml
+    run: zuul-playbooks/push.yaml
+    vars:
+      registry: quay.io
+      username: "distributedci+botsito"
+      password: "QIFYT2RG8G4VDJJ1TQC8W13Q6NG54K942VVVR27TXCUAUHK9J5CK9KBN9323CQRV"
+    nodeset:
+      nodes:
+        - name: testrunner
+          label: dib-dci-centos-7
+
+- project:
+    name: dci-rhel-agent
+    check:
+      jobs:
+        - dci-build-container-job
+        - dci-push-container-job

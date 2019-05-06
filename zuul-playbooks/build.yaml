@@ -1,0 +1,17 @@
+- hosts: testrunner
+  tasks:
+    - name: Start docker daemon
+      service:
+        name: docker
+        state: started
+      become: true
+
+    - name: Set image_name
+      set_fact:
+        image_name: "{{ registry }}/{{ tag }}:{{ version }}"
+
+    - name: "Build {{ image_name }} image"
+      shell: "docker build --tag {{ image_name }} --file ./Dockerfile ."
+      become: true
+      args:
+        chdir: "{{ zuul.project.src_dir }}"
