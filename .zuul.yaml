@@ -1,0 +1,18 @@
+---
+- job:
+    name: dci-build-container-job
+    parent: base
+    description: Build container
+    run: zuul-playbooks/build.yaml
+    vars:
+      zuul_work_dir: '{{ ansible_user_dir }}/src/softwarefactory-project.io/python-dciclient'
+    nodeset:
+      nodes:
+        - name: testrunner
+          label: dib-dci-centos-7
+
+- project:
+    name: dci-rhel-agent
+    check:
+      jobs:
+        - dci-build-container-job
