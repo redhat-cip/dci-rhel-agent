@@ -1,0 +1,12 @@
+- hosts: testrunner
+  tasks:
+    - name: Ensure podman is present
+      yum:
+        name: podman
+        state: present
+
+    - name: Display podman version
+      shell: podman --version
+
+    - name: Build
+      shell: make build
