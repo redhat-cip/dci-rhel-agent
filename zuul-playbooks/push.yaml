@@ -1,0 +1,19 @@
+- hosts: testrunner
+  tasks:
+    - name: Start docker daemon
+      service:
+        name: docker
+        state: started
+      become: true
+
+    - name: "Login to {{ registry }} registry"
+      shell: "docker login --username=\"{{ username }}\" --password=\"{{ password }}\" {{ registry }}"
+      become: true
+
+    - name: "list available images"
+      shell: "docker images"
+      become: true
+
+    - name: "Push docker image"
+      shell: "docker push {{ registry }}/{{ tag }}:{{ version }}"
+      become: true
