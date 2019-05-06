@@ -1,0 +1,17 @@
+- hosts: testrunner
+  tasks:
+    - name: Display docker version
+      shell: docker --version
+      become: true
+
+    - name: ls
+      shell: ls
+      become: true
+
+    - name: pwd
+      shell: pwd
+      become: true
+
+    - name: Build dci-rhel-agent image
+      shell: docker build --tag distributedci/dci-rhel-agent:latest --file ./Dockerfile .
+      become: true
