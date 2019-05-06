@@ -1,0 +1,15 @@
+- hosts: testrunner
+  tasks:
+    - name: Enable docker service
+      service:
+        name: docker
+        state: started
+      become: true
+
+    - name: Display docker version
+      shell: docker --version
+      become: true
+
+    - name: Build dci-rhel-agent image
+      shell: docker build --tag distributedci/dci-rhel-agent:latest --file ./Dockerfile .
+      become: true
