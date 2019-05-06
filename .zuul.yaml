@@ -1,0 +1,16 @@
+---
+- job:
+    name: dci-build-container-job
+    parent: base
+    description: Build container
+    run: zuul-playbooks/build.yaml
+    nodeset:
+      nodes:
+        - name: testrunner
+          label: dib-centos-7
+
+- project:
+    name: dci-rhel-agent
+    check:
+      jobs:
+        - dci-build-container-job
