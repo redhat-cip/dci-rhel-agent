@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9e2b1731_69eda261",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 43
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 29
+      },
+      "writtenOn": "2019-05-07T01:14:51Z",
+      "side": 1,
+      "message": "no need to have all the following lines with the with() statement body",
+      "revId": "ba6abf8259fa03d5b450110d98f6b1e29ac9eaac",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e70ccaf6_328169b7",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 43
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 29
+      },
+      "writtenOn": "2019-05-07T01:14:51Z",
+      "side": 1,
+      "message": "maybe should check these env variables and exit with proper error messages in case they have not been set ?",
+      "revId": "ba6abf8259fa03d5b450110d98f6b1e29ac9eaac",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8d813ed0_986e6027",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 43
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 29
+      },
+      "writtenOn": "2019-05-07T01:14:51Z",
+      "side": 1,
+      "message": "t \u003d topic.list(context, where\u003d\"name:%s\" % extravars[\u0027topic\u0027])\nif t.status_code !\u003d 200:\n   print(\"http error code\u003d%s, message\u003d%s, while getting \"\n         \"topics\" % (t.status_code, t.text))\n   sys.exit(1)\ntopic_id \u003d t.json()[\"topics\"][0][\u0027id\u0027]",
+      "revId": "ba6abf8259fa03d5b450110d98f6b1e29ac9eaac",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "09c3cf84_8e31acb0",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 43
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 29
+      },
+      "writtenOn": "2019-05-07T01:14:51Z",
+      "side": 1,
+      "message": "you should also catch errors",
+      "revId": "ba6abf8259fa03d5b450110d98f6b1e29ac9eaac",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "31c7a3a5_ebab99c9",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 43
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 29
+      },
+      "writtenOn": "2019-05-07T01:14:51Z",
+      "side": 1,
+      "message": "runner_threads \u003d []",
+      "revId": "ba6abf8259fa03d5b450110d98f6b1e29ac9eaac",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9828a729_3ec4ec1f",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 43
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 29
+      },
+      "writtenOn": "2019-05-07T01:14:51Z",
+      "side": 1,
+      "message": "thread, _ \u003d ansible_runner...",
+      "revId": "ba6abf8259fa03d5b450110d98f6b1e29ac9eaac",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a9b4b82_ea147d67",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 43
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 29
+      },
+      "writtenOn": "2019-05-07T01:14:51Z",
+      "side": 1,
+      "message": "runner_threads.append(thread)",
+      "revId": "ba6abf8259fa03d5b450110d98f6b1e29ac9eaac",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f0fb7a30_16d0a0c1",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 43
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 29
+      },
+      "writtenOn": "2019-05-07T01:14:51Z",
+      "side": 1,
+      "message": "# waiting for all threads to complete\nfor rt in runner_threads:\n    rt.join()",
+      "revId": "ba6abf8259fa03d5b450110d98f6b1e29ac9eaac",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
