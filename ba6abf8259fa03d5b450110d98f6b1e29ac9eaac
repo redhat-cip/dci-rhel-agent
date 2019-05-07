@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "e184b7d1_dd58f8aa",
+        "filename": "dci-rhel-agent/dci-downloader.yml",
+        "patchSetId": 43
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-05-07T14:20:16Z",
+      "side": 1,
+      "message": "- name: Retrieve components\n      vars:\n        dci_retrieve_component_local_repo: \u0027{{ local_repo }}\u0027\n        dci_retrieve_component_component_id: \u0027{{ item}}\u0027\n      include_role:\n        name: dci-retrieve-component\n      with_list: \u0027{{ components_ids }}\u0027\n\nitems is components_ids \u003d\u003d list of component id",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 39
+      },
+      "revId": "ba6abf8259fa03d5b450110d98f6b1e29ac9eaac",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9e2b1731_69eda261",
         "filename": "dci-rhel-agent/entrypoint.py",
         "patchSetId": 43
