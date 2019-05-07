@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9b6413cd_668d323d",
+        "filename": "dci-rhel-agent/dci-downloader.yml",
+        "patchSetId": 47
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-05-07T16:54:51Z",
+      "side": 1,
+      "message": "\u0027{{ components }}\u0027",
+      "range": {
+        "startLine": 18,
+        "startChar": 17,
+        "endLine": 18,
+        "endChar": 39
+      },
+      "revId": "c447205dbc1f25ad69754b69b5554fc995ba3aab",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "032d4f91_36843f50",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 47
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-05-07T16:54:51Z",
+      "side": 1,
+      "message": "After merge of https://softwarefactory-project.io/r/#/c/15509/\n\nthis become \n\ncomponents \u003d context.session.post(\n      \"%s/jobs/schedule\" % context.dci_cs_api,\n      json\u003d{\"topic_id\": topic_id, \"dry_run\": True},\n  ).json()[\"components\"]",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 28
+      },
+      "revId": "c447205dbc1f25ad69754b69b5554fc995ba3aab",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3c234216_7c84df2b",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 47
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-05-07T16:54:51Z",
+      "side": 1,
+      "message": "\"components\": components,",
+      "range": {
+        "startLine": 82,
+        "startChar": 10,
+        "endLine": 82,
+        "endChar": 43
+      },
+      "revId": "c447205dbc1f25ad69754b69b5554fc995ba3aab",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
