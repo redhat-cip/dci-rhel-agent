@@ -52,7 +52,7 @@
               - beaker-host
       rescue:
         - include_tasks: dci/failure.yml
-      when: hostRequires.fqdn is defined
+      when: hostRequires is defined and hostRequires.fqdn is defined
 
 - name: PREPARE LAB
   hosts: beaker-lab
