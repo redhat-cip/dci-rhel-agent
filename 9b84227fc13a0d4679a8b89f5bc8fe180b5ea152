@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "affacaf8_ee1e5978",
+        "filename": "Dockerfile",
+        "patchSetId": 64
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-05-28T13:00:05Z",
+      "side": 1,
+      "message": "https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/2K5PMFWTIAOY7PYKIAYMCO7GN5SLYWNL/\n\nI think it\u0027s fixed now",
+      "range": {
+        "startLine": 12,
+        "startChar": 5,
+        "endLine": 12,
+        "endChar": 18
+      },
+      "revId": "9b84227fc13a0d4679a8b89f5bc8fe180b5ea152",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
