@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6b3d55c6_9d01b3fe",
+        "filename": "README.md",
+        "patchSetId": 72
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-06-21T07:20:42Z",
+      "side": 1,
+      "message": "There is no download anymore, the user need to copy and edit the /etc/dci-rhel-agent/dcirc.sh file",
+      "range": {
+        "startLine": 100,
+        "startChar": 222,
+        "endLine": 100,
+        "endChar": 259
+      },
+      "revId": "2e066d99cd55d50ebde32c7aabf2c5c1b188b8b4",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aefa73a1_7b7d51b1",
+        "filename": "README.md",
+        "patchSetId": 72
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-06-21T07:20:42Z",
+      "side": 1,
+      "message": "trailing space",
+      "range": {
+        "startLine": 156,
+        "startChar": 100,
+        "endLine": 156,
+        "endChar": 101
+      },
+      "revId": "2e066d99cd55d50ebde32c7aabf2c5c1b188b8b4",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "06980951_7636c605",
+        "filename": "README.md",
+        "patchSetId": 72
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-06-21T07:20:42Z",
+      "side": 1,
+      "message": "trailing spaces",
+      "range": {
+        "startLine": 162,
+        "startChar": 17,
+        "endLine": 162,
+        "endChar": 19
+      },
+      "revId": "2e066d99cd55d50ebde32c7aabf2c5c1b188b8b4",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cf3ed0a3_6e903e32",
+        "filename": "dci-rhel-agent/wait.py",
+        "patchSetId": 72
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-06-21T07:20:42Z",
+      "side": 1,
+      "message": "space",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 1
+      },
+      "revId": "2e066d99cd55d50ebde32c7aabf2c5c1b188b8b4",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
