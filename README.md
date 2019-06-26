@@ -107,7 +107,7 @@ DCI_CS_URL="https://api.distributed-ci.io/"
 DCI_CLIENT_ID=remoteci/<remoteci_id>
 DCI_API_SECRET=>remoteci_api_secret>
 DCI_BEAKER_CONFIG='/etc/beaker'
-DCI_LOCAL_REPO='/var/www/html/'
+DCI_LOCAL_REPO='/var/www/html'
 export DCI_CLIENT_ID
 export DCI_API_SECRET
 export DCI_CS_URL

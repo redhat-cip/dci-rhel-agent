@@ -1,1 +1,3 @@
 topic: RHEL-7.6
+# local_repo_ip: 
+# dci_rhel_agent_cert: false
