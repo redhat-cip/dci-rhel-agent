@@ -51,7 +51,7 @@ def main():
   extravars['local_repo'] = local_repo
 
   if 'topic' in extravars.keys():
-    print ("Topic is %s." % extravars['topic'])
+    print ("Topic is %s" % extravars['topic'])
   else:
     print ("Error ! No topic found in settings.")
     sys.exit(1)
