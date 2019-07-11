@@ -1,19 +1,21 @@
 ---
-- name: Create temporary file
-  tempfile:
-    state: file
-    suffix: xml
-  register: job_xml
-
 - name: Get information from treeinfo
   set_fact:
     distro_name: "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
     distro_arch: "{{ lookup('ini', 'arch section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
 
-- name: Create job.xml file
-  template:
-    src: /usr/share/dci-rhel-agent/templates/job.xml.j2
-    dest: "{{ job_xml.path }}"
+- name: Create the Beaker XML job
+  block:
+    - name: Create temporary file
+      tempfile:
+        state: file
+        suffix: xml
+      register: job_xml
+    - name: Create Beaker job.xml from template
+      template:
+        src: /usr/share/dci-rhel-agent/templates/job.xml.j2
+        dest: "{{ job_xml.path }}"
+  when: job_xml.path is not defined
 
 - name: Upload job.xml to DCI
   dci_file:
