@@ -1,29 +1,41 @@
 ---
-- name: Create temporary file
-  tempfile:
-    state: file
-    suffix: xml
-  register: job_xml
-
 - name: Get information from treeinfo
   set_fact:
     distro_name: "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
     distro_arch: "{{ lookup('ini', 'arch section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
 
-- name: Create job.xml file
-  template:
-    src: /usr/share/dci-rhel-agent/templates/job.xml.j2
-    dest: "{{ job_xml.path }}"
+- name: Populate the Beaker XML job from template
+  block:
+    - name: Create a temporary file
+      tempfile:
+        state: file
+        suffix: xml
+      register: job_xml
+    - name: Create Beaker job.xml from template
+      template:
+        src: /usr/share/dci-rhel-agent/templates/job.xml.j2
+        dest: "{{ job_xml.path }}"
+  when: beaker_xml is not defined
+
+- name: Configure fact to use XML from template
+  set_fact:
+    bkr_xml: "{{ job_xml.path }}"
+  when: beaker_xml is not defined
+
+- name: Configure fact to use XML from settings
+  set_fact:
+    bkr_xml: "{{ beaker_xml }}"
+  when: beaker_xml is defined
 
 - name: Upload job.xml to DCI
   dci_file:
-    path: "{{ job_xml.path }}"
+    path: "{{ bkr_xml }}"
     name: 'job.xml'
     mime: 'text/xml'
     job_id: '{{ job_id }}'
 
-- name: Launch beaker install
-  shell: "bkr job-submit {{ job_xml.path }}"
+- name: Launch Beaker install
+  shell: "bkr job-submit {{ bkr_xml }}"
   register: bkr_jobid
 
 - debug:
