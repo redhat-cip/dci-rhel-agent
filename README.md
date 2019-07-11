@@ -127,6 +127,7 @@ The possible values are:
 | dci_rhel_agent_cert | True | True/False | Enable or disable the certification tests suite. |
 | download_only | False | True/False | If enable, dci-rhel-agnt will exit after downloading RHEL builds (no job will be executed). |
 | systems | False | List of string | List of all systems that will be deployed using RHEL from DCI. |
+| beaker_xml | False | String | Path to a custom XML file to use with Beaker job. |
 
 Example:
 
@@ -169,6 +170,16 @@ Some users might want to skip the certification tests suite. This can be done vi
 If you want to associate tags to jobs you can edit the file `settings.yml` and add your tags in the `dci_tags` list.
 By default, the tag "debug" is associated with every jobs. It should be kept 'as is' until the integration of the agent is done.
 The debug tag prevents jobs results to be compiled in DCI trends.
+
+#### How to use a custom Beaker XML file in DCI jobs ?
+
+If you want to use your own XML file during the `bkr-job-submit (1)` step, you can use the property `beaker_xml` in `settings.yml`:
+
+```
+beaker_xml: /etc/dci-rhel-agent/hooks/path/to/job.xml
+```
+
+Please note that, the XML file has to be in `/etc/dci-rhel-agent/hooks/` directory.
 
 ## Usage
 To start a single job `dci-rhel-agent`, please use `systemctl start dci-rhel-agent`.
