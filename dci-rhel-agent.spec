@@ -27,6 +27,7 @@ The RHEL's DCI agent
 %build
 
 %install
+install -p -D -m 755 bin/dcictl %{buildroot}%{_bindir}/dcictl
 install -p -D -m 644 systemd/%{name}.service %{buildroot}%{_unitdir}/%{name}.service
 install -p -D -m 644 dcirc.sh.dist %{buildroot}%{_sysconfdir}/dci-rhel-agent/dcirc.sh.dist
 install -p -D -m 644 hosts %{buildroot}%{_sysconfdir}/dci-rhel-agent/hosts
@@ -48,6 +49,7 @@ install -p -D -m 644 Makefile %{buildroot}%{_sysconfdir}/dci-rhel-agent/Makefile
 %systemd_postun
 
 %files
+%{_bindir}/dcictl
 %{_unitdir}/*
 %{_sysconfdir}/dci-rhel-agent/Makefile
 %{_sysconfdir}/dci-rhel-agent/dcirc.sh.dist
