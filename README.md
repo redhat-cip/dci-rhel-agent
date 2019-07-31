@@ -127,12 +127,13 @@ The possible values are:
 | dci_rhel_agent_cert | True | True/False | Enable or disable the certification tests suite. |
 | download_only | False | True/False | If enable, dci-rhel-agnt will exit after downloading RHEL builds (no job will be executed). |
 | systems | False | List of string | List of all systems that will be deployed using RHEL from DCI. |
+| repos | False | List | List of repositories to configure on the system under test. |
 | beaker_xml | False | String | Path to a custom XML file to use with Beaker job. |
 
 Example:
 
 ```console
-topic: RHEL-7
+topic: RHEL-7.6
 local_repo_ip: 172.23.100.100
 dci_rhel_agent_cert: false
 download_only: false
@@ -179,6 +180,19 @@ beaker_xml: /etc/dci-rhel-agent/hooks/path/to/job.xml
 ```
 
 Please note the XML file has to be in `/etc/dci-rhel-agent/hooks/` directory.
+
+#### How to configure additional repositories on the SUT ?
+When you use the default dci-rhel-agent's Beaker configuration, it is possible to add extra repositories with the variable `repos`. 
+
+```
+repos:
+  - name: My custom repo 1
+    url: http://192.168.1.23/path/to/repo1
+  - name: My custom repo 2
+    url: http://192.168.1.23/path/to/repo2
+```
+
+Please note that by default, the system under tests uses the DNS resolver running on the `dci-jumpbox`. 
 
 ## Usage
 To start a single job `dci-rhel-agent`, please use `systemctl start dci-rhel-agent`.

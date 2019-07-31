@@ -13,17 +13,18 @@
             {% else %}
             <hostRequires/>
             {% endif %}
-            {% if topic.startswith('RHEL-7') %}
             <repos>
+            {% if topic.startswith('RHEL-7') %}
               <repo name="extraos-local" url="http://{{ local_repo_ip }}/extraos"/>
-            </repos>
             {% endif %}
             {% if topic.startswith('RHEL-8') %}
-            <repos>
               <repo name="redhat-local" url="http://{{ local_repo_ip }}/{{ topic }}"/>
               <repo name="appstream-local" url="http://{{ local_repo_ip }}/appstream"/>
-            </repos>
             {% endif %}
+            {% for repo in repos %}
+              <repo name="{{ repo.name }}" url="{{ repo.url }}"/>
+            {% endfor %}
+            </repos>
             <partitions/>
             <task name="/distribution/install" role="STANDALONE">
                 <params>
