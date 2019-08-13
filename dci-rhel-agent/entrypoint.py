@@ -56,34 +56,7 @@ def main():
     print ("Error ! No topic found in settings.")
     sys.exit(1)
 
-  context = build_signature_context()
-  t = topic.list(context, where="name:%s" % extravars['topic'])
-  if t.status_code != 200:
-    print("Error !  HTTP error code=%s, message=%s, while getting topics" % (t.status_code, t.text))
-    sys.exit(1)
-  _topic = t.json()["topics"][0]
-
-  components = context.session.post(
-      "%s/jobs/schedule" % context.dci_cs_api,
-      json={"topic_id": _topic['id'], "dry_run": True},
-  ).json()['components']
-
-  r = ansible_runner.run(
-      private_data_dir="/usr/share/dci-rhel-agent",
-      playbook="dci-downloader.yml",
-      extravars={
-          "remoteci_id": remoteci_id,
-          "local_repo": local_repo,
-          "components": components,
-          "topic_id": _topic['id'],
-          "product": _topic['product_id'],
-          "topic": extravars['topic']
-      }
-  )
-  if r.rc != 0:
-    print ("Error ! Download components has failed. {}: {}".format(r.status, r.rc))
-    sys.exit(1)
-
+ # This function is kept for backward compatibility.
   if 'download_only' in extravars.keys():
     if extravars['download_only'] == True:
       print ('The dci-rhel-agent is configured in download-only mode.')

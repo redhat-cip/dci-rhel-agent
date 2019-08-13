@@ -7,16 +7,3 @@ dci_config_dir: /etc/dci-rhel-agent
 dci_tags: ['debug']
 dci_rhel_agent_sslverify: yes
 dci_rhel_agent_cert: true
-dci_rhel_agent_images: >-
-  [
-   {'name': 'boot.iso', 'path': 'images'},
-   {'name': 'initrd.img', 'path': 'images/pxeboot'},
-   {'name': 'vmlinuz', 'path': 'images/pxeboot'},
-   {% if topic.startswith('RHEL-7') %}
-   {'name': 'squashfs.img', 'path': 'LiveOS'},
-   {'name': 'upgrade.img', 'path': 'images/pxeboot'}
-   {% elif topic.startswith('RHEL-8') %}
-   {'name': 'install.img', 'path': 'images'},
-   {'name': 'efiboot.img', 'path': 'images'}
-   {% endif %}
-  ]
