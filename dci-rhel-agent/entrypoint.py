@@ -50,6 +50,10 @@ def main():
   extravars = load_settings()
   extravars['local_repo'] = local_repo
 
+  if environ.get('DCI_TOPIC'):
+      print ("Overriding topic from environment variable")
+      extravars['topic'] = environ.get('DCI_TOPIC')
+
   if 'topic' in extravars.keys():
     print ("Topic is %s" % extravars['topic'])
   else:

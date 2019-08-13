@@ -200,6 +200,24 @@ If you need advanced debug, you can spawn a new container with a shell:
 [container]# dcictl topic-list
 ```
 
+If you need to change topic often, you can specify the topic as an argument to the service: `systemctl start dci-rhel-agent@<topic_name>`
+
+For troubleshooting purposes, pass the topic as an environment variable:
+
+```bash
+# cd /etc/dci-rhel-agent/
+# DCI_TOPIC=<topic_name> make run
+```
+
+and in the shell:
+
+```bash
+# cd /etc/dci-rhel-agent/
+# make shell
+[container]#
+[container]# DCI_TOPIC=<topic_name> ./entrypoint.py
+```
+
 ## How to run your own set of tests ?
 By default, `dci-rhel-agent` provides an empty Ansible list of tasks located at `/etc/dci-rhel-agent/hooks/user-tests.yml`.
 It can be modified to include any task needed to run on top of the lab server that was provisionned for the job.

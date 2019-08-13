@@ -1,0 +1,13 @@
+[Unit]
+Description=DCI Ansible Agent for RHEL for topic %I
+
+[Service]
+Type=simple
+WorkingDirectory=/etc/dci-rhel-agent
+ExecStart=DCI_TOPIC=%i /bin/make run
+ExecStop=/bin/make stop
+SuccessExitStatus=0
+User=root
+
+[Install]
+WantedBy=default.target
