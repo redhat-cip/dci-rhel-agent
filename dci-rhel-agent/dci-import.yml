@@ -3,18 +3,25 @@
   hosts: beaker-lab
   vars:
     dci_status: 'pre-run'
+    topic_url:
+      RHEL-7:   'http://{{ local_repo_ip }}/{{ topic }}/'
+      RHEL-7.6: 'http://{{ local_repo_ip }}/{{ topic }}/'
+      RHEL-7.7: 'http://{{ local_repo_ip }}/{{ topic }}/'
+      RHEL-8:   'http://{{ local_repo_ip }}/{{ topic }}/'
+      RHEL-8.0: 'http://{{ local_repo_ip }}/{{ topic }}/compose/'
+      RHEL-8.1: 'http://{{ local_repo_ip }}/{{ topic }}/compose/'
   tasks:
     - block:
-        - name: Allow user to use beaker commands
-          acl:
-            path: /etc/beaker/client.conf
-            entity: '{{ ansible_user_id }}'
-            etype: user
-            permissions: r
-            state: present
-          become: true
-        - name: Import the last build
-          shell: beaker-import http://{{ local_repo_ip }}/{{ topic }}/
+        # - name: Allow user to use beaker commands
+        #   acl:
+        #     path: /etc/beaker/client.conf
+        #     entity: '{{ ansible_user_id }}'
+        #     etype: user
+        #     permissions: r
+        #     state: present
+        #   become: true
+        - name: Import the latest build
+          shell: beaker-import -v --ignore-missing-tree-compose {{ topic_url[topic] }}
       rescue:
         - include_tasks: failure.yml
   tags:
