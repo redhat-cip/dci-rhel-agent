@@ -128,16 +128,26 @@ The possible values are:
 | download_only | False | True/False | If enable, dci-rhel-agnt will exit after downloading RHEL builds (no job will be executed). |
 | systems | False | List of string | List of all systems that will be deployed using RHEL from DCI. |
 | beaker_xml | False | String | Path to a custom XML file to use with Beaker job. |
-
+| variants | False | List of string | List of RHEL 8.x variant to enable (AppStream, BaseOS, CRB, HighAvailability, NFV, RT, ResilientStorage, SAP, SAPHANA and unified). |
+| archs | False | List of string | CPU arch to enable (aarch64, ppc64le, s390x and x86_64). |
+| with_debug | False | True/False | Use RPM with debug symbols.  |
 Example:
 
 ```console
-topic: RHEL-7
+topic: RHEL-8.1
 local_repo_ip: 172.23.100.100
 dci_rhel_agent_cert: false
 download_only: false
+variants:
+  - AppStream
+  - BaseOS
+archs:
+  - x86_64
+  - ppc64le
+with_debug: false
 systems:
-  - labvm.local
+  - my.x86_64.system.local
+  - my.ppc64le.system.local  
 ```
 
 ### Advanced settings

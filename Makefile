@@ -3,7 +3,10 @@ build:
 	podman build -f Dockerfile -t dci-rhel-agent --no-cache
 
 run:
-	podman pull quay.io/distributedci/dci-rhel-agent:stable && source /etc/dci-rhel-agent/dcirc.sh && podman run --rm -ti --network host \
+    source /etc/dci-rhel-agent/dcirc.sh &&  \
+    /bin/dci-downloader --settings "/etc/dci-rhel-agent/settings.yml" && \
+    podman pull quay.io/distributedci/dci-rhel-agent:stable && \
+	podman run --rm -ti --network host \
 	-e DCI_CLIENT_ID \
 	-e DCI_API_SECRET \
 	-e DCI_CS_URL \
