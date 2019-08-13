@@ -17,6 +17,7 @@ Requires(postun): systemd
 
 Requires:         podman
 Requires:         make
+Requires:         dci-downloader
 
 %description
 The RHEL's DCI agent
@@ -56,6 +57,11 @@ install -p -D -m 644 Makefile %{buildroot}%{_sysconfdir}/dci-rhel-agent/Makefile
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
 
 %changelog
+* Tue Aug 13 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-5
+- Use dci-downloader instead of built-in downloader
+- Add support for RHEL Compose (multi-arch, variant)
+* Thu Jul 11 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-4
+- Allow users to provide a custom XML to bkr job-submit
 * Wed Apr 25 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-3
 - Make dci-rhel-agent a container
 * Wed Apr 17 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-2
