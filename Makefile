@@ -9,6 +9,7 @@ run:
 	-e DCI_CS_URL \
 	-e DCI_LOCAL_REPO \
 	-e DCI_BEAKER_CONFIG \
+	-e DCI_TOPIC \
 	-e PS1='\[\e[32m\][container]#\[\e[m\] ' \
 	-v /etc/dci-rhel-agent/hooks/:/etc/dci-rhel-agent/hooks/ \
 	-v /etc/dci-rhel-agent/settings.yml:/etc/dci-rhel-agent/settings.yml \
