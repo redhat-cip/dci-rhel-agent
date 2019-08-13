@@ -1,8 +1,15 @@
 ---
 - name: Get information from treeinfo
+  vars:
+    topic_info:
+      RHEL-7:   "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
+      RHEL-7.6: "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
+      RHEL-7.7: "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
+      RHEL-8:   "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
+      RHEL-8.0: "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
+      RHEL-8.1: "{{ lookup('ini', 'name section=product file={{ local_repo }}/{{ topic }}/compose/.composeinfo') }}"
   set_fact:
-    distro_name: "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
-    distro_arch: "{{ lookup('ini', 'arch section=general file={{ local_repo }}/{{ topic }}/.treeinfo') }}"
+    distro_name: "{{ topic_info[topic] }}"
 
 - name: Populate the Beaker XML job from template
   block:
