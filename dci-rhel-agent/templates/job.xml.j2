@@ -5,7 +5,6 @@
             <distroRequires>
                 <and>
                     <distro_name op="=" value="{{ distro_name }}"/>
-                    <distro_arch op="=" value="{{ distro_arch }}"/>
                 </and>
             </distroRequires>
             {% if fqdn is defined %}
@@ -13,15 +12,29 @@
             {% else %}
             <hostRequires/>
             {% endif %}
-            {% if topic.startswith('RHEL-7') %}
+            {% if topic == 'RHEL-7' %}
             <repos>
-              <repo name="extraos-local" url="http://{{ local_repo_ip }}/extraos"/>
+              <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos"/>
             </repos>
             {% endif %}
-            {% if topic.startswith('RHEL-8') %}
+            {% if topic == 'RHEL-7.6' %}
             <repos>
-              <repo name="redhat-local" url="http://{{ local_repo_ip }}/{{ topic }}"/>
-              <repo name="appstream-local" url="http://{{ local_repo_ip }}/appstream"/>
+              <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos"/>
+            </repos>
+            {% endif %}
+            {% if topic == 'RHEL-7.7' %}
+            <repos>
+              <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos"/>
+            </repos>
+            {% endif %}
+            {% if topic == 'RHEL-7.8' %}
+            <repos>
+              <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos"/>
+            </repos>
+            {% endif %}
+            {% if topic == 'RHEL-8' %}
+            <repos>
+              <repo name="appstream-local" url="http://{{ local_repo_ip }}/{{ topic }}"/appstream"/>
             </repos>
             {% endif %}
             <partitions/>
