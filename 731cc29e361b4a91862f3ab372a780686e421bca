@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d4881e5f_f7019d1d",
+        "filename": "Makefile",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-08-26T16:16:54Z",
+      "side": 1,
+      "message": "after https://softwarefactory-project.io/r/#/c/16138/\n\nreplace this line \n\nLOCAL_STORAGE_FOLDER\u003d$$DCI_LOCAL_REPO /bin/dci-downloader --topic \"RHEL-8.1\" --arch \"x86_64\" --arch \"ppc64le\" \u0026\u0026 \\\n\nwith:\n\n/bin/dci-downloader --settings \"/etc/dci-rhel-agent/settings.yml\" \u0026\u0026 \\\n\n\nexample of settings.yml file parameters you can have:\n\ntopic: RHEL-7\n# topics:\n#   - RHEL-7\n#   - RHEL-8\nvariants:\n  - AppStream\n  - BaseOS\narchs:\n  - x86_64\n  - ppc64le\nwith_debug: false",
+      "range": {
+        "startLine": 7,
+        "startChar": 4,
+        "endLine": 7,
+        "endChar": 113
+      },
+      "revId": "731cc29e361b4a91862f3ab372a780686e421bca",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
