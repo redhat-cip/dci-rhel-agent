@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "14c1d62a_47228c4e",
+        "filename": "Makefile",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-08-26T16:26:58Z",
+      "side": 1,
+      "message": "After the merge of https://softwarefactory-project.io/r/#/c/16139/ you probably want to ensure that the dci-downloader container is updated\n\nSomething like:\n\npodman pull quay.io/distributedci/dci-downloader:stable",
+      "range": {
+        "startLine": 6,
+        "startChar": 4,
+        "endLine": 6,
+        "endChar": 45
+      },
+      "revId": "731cc29e361b4a91862f3ab372a780686e421bca",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d4881e5f_f7019d1d",
         "filename": "Makefile",
         "patchSetId": 5
