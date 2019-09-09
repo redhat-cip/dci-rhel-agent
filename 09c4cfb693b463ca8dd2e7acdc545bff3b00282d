@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "428a5319_bb49e8e1",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 13
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-09-09T13:43:00Z",
+      "side": 1,
+      "message": "Yes we can !\n(It is also OK to use dci-rhel-agent in download_only mode because it manages the `beaker-import` and ppl might want to continue to use it manually to provision system),",
+      "parentUuid": "5e4e8ebf_a3701a69",
+      "range": {
+        "startLine": 62,
+        "startChar": 6,
+        "endLine": 62,
+        "endChar": 71
+      },
+      "revId": "09c4cfb693b463ca8dd2e7acdc545bff3b00282d",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "275bf3d2_7582baff",
         "filename": "dci-rhel-agent/install.yml",
         "patchSetId": 13
