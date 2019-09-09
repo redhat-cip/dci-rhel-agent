@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5e4e8ebf_a3701a69",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 13
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-09-09T08:38:48Z",
+      "side": 1,
+      "message": "Maybe we should print a warning here asking the user to use dci-downloader directly no?",
+      "range": {
+        "startLine": 62,
+        "startChar": 6,
+        "endLine": 62,
+        "endChar": 71
+      },
+      "revId": "09c4cfb693b463ca8dd2e7acdc545bff3b00282d",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "275bf3d2_7582baff",
+        "filename": "dci-rhel-agent/install.yml",
+        "patchSetId": 13
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-09-09T08:38:48Z",
+      "side": 1,
+      "message": "Why do you add explicit duplication here?\nDid I miss something?\n\nWhy not\n\n- name: Get information from treeinfo for RHEL-7\n  set_fact:\n      distro_name: \"{{ lookup(\u0027ini\u0027, \u0027name section\u003dgeneral file\u003d{{ local_repo }}/{{ topic }}/compose/.treeinfo\u0027) }}\"\n  when: topic.startswith(\"RHEL-7\")",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 27
+      },
+      "revId": "09c4cfb693b463ca8dd2e7acdc545bff3b00282d",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e478eeaf_b91f02d7",
+        "filename": "dci-rhel-agent/templates/job.xml.j2",
+        "patchSetId": 13
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-09-09T08:38:48Z",
+      "side": 1,
+      "message": "same here, I probably miss something but \n\n{% if topic.startswith(\u0027RHEL-7\u0027) %}\n\u003crepos\u003e\n    \u003crepo name\u003d\"extraos-local\" url\u003d\"http://{{ local_repo_ip }}{{ topic }}/extraos\"/\u003e\n\u003c/repos\u003e\n{% endif %}\n\nis good no?",
+      "range": {
+        "startLine": 15,
+        "startChar": 12,
+        "endLine": 34,
+        "endChar": 23
+      },
+      "revId": "09c4cfb693b463ca8dd2e7acdc545bff3b00282d",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5b4ea86b_77e50614",
+        "filename": "settings.yml",
+        "patchSetId": 13
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-09-09T08:38:48Z",
+      "side": 1,
+      "message": "Nice default change, do we need to print it somewhere that we use the latest version available by default?",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 15
+      },
+      "revId": "09c4cfb693b463ca8dd2e7acdc545bff3b00282d",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
