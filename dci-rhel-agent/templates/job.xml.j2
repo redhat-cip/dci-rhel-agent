@@ -27,16 +27,6 @@
               <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos"/>
             </repos>
             {% endif %}
-            {% if topic == 'RHEL-7.8' %}
-            <repos>
-              <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos"/>
-            </repos>
-            {% endif %}
-            {% if topic == 'RHEL-8' %}
-            <repos>
-              <repo name="appstream-local" url="http://{{ local_repo_ip }}/{{ topic }}"/appstream"/>
-            </repos>
-            {% endif %}
             <partitions/>
             <task name="/distribution/install" role="STANDALONE">
                 <params>
