@@ -5,6 +5,7 @@
             <distroRequires>
                 <and>
                     <distro_name op="=" value="{{ distro_name }}"/>
+                    <distro_arch op="=" value="{{ system_arch }}"/>
                 </and>
             </distroRequires>
             {% if fqdn is defined %}
@@ -12,19 +13,9 @@
             {% else %}
             <hostRequires/>
             {% endif %}
-            {% if topic == 'RHEL-7.6' %}
+            {% if 'RHEL-7' in topic %}
             <repos>
-              <repo name="extraos-local" url="http://{{ local_repo_ip }}/{{ topic }}/extraos/Server/x86_64/os"/>
-            </repos>
-            {% endif %}
-            {% if topic == 'RHEL-7.7' %}
-            <repos>
-              <repo name="extraos-local" url="http://{{ local_repo_ip }}/{{ topic }}/extraos/Server/x86_64/os"/>
-            </repos>
-            {% endif %}
-            {% if topic == 'RHEL-7.8' %}
-            <repos>
-              <repo name="extraos-local" url="http://{{ local_repo_ip }}/{{ topic }}/extraos/Server/x86_64/os"/>
+              <repo name="extraos-local" url="http://{{ local_repo_ip }}/{{ topic }}/extraos/Server/{{ system_arch }}/os"/>
             </repos>
             {% endif %}
             <partitions/>
