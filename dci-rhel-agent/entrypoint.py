@@ -17,6 +17,8 @@ import os
 import signal
 import sys
 import yaml
+import subprocess
+from lxml import etree
 
 from os import environ
 from dciclient.v1.api.context import build_signature_context
@@ -37,6 +39,21 @@ def load_settings():
     except yaml.YAMLError as exc:
       print(exc)
       sys.exit(1)
+
+def get_system_arch(fqdn):
+  try:
+    machine_details = subprocess.check_output(["bkr", "system-details", fqdn])
+    tree = etree.fromstring(machine_details)
+    systemArch = tree.find('{https://fedorahosted.org/beaker/rdfschema/inventory#}System')\
+                     .find('{https://fedorahosted.org/beaker/rdfschema/inventory#}supportsArch')\
+                     .find('{https://fedorahosted.org/beaker/rdfschema/inventory#}Arch')\
+                     .find('{http://www.w3.org/2000/01/rdf-schema#}label').text
+    return systemArch
+  except:
+    print("Unexpected Error: Could not determine supported architecture of \
+           machine to be provisioned: %s.  Ensure supported architecture \
+           is specified in Beaker." % fqdn)
+    return ""
 
 def main():
   if environ.get('DCI_CLIENT_ID') is not None:
@@ -83,6 +100,13 @@ def main():
   runner_threads = []
   for x in fqdn:
       print ("Starting job for %s." % x)
+      extravars['system_arch'] = get_system_arch(x)
+      if extravars['system_arch']:
+        print ("Supported architecture is %s." % extravars['system_arch'])
+      else:
+        #If we could not determine system arch of SUT, skip it and move on to the next SUT
+        continue
+
       extravars['fqdn']=x
       thread,_ = ansible_runner.run_async(
           private_data_dir="/usr/share/dci-rhel-agent/",
