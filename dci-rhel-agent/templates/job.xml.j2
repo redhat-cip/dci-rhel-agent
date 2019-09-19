@@ -17,16 +17,6 @@
               <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos"/>
             </repos>
             {% endif %}
-            {% if topic == 'RHEL-7.6' %}
-            <repos>
-              <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos"/>
-            </repos>
-            {% endif %}
-            {% if topic == 'RHEL-7.7' %}
-            <repos>
-              <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos"/>
-            </repos>
-            {% endif %}
             <partitions/>
             <task name="/distribution/install" role="STANDALONE">
                 <params>

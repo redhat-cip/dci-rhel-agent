@@ -6,12 +6,12 @@
 
 - name: Get information from treeinfo for RHEL-7.6
   set_fact:
-      distro_name: "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/compose/.treeinfo') }}"
+      distro_name: "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/compose/.composeinfo') }}"
   when: topic == "RHEL-7.6"
 
 - name: Get information from treeinfo for RHEL-7.7
   set_fact:
-      distro_name: "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/compose/.treeinfo') }}"
+      distro_name: "{{ lookup('ini', 'name section=general file={{ local_repo }}/{{ topic }}/compose/.composeinfo') }}"
   when: topic == "RHEL-7.7"
 
 - name: Get information from treeinfo for RHEL-7.8
