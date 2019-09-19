@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0ea96e38_b61415a1",
+        "filename": "dci-rhel-agent/install.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 166
+      },
+      "writtenOn": "2019-09-19T08:13:42Z",
+      "side": 1,
+      "message": "ack",
+      "revId": "05fcbf335494d569ef88fe65b3b762069dfd2a0f",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
