@@ -3,6 +3,18 @@
   set_fact:
       distro_name: "{{ lookup('ini', 'name section=product file={{ local_repo }}/{{ topic }}/compose/.composeinfo') }}"
 
+- name: Copy RHEL8 ppc64le boot files to tftproot when provisioning a ppc64le machine
+  copy:
+    src: "{{ local_repo }}/{{ topic }}/compose/BaseOS/ppc64le/os/boot/grub/powerpc-ieee1275"
+    dest: "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
+  when: system_arch == "ppc64le" and topic.startswith("RHEL-8")
+
+- name: Copy RHEL7 ppc64le boot files to tftproot when provisioning a ppc64le machine
+  copy:
+    src: "{{ local_repo }}/{{ topic }}/compose/Server/ppc64le/os/boot/grub/powerpc-ieee1275"
+    dest: "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
+  when: system_arch == "ppc64le" and topic.startswith("RHEL-7")
+
 - name: Populate the Beaker XML job from template
   block:
     - name: Create a temporary file

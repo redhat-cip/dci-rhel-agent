@@ -15,6 +15,7 @@ run:
 	-e DCI_LOCAL_REPO \
 	-e DCI_BEAKER_CONFIG \
 	-e PS1='\[\e[32m\][container]#\[\e[m\] ' \
+	-v /var/lib/tftpboot/:/var/lib/tftpboot/ \
 	-v /etc/dci-rhel-agent/hooks/:/etc/dci-rhel-agent/hooks/ \
 	-v /etc/dci-rhel-agent/settings.yml:/etc/dci-rhel-agent/settings.yml \
 	-v /etc/dci-rhel-agent/hosts:/etc/dci-rhel-agent/hosts  \

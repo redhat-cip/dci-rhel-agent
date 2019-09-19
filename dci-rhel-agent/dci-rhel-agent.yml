@@ -54,6 +54,31 @@
         - include_tasks: failure.yml
       when: fqdn is defined
 
+- name: GET SUT ARCH
+  hosts: localhost
+  tasks:
+    - block:
+        - name: Get SUT details
+          shell: "bkr system-details {{ fqdn }}"
+          register: system_details
+
+        - name: Parse arch from SUT details
+          xml:
+            xmlstring: "{{ system_details.stdout }}"
+            xpath: inv:System/inv:supportsArch/inv:Arch/rdfs:label
+            namespaces:
+              inv: https://fedorahosted.org/beaker/rdfschema/inventory#
+              rdfs: http://www.w3.org/2000/01/rdf-schema#
+            content: text
+          register: supported_arch_info
+
+        - name: Register supported arch
+          set_fact:
+            system_arch: "{{ supported_arch_info.matches[0].values().pop() }}"
+      rescue:
+         - include_tasks: failure.yml
+      when: fqdn is defined
+
 - name: LAUNCH INSTALL
   hosts: localhost
   vars:

@@ -16,11 +16,11 @@ def get_task_status(task, job_id):
         logging.debug('Status for task %s: %s' % (task, status))
         return status
 
-status = get_task_status('/distribution/install', sys.argv[1])
+status = get_task_status('/distribution/check-install', sys.argv[1])
 while status != "Completed":
         logging.debug('Waiting for 5s ...')
         time.sleep(5)
-        status = get_task_status('/distribution/install', sys.argv[1])
+        status = get_task_status('/distribution/check-install', sys.argv[1])
         if status in ["Aborted", "Cancelled"]:
                 exit(1)
 
