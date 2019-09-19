@@ -10,7 +10,7 @@
     - name: Grab logs from beaker
       get_url:
         url: "{{ item }}"
-        dest: "{{ job_logs.path }}"
+        dest: "{{ hostvars.localhost.job_logs.path }}"
       with_items: "{{ bkr_files.stdout_lines }}"
 
     - name: Grab beaker junit results
@@ -18,7 +18,7 @@
       args:
         creates: '{{ beaker_results }}'
       vars:
-        beaker_results: '{{job_artifacts.path }}/beaker-results.xml'
+        beaker_results: '{{hostvars.localhost.job_artifacts.path }}/beaker-results.xml'
 
     - name: Upload logs files to DCI
       dci_file:
@@ -26,8 +26,8 @@
         name: '{{ item | basename }}'
         job_id: '{{ hostvars.localhost.job_id }}'
       with_fileglob:
-        - '{{ job_logs.path }}/*'
-        - '{{ job_artifacts.path }}/*.log'
+        - '{{ hostvars.localhost.job_logs.path }}/*'
+        - '{{ hostvars.localhost.job_artifacts.path }}/*.log'
 
     - name: Upload junit files to DCI
       dci_file:
@@ -35,12 +35,12 @@
         name: "{{ item | basename | regex_replace('^(.*\\.cli\\.)?(.*).xml$','\\2') }}"
         job_id: '{{ hostvars.localhost.job_id }}'
         mime: 'application/junit'
-      with_fileglob: '{{ job_artifacts.path }}/*.xml'
+      with_fileglob: '{{ hostvars.localhost.job_artifacts.path }}/*.xml'
 
     - name: Clean logs
       file:
         state: absent
         path: "{{ item }}"
       with_items:
-        - "{{ job_logs.path }}"
-        - "{{ job_artifacts.path }}"
+        - "{{ hostvars.localhost.job_logs.path }}"
+        - "{{ hostvars.localhost.job_artifacts.path }}"

@@ -1,5 +1,6 @@
 ---
 - include_tasks: logs.yml
+- include_tasks: release.yml
 
 - name: Fail properly
   fail:
