@@ -17,6 +17,8 @@ import os
 import signal
 import sys
 import yaml
+import subprocess
+from lxml import etree
 
 from os import environ
 from dciclient.v1.api.context import build_signature_context
