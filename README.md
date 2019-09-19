@@ -168,7 +168,9 @@ systems:
   - labvm-3.local
 ```
 
-Please note that all FQDN must resolve locally on the DCI jumpbox. If you don't have proper DNS records, please update `/etc/hosts` then reload `dnsmasq` service.
+Please note that all FQDN must resolve locally on the DCI jumpbox. If you don't have proper DNS records, please update `/etc/hosts` then reload `dnsmasq` service.  Also, the supported architecture of the systems must be entered in Beaker in order for the agent to properly provision a system with the correct architecture.
+
+Please also note that the RHEL agent does not currently support concurrent provisioning.  Running two instances of the agent simultaneously will cause installation issues on the systems under test.  This feature will be added in the near future and this readme will be updated to reflect the support.
 
 #### How to skip Red Hat Certification tests ?
 Some users might want to skip the certification tests suite. This can be done via `settings.yml` file by adding `dci_rhel_agent_cert: false`.

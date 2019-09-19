@@ -61,6 +61,8 @@ install -p -D -m 755 dci-rhel-agent-ctl %{buildroot}%{_bindir}/dci-rhel-agent-ct
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
 
 %changelog
+* Tue Oct 29 2019 Michael Burke <miburke@redhat.com> - 0.1.2-7
+- Updates for PPC arch
 * Tue Oct 09 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-6
 - Introduce dci-rhel-agent-ctl
 * Tue Aug 13 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-5

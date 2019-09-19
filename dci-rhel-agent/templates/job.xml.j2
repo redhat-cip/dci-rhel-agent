@@ -1,10 +1,15 @@
 <job retention_tag="Scratch">
     <whiteboard>This job was scheduled from the dci-rhel-agent using XML template.</whiteboard>
     <recipeSet priority="Normal">
-        <recipe ks_meta="selinux=--permissive autopart_type=plain harness='restraint'" whiteboard="">
+        {% if system_arch == 'ppc64le' %}
+                <recipe ks_meta="selinux=--permissive autopart_type=plain harness='restraint'" whiteboard="" kernel_options="netbootloader=boot/grub2/{{ fqdn }}/powerpc-ieee1275/core.elf">
+        {% else %}
+                <recipe ks_meta="selinux=--permissive autopart_type=plain harness='restraint'" whiteboard="">
+        {% endif %}
             <distroRequires>
                 <and>
                     <distro_name op="=" value="{{ distro_name }}"/>
+                    <distro_arch op="=" value="{{ system_arch }}"/>
                 </and>
             </distroRequires>
             {% if fqdn is defined %}
@@ -12,23 +17,13 @@
             {% else %}
             <hostRequires/>
             {% endif %}
-            {% if topic == 'RHEL-7.6' %}
+            {% if 'RHEL-7' in topic %}
             <repos>
-              <repo name="extraos-local" url="http://{{ local_repo_ip }}/{{ topic }}/extraos/Server/x86_64/os"/>
-            </repos>
-            {% endif %}
-            {% if topic == 'RHEL-7.7' %}
-            <repos>
-              <repo name="extraos-local" url="http://{{ local_repo_ip }}/{{ topic }}/extraos/Server/x86_64/os"/>
-            </repos>
-            {% endif %}
-            {% if topic == 'RHEL-7.8' %}
-            <repos>
-              <repo name="extraos-local" url="http://{{ local_repo_ip }}/{{ topic }}/extraos/Server/x86_64/os"/>
+              <repo name="extraos-local" url="http://{{ local_repo_ip }}/{{ topic }}/extraos/Server/{{ system_arch }}/os"/>
             </repos>
             {% endif %}
             <partitions/>
-            <task name="/distribution/install" role="STANDALONE">
+            <task name="/distribution/check-install" role="STANDALONE">
                 <params>
                 </params>
             </task>

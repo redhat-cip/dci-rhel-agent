@@ -72,6 +72,7 @@ def main():
         -e DCI_CLIENT_ID \
         -e DCI_API_SECRET \
         -e DCI_CS_URL \
+        -v /var/lib/tftpboot/:/var/lib/tftpboot/ \
         -v /etc/dci-rhel-agent/hooks/:/etc/dci-rhel-agent/hooks/ \
         -v %s:/etc/dci-rhel-agent/settings.yml \
         -v /etc/dci-rhel-agent/hosts:/etc/dci-rhel-agent/hosts  \
