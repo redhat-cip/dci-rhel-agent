@@ -12,9 +12,19 @@
             {% else %}
             <hostRequires/>
             {% endif %}
-            {% if topic == 'RHEL-7' %}
+            {% if topic == 'RHEL-7.6' %}
             <repos>
-              <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos"/>
+              <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos/">
+            </repos>
+            {% endif %}
+            {% if topic == 'RHEL-7.7' %}
+            <repos>
+              <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos/Server/x86_64/">
+            </repos>
+            {% endif %}
+            {% if topic == 'RHEL-7.8' %}
+            <repos>
+              <repo name="extraos-local" url="http://{{ local_repo_ip }}{{ topic }}/extraos/Server/x86_64/">
             </repos>
             {% endif %}
             <partitions/>
