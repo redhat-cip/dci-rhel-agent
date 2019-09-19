@@ -34,6 +34,18 @@
       distro_name: "{{ lookup('ini', 'name section=product file={{ local_repo }}/{{ topic }}/compose/.composeinfo') }}"
   when: topic == "RHEL-8.1"
 
+- name: Copy RHEL8 ppc boot files to tftproot
+  copy:
+    src: "{{ local_repo }}/{{ topic }}/compose/BaseOS/ppc64le/os/boot/grub/powerpc-ieee1275"
+    dest: /var/lib/tftpboot/boot/grub2
+  when: topic == "RHEL-8.0" or topic == "RHEL-8.1" or topic == "RHEL-8"
+
+- name: Copy RHEL7 ppc boot files to tftproot
+  copy:
+    src: "{{ local_repo }}/{{ topic }}/compose/Server/ppc64le/os/boot/grub/powerpc-ieee1275"
+    dest: /var/lib/tftpboot/boot/grub2
+  when: topic == "RHEL-7.6" or topic == "RHEL-7.7" or topic == "RHEL-7.8"
+
 - name: Populate the Beaker XML job from template
   block:
     - name: Create a temporary file
