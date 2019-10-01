@@ -1,7 +1,8 @@
-topic: RHEL-8.1
-variants:
-  - AppStream
-  - BaseOS
-archs:
-  - x86_64
-with_debug: false
+topics:
+  - topic: RHEL-8.1
+    variants:
+      - AppStream
+      - BaseOS
+    archs:
+      - x86_64
+    with_debug: false

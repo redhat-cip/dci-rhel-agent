@@ -3,14 +3,32 @@
 """
 Entrypoint for dci-rhel-agent.
 Example for settings.yml:
+topics:
+  - topic: RHEL-7.6
+    archs:
+      - x86_64
+      - ppc64le
+    variants:
+      - Server
+    local_repo_ip: 192.168.60.1
+    dci_rhel_agent_cert: false
+    download_only: false
+    systems:
+      - labvm-1.novalocal
+      - labvm-2.novalocal
 
-topic: RHEL-7.6
-local_repo_ip: 192.168.60.1
-dci_rhel_agent_cert: false
-download_only: false
-systems:
-  - labvm-1.novalocal
-  - labvm-2.novalocal
+  - topic: RHEL-8.1
+    archs:
+      - ppc64le
+    variants:
+      - BaseOS
+      - AppStream
+    local_repo_ip: 192.168.60.1
+    dci_rhel-agent_cert: false
+    download_only: false
+    systems:
+      - SUT3
+      - SUT4
 """
 import ansible_runner
 import os
@@ -30,6 +48,7 @@ def sigterm_handler(signal, frame):
 
 signal.signal(signal.SIGTERM, sigterm_handler)
 
+
 def load_settings():
   with open('/etc/dci-rhel-agent/settings.yml', 'r') as settings:
     try:
@@ -38,16 +57,10 @@ def load_settings():
       print(exc)
       sys.exit(1)
 
-def main():
-  if environ.get('DCI_CLIENT_ID') is not None:
-    remoteci_id = os.getenv("DCI_CLIENT_ID").split("/")[1]
-  else:
-    print ("Error ! Environmental variable DCI_CLIENT_ID not set.")
-    sys.exit(1)
 
+def provision_and_test(extravars):
   # Path is static in the container
   local_repo = '/var/www/html'
-  extravars = load_settings()
   extravars['local_repo'] = local_repo
 
   if 'topic' in extravars.keys():
@@ -56,7 +69,7 @@ def main():
     print ("Error ! No topic found in settings.")
     sys.exit(1)
 
- # This function is kept for backward compatibility.
+  # This function is kept for backward compatibility.
   if 'download_only' in extravars.keys():
     if extravars['download_only'] == True:
       print ('The dci-rhel-agent is configured in download-only mode.')
@@ -97,6 +110,31 @@ def main():
   for rt in runner_threads:
     rt.join()
   print("All jobs terminated.")
+
+
+def main():
+  if environ.get('DCI_CLIENT_ID') is not None:
+    remoteci_id = os.getenv("DCI_CLIENT_ID").split("/")[1]
+  else:
+    print ("Error ! Environmental variable DCI_CLIENT_ID not set.")
+    sys.exit(1)
+  
+  #Read the settings file
+  sets = load_settings()
+  
+  #Check if the settings contain multiple topics and 
+  #process accordingly
+  if 'topics' in sets:
+    #Break up settings file into individual jobs by topic
+    jobs = sets['topics']
+    #Loop over each job and provision system(s)
+    for idx, current_job in enumerate(jobs):
+      print ("Beginning provisioning job %s of %s" % (idx+1, len(jobs)))
+      provision_and_test(current_job)
+  else:
+    #Legacy settings file format (single topic/job)
+    #preserved for compatibility
+    provision_and_test(sets)
 
 if __name__ == '__main__':
     main()

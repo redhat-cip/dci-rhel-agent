@@ -117,7 +117,7 @@ export DCI_LOCAL_REPO
 
 * `/etc/dci-rhel-agent/settings.yml`
 
-This YAML file includes the configuration for a `dci-rhel-agent` Job.
+This YAML file includes the configuration for one or more `dci-rhel-agent` Jobs.
 The possible values are:
 
 | Variable | Required | Type | Description |
@@ -134,20 +134,51 @@ The possible values are:
 Example:
 
 ```console
-topic: RHEL-8.1
-local_repo_ip: 172.23.100.100
-dci_rhel_agent_cert: false
-download_only: false
+topics:
+  - topic: RHEL-8.1
+    local_repo_ip: 172.23.100.100
+    dci_rhel_agent_cert: false
+    download_only: false
+    variants:
+      - AppStream
+      - BaseOS
+    archs:
+      - x86_64
+      - ppc64le
+    with_debug: false
+    systems:
+      - my.x86_64.system.local
+      - my.ppc64le.system.local
+ 
+  - topic_RHEL-7.8
+    local_repo_ip: 172.23.100.100
+    dci_rhel_agent_cert: false
+    download_only: false
+    variants
+      - Server
+    archs:
+      - x86_64
+    with_debug: false
+    systems:
+      - my.x86_64.system2.local
+      - my.x86_64.system3.local
+      - my.x86_64.system4.local
+```
+
+Note that the prior format containing a single topic is also still supported as well:
+
+```console
+topic: RHEL-8.2
+local_repo_ip: 192.168.1.1
 variants:
-  - AppStream
   - BaseOS
+  - AppStream
 archs:
   - x86_64
-  - ppc64le
 with_debug: false
+dci_rhel_agent_cert: false
 systems:
-  - my.x86_64.system.local
-  - my.ppc64le.system.local
+  - dci-client
 ```
 
 ### Advanced settings
