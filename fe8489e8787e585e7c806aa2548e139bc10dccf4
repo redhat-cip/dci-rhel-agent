@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c3fc8168_8f481c77",
+        "filename": "dci-rhel-agent/install.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-10-03T18:28:08Z",
+      "side": 1,
+      "message": "we should try to maintain a global list as we use this condition at different places in the agent.",
+      "range": {
+        "startLine": 47,
+        "startChar": 8,
+        "endLine": 47,
+        "endChar": 73
+      },
+      "revId": "fe8489e8787e585e7c806aa2548e139bc10dccf4",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
