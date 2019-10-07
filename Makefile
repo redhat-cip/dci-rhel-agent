@@ -1,10 +1,11 @@
 SHELL := '/bin/bash'
+SETTINGS?='settings.yml'
 build:
 	podman build -f Dockerfile -t dci-rhel-agent --no-cache
 
 run:
 	source /etc/dci-rhel-agent/dcirc.sh &&  \
-	/bin/dci-downloader --settings "/etc/dci-rhel-agent/settings.yml" && \
+	/bin/dci-downloader --settings "/etc/dci-rhel-agent/$(SETTINGS)" && \
 	podman pull quay.io/distributedci/dci-rhel-agent:stable && \
 	podman run --rm -ti --network host \
 	-e DCI_CLIENT_ID \
@@ -14,7 +15,7 @@ run:
 	-e DCI_BEAKER_CONFIG \
 	-e PS1='\[\e[32m\][container]#\[\e[m\] ' \
 	-v /etc/dci-rhel-agent/hooks/:/etc/dci-rhel-agent/hooks/ \
-	-v /etc/dci-rhel-agent/settings.yml:/etc/dci-rhel-agent/settings.yml \
+	-v /etc/dci-rhel-agent/$(SETTINGS):/etc/dci-rhel-agent/settings.yml \
 	-v /etc/dci-rhel-agent/hosts:/etc/dci-rhel-agent/hosts  \
 	-v $$DCI_LOCAL_REPO:/var/www/html \
 	-v $$DCI_BEAKER_CONFIG:/etc/beaker/ \
@@ -38,7 +39,7 @@ shell:
 	-e DCI_BEAKER_CONFIG \
 	-e PS1='\[\e[32m\][container]#\[\e[m\] ' \
 	-v /etc/dci-rhel-agent/hooks/:/etc/dci-rhel-agent/hooks/ \
-	-v /etc/dci-rhel-agent/settings.yml:/etc/dci-rhel-agent/settings.yml \
+	-v /etc/dci-rhel-agent/$(SETTINGS):/etc/dci-rhel-agent/settings.yml \
 	-v /etc/dci-rhel-agent/hosts:/etc/dci-rhel-agent/hosts  \
 	-v $$DCI_LOCAL_REPO:/var/www/html \
 	-v $$DCI_BEAKER_CONFIG:/etc/beaker/ \
