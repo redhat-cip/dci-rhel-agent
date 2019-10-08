@@ -46,6 +46,30 @@
       "revId": "fe8489e8787e585e7c806aa2548e139bc10dccf4",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c13199e1_9f326486",
+        "filename": "dci-rhel-agent/install.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 28
+      },
+      "writtenOn": "2019-10-08T08:09:19Z",
+      "side": 1,
+      "message": "Could be simplified, like:\n\nwhen: topic.startswith(\"RHEL-7\")",
+      "parentUuid": "b194b0ca_f9299cb1",
+      "range": {
+        "startLine": 47,
+        "startChar": 8,
+        "endLine": 47,
+        "endChar": 73
+      },
+      "revId": "fe8489e8787e585e7c806aa2548e139bc10dccf4",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
