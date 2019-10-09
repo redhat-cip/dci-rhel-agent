@@ -34,6 +34,7 @@ install -p -D -m 644 hosts %{buildroot}%{_sysconfdir}/dci-rhel-agent/hosts
 install -p -D -m 644 settings.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/settings.yml
 install -p -D -m 644 hooks/user-tests.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
 install -p -D -m 644 Makefile %{buildroot}%{_sysconfdir}/dci-rhel-agent/Makefile
+install -p -D -m 755 dci-rhel-agent-ctl %{buildroot}%{_bindir}/dci-rhel-agent/dci-rhel-agent-ctl
 
 %clean
 
@@ -51,12 +52,15 @@ install -p -D -m 644 Makefile %{buildroot}%{_sysconfdir}/dci-rhel-agent/Makefile
 %files
 %{_unitdir}/*
 %{_sysconfdir}/dci-rhel-agent/Makefile
+%{_bindir}/dci-rhel-agent/dci-rhel-agent-ctl
 %{_sysconfdir}/dci-rhel-agent/dcirc.sh.dist
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/settings.yml
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/hosts
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
 
 %changelog
+* Tue Oct 09 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-6
+- Introduce dci-rhel-agent-ctl
 * Tue Aug 13 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-5
 - Use dci-downloader instead of built-in downloader
 - Add support for RHEL Compose (multi-arch, variant)
