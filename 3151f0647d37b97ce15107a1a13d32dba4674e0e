@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "253b7a4d_80f98bc4",
+        "filename": "Makefile",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-10-09T12:05:03Z",
+      "side": 1,
+      "message": "Did i miss something ?\n\n[root@jumpbox dci-rhel-agent]# make run\nsource /etc/dci-rhel-agent/dcirc.sh \u0026\u0026  \\\n/bin/dci-downloader --settings \"/etc/dci-rhel-agent/\u0027settings.yml\u0027\" \u0026\u0026 \\\npodman pull quay.io/distributedci/dci-rhel-agent:stable \u0026\u0026 \\\npodman run --rm -ti --network host \\\n-e DCI_CLIENT_ID \\\n-e DCI_API_SECRET \\\n-e DCI_CS_URL \\\n-e DCI_LOCAL_REPO \\\n-e DCI_BEAKER_CONFIG \\\n-e PS1\u003d\u0027\\[\\e[32m\\][container]#\\[\\e[m\\] \u0027 \\\n-v /etc/dci-rhel-agent/hooks/:/etc/dci-rhel-agent/hooks/ \\\n-v /etc/dci-rhel-agent/\u0027settings.yml\u0027:/etc/dci-rhel-agent/settings.yml \\\n-v /etc/dci-rhel-agent/hosts:/etc/dci-rhel-agent/hosts  \\\n-v $DCI_LOCAL_REPO:/var/www/html \\\n-v $DCI_BEAKER_CONFIG:/etc/beaker/ \\\nquay.io/distributedci/dci-rhel-agent:stable\nTraceback (most recent call last):\n  File \"/bin/dci-downloader\", line 9, in \u003cmodule\u003e\n    load_entry_point(\u0027dci-downloader\u003d\u003d2.0.0\u0027, \u0027console_scripts\u0027, \u0027dci-downloader\u0027)()\n  File \"/usr/lib/python2.7/site-packages/dci_downloader/main.py\", line 38, in main\n    settings \u003d get_settings(sys_args\u003dsys.argv[1:], env_variables\u003ddict(os.environ))\n  File \"/usr/lib/python2.7/site-packages/dci_downloader/settings.py\", line 41, in get_settings\n    settings.update(_read_settings_file(settings_file_path))\n  File \"/usr/lib/python2.7/site-packages/dci_downloader/settings.py\", line 10, in _read_settings_file\n    with open(settings_file_path, \"r\") as stream:\nIOError: [Errno 2] No such file or directory: \"/etc/dci-rhel-agent/\u0027settings.yml\u0027\"\nmake: *** [run] Error 1",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 24
+      },
+      "revId": "3151f0647d37b97ce15107a1a13d32dba4674e0e",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
