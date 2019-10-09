@@ -3,6 +3,8 @@ build:
 	podman build -f Dockerfile -t dci-rhel-agent --no-cache
 
 run:
+
+	$(info [DEPRECATION WARNING]: Make support in `dci-rhel-agent` will be removed in the next version. Please use `dci-rhel-agent-ctl`.)
 	source /etc/dci-rhel-agent/dcirc.sh &&  \
 	/bin/dci-downloader --settings "/etc/dci-rhel-agent/settings.yml" && \
 	podman pull quay.io/distributedci/dci-rhel-agent:stable && \
@@ -21,15 +23,19 @@ run:
 	quay.io/distributedci/dci-rhel-agent:stable
 
 stop:
+	$(info [DEPRECATION WARNING]: Make support in `dci-rhel-agent` will be removed in the next version. Please use `dci-rhel-agent-ctl`.)
 	podman stop $$(podman ps -a -q  --filter ancestor=dci-rhel-agent)
 
 kill:
+	$(info [DEPRECATION WARNING]: Make support in `dci-rhel-agent` will be removed in the next version. Please use `dci-rhel-agent-ctl`.)
 	podman kill $$(podman ps -a -q  --filter ancestor=dci-rhel-agent)
 
 clean:
+	$(info [DEPRECATION WARNING]: Make support in `dci-rhel-agent` will be removed in the next version. Please use `dci-rhel-agent-ctl`.)
 	podman rmi quay.io/distributedci/dci-rhel-agent:stable
 
 shell:
+	$(info [DEPRECATION WARNING]: Make support in `dci-rhel-agent` will be removed in the next version. Please use `dci-rhel-agent-ctl`.)
 	podman pull quay.io/distributedci/dci-rhel-agent:stable && source /etc/dci-rhel-agent/dcirc.sh && podman run --rm -ti --network host \
 	-e DCI_CLIENT_ID \
 	-e DCI_API_SECRET \
