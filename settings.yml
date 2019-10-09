@@ -5,3 +5,4 @@ variants:
 archs:
   - x86_64
 with_debug: false
+local_repo: /var/www/html

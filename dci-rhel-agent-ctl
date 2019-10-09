@@ -1,0 +1,85 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# dci-rhel-agent-ctl controls dci-rhel-agent (start, stop and kill).
+
+import argparse
+import subprocess
+import signal
+import sys
+import yaml
+
+# dci-rhel-agent-ctl default values
+default_value =	{
+  "local_repo": "/var/www/html",
+  "settings_path": "/etc/dci-rhel-agent/settings.yml",
+  "dci_rhel_agent_url":"quay.io/distributedci/dci-rhel-agent:stable"
+}
+
+proc = None
+
+def sigterm_handler(signal, frame):
+  print('Exiting...')
+  proc.terminate()
+  sys.exit(0)
+
+signal.signal(signal.SIGTERM, sigterm_handler)
+signal.signal(signal.SIGINT, sigterm_handler)
+
+def load_settings(settings_path):
+  with open(settings_path, 'r') as settings:
+    try:
+      return yaml.safe_load(settings)
+    except yaml.YAMLError as exc:
+      print(exc)
+      sys.exit(1)
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--config', action='store', help="Path to config file. Default is `/etc/dci-rhel-agent/settings.yml`.", default=default_value['settings_path'])
+    parser.add_argument('-u', '--url', action='store', help="Url for dci-rhel-agent. Default is `quay.io/distributedci/dci-rhel-agent:stable`.", default=default_value['dci_rhel_agent_url'])
+    parser.add_argument('-s', '--start', action='store_true', help="Start dci-rhel-agent")
+    args = parser.parse_args()
+
+    if args.config:
+        settings_path = args.config
+
+    if args.url:
+        dci_rhel_agent_url = args.url
+
+    if args.start:
+        settings = load_settings(settings_path)
+        if 'local_repo' in settings.keys():
+            local_repo = settings['local_repo']
+        else:
+            print ("local_repo is NOT set in %s. Using default value." % default_value['local_repo'])
+            local_repo = default_value['local_repo']
+
+        # Start dci-downloader
+        myCmd = 'source /etc/dci-rhel-agent/dcirc.sh &&  \
+        /bin/dci-downloader --settings %s' % (settings_path)
+        global proc
+        proc = subprocess.Popen(myCmd, shell=True)
+        proc.wait()
+
+        # Start dci-rhel-agent update
+        myCmd = 'podman pull %s' % (dci_rhel_agent_url)
+        proc = subprocess.Popen(myCmd, shell=True)
+        proc.wait()
+
+        # Start dci-rhel-agent
+        myCmd = 'source /etc/dci-rhel-agent/dcirc.sh &&  \
+        podman run --rm -ti --network host \
+        -e DCI_CLIENT_ID \
+        -e DCI_API_SECRET \
+        -e DCI_CS_URL \
+        -v /etc/dci-rhel-agent/hooks/:/etc/dci-rhel-agent/hooks/ \
+        -v %s:/etc/dci-rhel-agent/settings.yml \
+        -v /etc/dci-rhel-agent/hosts:/etc/dci-rhel-agent/hosts  \
+        -v %s:/var/www/html \
+        -v /etc/beaker:/etc/beaker/ \
+        %s' % (settings_path, local_repo, dci_rhel_agent_url)
+        proc = subprocess.Popen(myCmd, shell=True)
+        proc.wait()
+
+if __name__ == "__main__":
+    main()
