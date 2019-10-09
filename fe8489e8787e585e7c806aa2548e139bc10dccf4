@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "c1b3517e_c21e9b9c",
+        "filename": "dci-rhel-agent/install.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 597
+      },
+      "writtenOn": "2019-10-09T12:24:37Z",
+      "side": 1,
+      "message": "- name: Copy RHEL8 PPC boot files to tftproot\n- name: Copy RHEL7 ppc boot files to tftproot\n\nSteps above will break TFTP folder in case you will try to run something in parallel. Instead of that, I\u0027m suggesting you create a separate folder for payload and properly passing it as bootloader\u003d option into job. This will take NBP and create a symlink. But. More things may happen.\n\n1. NBP payload in compose contains know bug - For example $fw_path issues\n2. Expected UEFI configs can be different in composes. linux/linuxefi etc.. Proper evaluation needs to be done to be sure that cfg is readable and acceptable by NBP.",
+      "revId": "fe8489e8787e585e7c806aa2548e139bc10dccf4",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c3fc8168_8f481c77",
         "filename": "dci-rhel-agent/install.yml",
         "patchSetId": 1
