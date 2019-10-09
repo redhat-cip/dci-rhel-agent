@@ -4,8 +4,8 @@ Description=DCI Ansible Agent for RHEL
 [Service]
 Type=simple
 WorkingDirectory=/etc/dci-rhel-agent
-ExecStart=/bin/make run
-ExecStop=/bin/make stop
+ExecStart=/etc/dci-rhel-agent/dci-rhel-agent-ctl --start
+TimeoutStopSec=120
 SuccessExitStatus=0
 User=root
 
