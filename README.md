@@ -197,14 +197,14 @@ For troubleshooting purposes, launch `dci-rhel-agent` foreground:
 
 ```bash
 # cd /etc/dci-rhel-agent/
-# make run
+# ./dci-rhel-agent-ctl start
 ```
 
 If you need advanced debug, you can spawn a new container with a shell:
 
 ```bash
 # cd /etc/dci-rhel-agent/
-# make shell
+# ./dci-rhel-agent-ctl shell
 [container]#
 [container]# ./entrypoint.py
 [container]# dcictl topic-list
