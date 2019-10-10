@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c10e6f7d_32166d47",
+        "filename": "dci-rhel-agent-ctl",
+        "patchSetId": 10
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-10-10T15:27:14Z",
+      "side": 1,
+      "message": "(comment for myself) Wrong. Works as expected.",
+      "parentUuid": "314b359e_652aaa45",
+      "range": {
+        "startLine": 67,
+        "startChar": 7,
+        "endLine": 67,
+        "endChar": 24
+      },
+      "revId": "1271645dffc67e2acf61314da7aaf411e98114ae",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e8a86d39_43fdb0f0",
         "filename": "dci-rhel-agent.spec",
         "patchSetId": 10
