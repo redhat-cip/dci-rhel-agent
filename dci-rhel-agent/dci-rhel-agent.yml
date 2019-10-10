@@ -37,6 +37,7 @@
       RHEL-8:   '/usr/libexec/platform-python'
       RHEL-8.0: '/usr/libexec/platform-python'
       RHEL-8.1: '/usr/libexec/platform-python'
+      RHEL-8.2: '/usr/libexec/platform-python'
   tasks:
     - block:
         - name: Add Beaker system to the Ansible group
