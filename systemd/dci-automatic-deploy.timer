@@ -1,0 +1,9 @@
+[Unit]
+Description=dci-auto-deploy timer
+
+[Timer]
+OnCalendar=13:37
+Persistent=true     
+
+[Install]
+WantedBy=basic.target

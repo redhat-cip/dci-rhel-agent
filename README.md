@@ -8,6 +8,7 @@
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [How to run your own set of tests](#how-to-run-your-own-set-of-tests)
+- [Examples for automatic timer triggered deployment](#examples-for-automatic-timer-triggered-deployment)
 - [Create your DCI account on distributed-ci.io](#create-your-dci-account-on-distributed-ciio)
 - [License](#license)
 - [Contact](#contact)
@@ -239,6 +240,15 @@ In the following example, the task uploads Junit files (your tests results) into
   with_items:
     - /tmp/result-1.xml
     - /tmp/result-2.xml
+```
+
+
+## Examples for automatic timer triggered deployment
+Put examples from `systemd/dci-automatic-deploy.*` to `/usr/lib/systemd/system/` and enable with:
+
+```
+# systemctl enable dci-automatic-deploy.timer
+# systemctl start dci-automatic-deploy.timer
 ```
 
 ## Create your DCI account on distributed-ci.io

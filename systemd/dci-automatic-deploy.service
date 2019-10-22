@@ -1,0 +1,6 @@
+[Unit]
+Description=dci automatic deploy
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash -c "cd /etc/dci-rhel-agent && make run 2>&1 | tee /var/log/dci_automatic_deploy.log"
