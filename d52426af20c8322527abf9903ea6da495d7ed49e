@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ec63f468_9f6e3381",
+        "filename": "dci-rhel-agent-ctl",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2019-10-23T14:58:07Z",
+      "side": 1,
+      "message": "Inform user what the default location is.",
+      "revId": "d52426af20c8322527abf9903ea6da495d7ed49e",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7393f6cf_e7b389bd",
+        "filename": "settings.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2019-10-23T14:58:07Z",
+      "side": 1,
+      "message": "Recommend we show all possible settings in the settings.yml file.  Perhaps comment out the optional settings, but include them so the users are aware of what can be set when they look at the file since they won\u0027t read the doc :)",
+      "revId": "d52426af20c8322527abf9903ea6da495d7ed49e",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
