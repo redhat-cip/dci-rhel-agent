@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a740030_a715c5c4",
+        "filename": "dci-rhel-agent-ctl",
+        "patchSetId": 25
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2019-10-23T14:29:08Z",
+      "side": 1,
+      "message": "You probably can use this instead:\n\n    with open(settings_path, \"r\") as settings:\n        try:\n            return yaml.safe_load(settings)\n        except yaml.YAMLError:\n            print(\"Can\u0027t read %s file\" % settings_path)\n            sys.exit(1)",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 17
+      },
+      "revId": "e50f150f0eec97057728eb0b8aacb1b7f940b1e2",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
