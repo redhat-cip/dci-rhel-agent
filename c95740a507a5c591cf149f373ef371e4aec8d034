@@ -1,0 +1,8 @@
+Workflow+1: Thomas Vassilian <tvassili@redhat.com>
+Code-Review+2: Thomas Vassilian <tvassili@redhat.com>
+Verified+2: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-by: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-at: Wed, 23 Oct 2019 15:53:33 +0000
+Reviewed-on: https://softwarefactory-project.io/r/16846
+Project: dci-rhel-agent
+Branch: refs/heads/master
