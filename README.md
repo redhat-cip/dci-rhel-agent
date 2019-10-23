@@ -106,13 +106,9 @@ This file should be edited once:
 DCI_CS_URL="https://api.distributed-ci.io/"
 DCI_CLIENT_ID=remoteci/<remoteci_id>
 DCI_API_SECRET=>remoteci_api_secret>
-DCI_BEAKER_CONFIG='/etc/beaker'
-DCI_LOCAL_REPO='/var/www/html'
 export DCI_CLIENT_ID
 export DCI_API_SECRET
 export DCI_CS_URL
-export DCI_BEAKER_CONFIG
-export DCI_LOCAL_REPO
 ```
 
 * `/etc/dci-rhel-agent/settings.yml`
@@ -124,6 +120,7 @@ The possible values are:
 |----------|----------|------|-------------|
 | topic | True | String | Name of the topic. |
 | local_repo_ip | True | IP | DCI Jumpbox lab static network IP. |
+| local_repo | String | True | Path to store DCI artefacts (Local RHEL mirror that will be exposed to SUT by `httpd`). Default is `/var/www/html`. |
 | dci_rhel_agent_cert | True | True/False | Enable or disable the certification tests suite. |
 | download_only | False | True/False | If enable, dci-rhel-agnt will exit after downloading RHEL builds (no job will be executed). |
 | systems | False | List of string | List of all systems that will be deployed using RHEL from DCI. |
