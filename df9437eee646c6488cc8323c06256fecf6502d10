@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "503e7d6c_8af0feea",
+        "filename": "dci-rhel-agent.spec",
+        "patchSetId": 22
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 166
+      },
+      "writtenOn": "2019-10-23T13:53:24Z",
+      "side": 1,
+      "message": "Missing: python2-pyyaml\n\n(you use the yaml module, so it has to be added as a dependency)",
+      "revId": "df9437eee646c6488cc8323c06256fecf6502d10",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "beb1c6ad_7c891bf3",
+        "filename": "systemd/dci-rhel-agent.service",
+        "patchSetId": 22
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 166
+      },
+      "writtenOn": "2019-10-23T13:53:24Z",
+      "side": 1,
+      "message": "path should be /usr/bin",
+      "revId": "df9437eee646c6488cc8323c06256fecf6502d10",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
