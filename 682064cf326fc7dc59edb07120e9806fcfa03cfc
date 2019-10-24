@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8c5e4951_737fa93d",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-10-24T12:11:13Z",
+      "side": 1,
+      "message": "I think we could try to move the arch detection inside Ansible playbook (dci-rhel-agent.yml) to have a job failure in that case.",
+      "range": {
+        "startLine": 103,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 16
+      },
+      "revId": "682064cf326fc7dc59edb07120e9806fcfa03cfc",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
