@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3a3cc52e_3d34d8df",
+        "filename": "dci-rhel-agent/install.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2019-10-29T17:45:43Z",
+      "side": 1,
+      "message": "Martin,\nRight now, parallel jobs are on a per-SUT basis for a single topic.  So, machines to be provisioned with RHEL-8.1 for example will be provisioned in parallel.  Then, if other topics are specified, those machines will be provisioned in parallel next, so I do not think we will have an issue with this patch right now.  \n\nWe will add parallel provisioning of different topics later and will revise our approach at that point.  Our first priority is to support multi-arch at a basic level first.\n\nDo you agree?",
+      "parentUuid": "c1b3517e_c21e9b9c",
+      "revId": "fe8489e8787e585e7c806aa2548e139bc10dccf4",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c3fc8168_8f481c77",
         "filename": "dci-rhel-agent/install.yml",
         "patchSetId": 1
