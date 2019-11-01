@@ -1,0 +1,39 @@
+- name: Ensure dnsmasq beaker.conf file is updated
+  hosts: localhost
+  tasks:
+    - block:
+      - name: add arch options
+        blockinfile:
+          path: /etc/dnsmasq.d/beaker.conf
+          marker: "#{mark} Determine arch of requesting system"
+          block: |
+            # Legacy BIOS
+            dhcp-match=set:bios,option:client-arch,0
+            # 64 bit x86 EFI
+            dhcp-match=set:efi-x86_64,option:client-arch,7
+            # 64 bit x86 EFI (obsolete)
+            dhcp-match=set:efi-x86_64,option:client-arch,9
+            # 64 bit ARM EFI
+            dhcp-match=set:efi-ARM64,option:client-arch,11
+          insertafter: 'dhcp-option=option:ntp-server,0.0.0.0'
+          state: present
+
+      - name: remove dhcpboot line
+        lineinfile:
+          path: /etc/dnsmasq.d/beaker.conf
+          state: absent
+          regexp: 'dhcp-boot="pxelinux.0"'
+
+      - name: add boot options
+        blockinfile:
+          path: /etc/dnsmasq.d/beaker.conf
+          marker: "#{mark} Set up boot file for each arch"
+          block: |
+            dhcp-boot=tag:bios,"pxelinux.0"
+            dhcp-boot=tag:efi-x86_64,"BOOTX64.EFI"
+            dhcp-boot=tag:efi-ARM64,"BOOTAA64.EFI"
+          insertafter: 'tftp-root=/var/lib/tftpboot'
+          state: present
+
+      rescue:
+        - include_tasks: failure.yml

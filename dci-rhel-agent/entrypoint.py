@@ -35,6 +35,7 @@ import os
 import signal
 import sys
 import yaml
+import shutil
 
 from os import environ
 from dciclient.v1.api.context import build_signature_context
@@ -56,6 +57,22 @@ def load_settings():
     except yaml.YAMLError as exc:
       print(exc)
       sys.exit(1)
+
+def cleanup_boot_files():
+  boot_files_to_remove = ("/var/lib/tftpboot/BOOTX64.EFI", \
+                          "/var/lib/tftpboot/grubx64.efi", \
+                          "/var/lib/tftpboot/BOOTAA64.EFI", \
+                          "/var/lib/tftpboot/grubaa64.efi")
+  ppc_file_path = "/var/lib/tftpboot/boot/grub2"
+  #Remove individual boot files in tftpboot copied by agent
+  for x in boot_files_to_remove:
+    if os.path.exists(x):
+      os.remove(x)
+ 
+  #Remove ppc64le directories and files copied by agent
+  for root, dirs, files in os.walk(ppc_file_path):
+    for d in dirs:
+      shutil.rmtree(os.path.join(root,d))
 
 
 def provision_and_test(extravars):
@@ -130,10 +147,12 @@ def main():
       current_job['local_repo'] = sets['local_repo']
       current_job['local_repo_ip'] = sets['local_repo_ip']
       provision_and_test(current_job)
+      cleanup_boot_files()
   else:
     #Legacy settings file format (single topic/job)
     #preserved for compatibility
     provision_and_test(sets)
+    cleanup_boot_files()
 
 if __name__ == '__main__':
     main()

@@ -15,6 +15,54 @@
     dest: "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
   when: system_arch == "ppc64le" and topic.startswith("RHEL-7")
 
+- name: Copy RHEL7 boot files to tftproot for UEFI machines
+  block:
+    - name: Copy BOOTX64.EFI
+      copy:
+        src: "{{ local_repo }}/{{ topic }}/compose/Server/x86_64/os/EFI/BOOT/BOOTX64.EFI"
+        dest: /var/lib/tftpboot/BOOTX64.EFI
+        owner: root
+        group: root
+        mode: 0755
+    - name: Copy grubx64.efi
+      copy:
+        src: "{{ local_repo }}/{{ topic }}/compose/Server/x86_64/os/EFI/BOOT/grubx64.efi"
+        dest: /var/lib/tftpboot/grubx64.efi
+        owner: root
+        group: root
+        mode: 0755
+  when: system_arch == "x86_64" and topic.startswith("RHEL-7")
+
+- name: Copy RHEL8 boot files to tftproot for UEFI machines
+  block:
+    - name: Copy BOOTX64.EFI
+      copy:
+        src: "{{ local_repo }}/{{ topic }}/compose/BaseOS/x86_64/os/EFI/BOOT/BOOTX64.EFI"
+        dest: /var/lib/tftpboot/BOOTX64.EFI
+        owner: root
+        group: root
+        mode: 0755
+    - name: Copy grubx64.efi
+      copy:
+        src: "{{ local_repo }}/{{ topic }}/compose/BaseOS/x86_64/os/EFI/BOOT/grubx64.efi"
+        dest: /var/lib/tftpboot/grubx64.efi
+        owner: root
+        group: root
+        mode: 0755
+  when: system_arch == "x86_64" and topic.startswith("RHEL-8")
+
+- name: Copy RHEL8 aarch64 boot files to tftproot when provisioning an aarch64 machine
+  block:
+    - name: Copy BOOTAA64.EFI
+      copy:
+        src: "{{ local_repo }}/{{ topic }}/compose/BaseOS/aarch64/os/EFI/BOOT/BOOTAA64.EFI"
+        dest: /var/lib/tftpboot/BOOTAA64.EFI
+    - name: Copy grubaa64.efi
+      copy:
+        src: "{{ local_repo }}/{{ topic }}/compose/BaseOS/aarch64/os/EFI/BOOT/grubaa64.efi"
+        dest: /var/lib/tftpboot/grubaa64.efi
+  when: system_arch == "aarch64" and topic.startswith("RHEL-8")
+
 - name: Populate the Beaker XML job from template
   block:
     - name: Create a temporary file
@@ -50,6 +98,33 @@
 - name: Register Beaker Job ID
   set_fact:
     bkrjobid: "{{ bkr_jobid.stdout | regex_replace(\".*\\s\\[\\'(.*)\\'\\]\",'\\1') }}"
+
+- name: Get current job results containing kickstart url
+  shell: "bkr job-results {{ bkrjobid }}"
+  register: bkrjobresults
+  until: bkrjobresults.stdout.find("kickstart_url") != -1
+  retries: 5
+  delay: 5
+
+- name: Parse kickstart url from job result
+  xml:
+    xmlstring: "{{ bkrjobresults.stdout }}"
+    xpath: /job/recipeSet/recipe
+    content: attribute
+  register: recipeinfo
+
+- name: Register kickstart url
+  set_fact:
+    ksurl: "{{ recipeinfo.matches[0].recipe.kickstart_url }}"
+
+- name: Get IP of SUT from /etc/hosts
+  shell: "grep -w {{ fqdn }} /etc/hosts | awk '{ print $1 }'"
+  register: ipgrep
+
+- name: Populate unique grub cfg file from template for each UEFI client
+  template:
+    src: /usr/share/dci-rhel-agent/templates/grub.cfg.j2
+    dest: "/var/lib/tftpboot/grub.cfg-{{ ipgrep.stdout | ip4_hex | upper }}"
 
 - name: Wait system to be installed
   shell: "{{ playbook_dir }}/wait.py {{ bkrjobid }}"

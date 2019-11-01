@@ -12,7 +12,8 @@ import yaml
 default_value =	{
   "local_repo": "/var/www/html",
   "settings_path": "/etc/dci-rhel-agent/settings.yml",
-  "dci_rhel_agent_url":"quay.io/distributedci/dci-rhel-agent:stable"
+  "dci_rhel_agent_url":"quay.io/distributedci/dci-rhel-agent:stable",
+  "dci_rhel_agent_cfg_url":"quay.io/distributedci/dci-rhel-agent-cfg:stable"
 }
 
 proc = None
@@ -70,6 +71,30 @@ def main():
           myCmd = 'podman pull %s' % (dci_rhel_agent_url)
           proc = subprocess.Popen(myCmd, shell=True)
           proc.wait()
+
+          #Start dci-rhel-agent-cfg update
+          myCfgCmd = 'podman pull %s' % (dci_rhel_agent_cfg_url)
+          proc = subprocess.Popen(myCfgCmd, shell=True)
+          proc.wait
+
+          #Start dci-rhel-agent-cfg
+          myCfgCmd = 'podman run --rm -ti --network host \
+          -v /etc/dnsmasq.d/:/etc/dnsmasq.d \
+          %s' % (dci_rhel_agent_cfg_url)
+          proc = subprocess.Popen(myCfgCmd, shell=True)
+          proc.wait()
+          if proc.returncode != 0:
+            print("Configuration of jumpbox could not be verifed, exiting")
+            sys.exit(1)
+
+          #Restart dnsmasq service on jumpbox
+          myCfgCmd = 'systemctl restart dnsmasq'
+          proc = subprocess.Popen(myCfgCmd, shell=True)
+          proc.wait()
+          #if service restart was unsuccessful, exit
+          if proc.returncode != 0:
+            print("Could not restart dnsmasq service, exiting")
+            sys.exit(1)
 
         # Start dci-rhel-agent
         myCmd = 'source /etc/dci-rhel-agent/dcirc.sh &&  \
