@@ -1,7 +1,15 @@
 ---
 - name: NEW JOB
   hosts: localhost
+  gather_facts: false
   tasks:
+    - name: Read credentials
+      set_fact:
+        dci_client_id="{{ lookup('env','DCI_CLIENT_ID') }}"
+        dci_api_secret="{{ lookup('env','DCI_API_SECRET') }}"
+        dci_cs_url="{{ lookup('env','DCI_CS_URL') }}"
+      no_log: true
+
     - name: Schedule a new job
       dci_job:
         components: '{{ dci_components }}'
@@ -21,46 +29,46 @@
         id: "{{ job_id }}"
         tags: '{{ dci_tags }}'
       when: dci_tags
-
-    - include_tasks: create_temp_dir.yml
   tags:
       - new_job
 
-- name: ADD BEAKER_HOST
-  hosts: localhost
-  vars:
-    topic_interpreter:
-      RHEL-7:   'python'
-      RHEL-7.6: 'python'
-      RHEL-7.7: 'python'
-      RHEL-7.8: 'python'
-      RHEL-8:   '/usr/libexec/platform-python'
-      RHEL-8.0: '/usr/libexec/platform-python'
-      RHEL-8.1: '/usr/libexec/platform-python'
-      RHEL-8.2: '/usr/libexec/platform-python'
-  tasks:
-    - block:
-        - name: Add Beaker system to the Ansible group
-          add_host:
-            hostname: "{{ fqdn }}"
-            ansible_python_interpreter: "{{ topic_interpreter[topic] }}"
-            ansible_ssh_host: "{{ fqdn }}"
-            ansible_ssh_port: "{{ beaker_host_port | default('22') }}"
-            ansible_user: "{{ beaker_host_user | default('root') }}"
-            ansible_password: "{{ beaker_host_password | default('beaker') }}"
-            groups:
-              - beaker-host
-      rescue:
-        - include_tasks: failure.yml
-      when: fqdn is defined
+# - name: ADD BEAKER_HOST
+#   hosts: localhost
+#   vars:
+#     topic_interpreter:
+#       RHEL-7:   'python'
+#       RHEL-7.6: 'python'
+#       RHEL-7.7: 'python'
+#       RHEL-7.8: 'python'
+#       RHEL-8:   '/usr/libexec/platform-python'
+#       RHEL-8.0: '/usr/libexec/platform-python'
+#       RHEL-8.1: '/usr/libexec/platform-python'
+#       RHEL-8.2: '/usr/libexec/platform-python'
+#   tasks:
+#     - block:
+#         - name: Add Beaker system to the Ansible group
+#           add_host:
+#             hostname: "{{ fqdn }}"
+#             ansible_python_interpreter: "{{ topic_interpreter[topic] }}"
+#             ansible_ssh_host: "{{ fqdn }}"
+#             ansible_ssh_port: "{{ beaker_host_port | default('22') }}"
+#             ansible_user: "{{ beaker_host_user | default('root') }}"
+#             ansible_password: "{{ beaker_host_password | default('beaker') }}"
+#             groups:
+#               - beaker-sut
+#       rescue:
+#         - include_tasks: failure.yml
+#       when: fqdn is defined
 
 - name: GET SUT ARCH
-  hosts: localhost
+  hosts: beaker_server
+  gather_facts: no
   tasks:
     - block:
         - name: Get SUT details
           shell: "bkr system-details {{ fqdn }}"
           register: system_details
+          become: true
 
         - name: Parse arch from SUT details
           xml:
@@ -80,59 +88,61 @@
       when: fqdn is defined
 
 - name: LAUNCH INSTALL
-  hosts: localhost
+  hosts: beaker_server
+  gather_facts: no
   vars:
     dci_status: 'running'
   tasks:
     - block:
+        - include_tasks: create_temp_dir.yml
         - include_tasks: install.yml
-      rescue:
-        - include_tasks: failure.yml
+      # rescue:
+      #   - include_tasks: failure.yml
   tags:
       - install
 
-- name: TESTS
-  hosts: beaker-host
-  vars:
-    dci_status: 'post-run'
-  tasks:
-    - block:
-        - name: Launch RHEL Certification Test
-          import_role:
-            name: dci-rhel-certification
-          when:
-            - topic.startswith('RHEL-7')|bool
-            - dci_rhel_agent_cert|bool
-          become: true
-      rescue:
-        - include_tasks: release.yml
-        - include_tasks: failure.yml
-  tags:
-      - test
+# - name: TESTS
+#   hosts: beaker-sut
+#   vars:
+#     dci_status: 'post-run'
+#   tasks:
+#     - block:
+#         - name: Launch RHEL Certification Test
+#           import_role:
+#             name: dci-rhel-certification
+#           when:
+#             - topic.startswith('RHEL-7')|bool
+#             - dci_rhel_agent_cert|bool
+#           become: true
+#       rescue:
+#         - include_tasks: release.yml
+#         - include_tasks: failure.yml
+#   tags:
+#       - test
 
-- name: 'Launch customizable tests'
-  hosts: beaker-host
-  vars:
-    dci_status: 'post-run'
-  tasks:
-    - block:
-        - include_tasks: '{{ dci_config_dir }}/hooks/user-tests.yml'
-      rescue:
-        - include_tasks: failure.yml
-  tags:
-    - post-run
+# - name: 'Launch customizable tests'
+#   hosts: beaker-sut
+#   vars:
+#     dci_status: 'post-run'
+#   tasks:
+#     - block:
+#         - include_tasks: '{{ dci_config_dir }}/hooks/user-tests.yml'
+#       rescue:
+#         - include_tasks: failure.yml
+#   tags:
+#     - post-run
 
-- name: RELEASE SERVER
-  hosts: beaker-host
-  vars:
-    dci_status: 'post-run'
-  tasks:
-    - block:
-        - include_tasks: release.yml
-      rescue:
-        - include_tasks: failure.yml
-  tags:
-    - post-run
+# - name: RELEASE SERVER
+#   hosts: beaker-sut
+#   vars:
+#     dci_status: 'post-run'
+#   tasks:
+#     - block:
+#         - include_tasks: release.yml
+#       rescue:
+#         - include_tasks: failure.yml
+#   tags:
+#     - post-run
 
 - name: SUCCESS
   hosts: localhost

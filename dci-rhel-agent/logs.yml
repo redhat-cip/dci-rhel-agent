@@ -1,6 +1,6 @@
 ---
 - name: Collect and Upload logs
-  delegate_to: localhost
+  delegate_to: beaker-server
   when: hostvars.localhost.bkrjobid is defined
   block:
     - name: List all files
