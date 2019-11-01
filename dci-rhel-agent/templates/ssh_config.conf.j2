@@ -1,0 +1,9 @@
+{% if hostvars.beaker_server.inventory_hostname != local  %}
+Host {{ fqdn }}
+  User {{ beaker_sut_user | default('root') }}
+  Hostname {{ fqdn }}
+  ProxyCommand ssh {{ hostvars.beaker_server.inventory_hostname }} -W %h:%p 2>/dev/null
+  GSSAPIAuthentication no
+  Compression yes
+  ServerAliveInterval 60
+{% endif %}
