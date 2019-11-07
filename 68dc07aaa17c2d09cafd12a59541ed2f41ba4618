@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "de7f3550_9ec3e29c",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-11-07T14:21:10Z",
+      "side": 1,
+      "message": "It should be \"topic %s of %s\" (because 1 topic could have several jobs (systems[]). This is confusing.",
+      "range": {
+        "startLine": 129,
+        "startChar": 14,
+        "endLine": 129,
+        "endChar": 50
+      },
+      "revId": "68dc07aaa17c2d09cafd12a59541ed2f41ba4618",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
