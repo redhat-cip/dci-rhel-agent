@@ -232,7 +232,7 @@ For troubleshooting purposes, launch `dci-rhel-agent` foreground:
 If you need advanced debug, you can spawn a new container with a shell:
 
 ```bash
-# dci-rhel-agent-ctl --shell
+# dci-rhel-agent-ctl --start --debug
 [container]#
 [container]# ./entrypoint.py
 [container]# dcictl topic-list
