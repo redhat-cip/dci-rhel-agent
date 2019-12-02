@@ -78,6 +78,24 @@
         - include_tasks: release.yml
         - include_tasks: failure.yml
 
+- name: TESTS
+  hosts: beaker_sut
+  vars:
+    dci_status: 'post-run'
+  tasks:
+    - block:
+        - name: Launch RHEL CKI Test
+          ignore_errors: yes
+          import_role:
+            name: dci-rhel-cki
+          when:
+            - dci_rhel_agent_cki|bool
+          become: true
+      rescue:
+        - include_tasks: failure.yml
+  tags:
+      - test
+
 - name: 'Upload Beaker logs to DCI Control server'
   hosts: beaker_server
   gather_facts: no
