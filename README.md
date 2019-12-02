@@ -122,6 +122,7 @@ The possible values are:
 | local_repo_ip | True | IP | DCI Jumpbox lab static network IP. |
 | local_repo | String | True | Path to store DCI artefacts (Local RHEL mirror that will be exposed to SUT by `httpd`). Default is `/var/www/html`. |
 | dci_rhel_agent_cert | True | True/False | Enable or disable the certification tests suite. |
+| dci_rhel_agent_cki  | True | True/False | Enable or disable the cki tests suite.           |
 | download_only | False | True/False | If enable, dci-rhel-agnt will exit after downloading RHEL builds (no job will be executed). |
 | systems | False | List of string | List of all systems that will be deployed using RHEL from DCI. |
 | beaker_xml | False | String | Path to a custom XML file to use with Beaker job. |
@@ -136,6 +137,7 @@ local_repo: /var/www/html
 topics:
   - topic: RHEL-8.1
     dci_rhel_agent_cert: false
+    dci_rhel_agent_cki: false
     download_only: false
     variants:
       - AppStream
@@ -149,6 +151,7 @@ topics:
       - my.ppc64le.system.local 
   - topic_RHEL-7.8
     dci_rhel_agent_cert: false
+    dci_rhel_agent_cki: false
     download_only: false
     variants
       - Server
@@ -174,6 +177,7 @@ archs:
   - x86_64
 with_debug: false
 dci_rhel_agent_cert: false
+dci_rhel_agent_cki: false
 systems:
   - dci-client
 ```
@@ -205,6 +209,9 @@ Please also note that the RHEL agent does not currently support concurrent provi
 
 #### How to skip Red Hat Certification tests ?
 Some users might want to skip the certification tests suite. This can be done via `settings.yml` file by adding `dci_rhel_agent_cert: false`.
+
+#### How to skip Red Hat CKI tests ?
+Some users might want to skip the cki tests suite. This can be done via `settings.yml` file by adding `dci_rhel_agent_cki: false`.
 
 #### How to add tags to a job ?
 If you want to associate tags to jobs you can edit the file `settings.yml` and add your tags in the `dci_tags` list.

@@ -7,3 +7,4 @@ topics:
       - x86_64
     with_debug: false
     local_repo: /var/www/html
+    dci_rhel_agent_cki: false
