@@ -13,6 +13,7 @@ topics:
     variants:
       - Server
     dci_rhel_agent_cert: false
+    dci_rhel_agent_cki: false
     download_only: false
     systems:
       - labvm-1.novalocal
@@ -25,6 +26,7 @@ topics:
       - BaseOS
       - AppStream
     dci_rhel-agent_cert: false
+    dci_rhel-agent_cki: false
     download_only: false
     systems:
       - SUT3
