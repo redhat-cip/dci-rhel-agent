@@ -2,6 +2,7 @@ local_repo_ip: 192.168.1.1
 local_repo: /var/www/html
 topics:
   - topic: RHEL-8.1
+    dci_rhel_agent_cki: false
     dci_rhel_agent_cert: false
     download_only: false
     variants:
