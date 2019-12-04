@@ -69,12 +69,6 @@ def provision_and_test(extravars):
     print ("Error ! No topic found in settings.")
     sys.exit(1)
 
-  # This function is kept for backward compatibility.
-  if 'download_only' in extravars.keys():
-    if extravars['download_only'] == True:
-      print ('The dci-rhel-agent is configured in download-only mode.')
-      sys.exit(0)
-
   r = ansible_runner.run(
       private_data_dir="/usr/share/dci-rhel-agent/",
       inventory="/etc/dci-rhel-agent/hosts",
