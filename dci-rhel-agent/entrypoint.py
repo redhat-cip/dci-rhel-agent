@@ -58,9 +58,9 @@ def load_settings():
 
 
 def provision_and_test(extravars):
-    # Path is static in the container
-    local_repo = '/var/www/html'
-    extravars['local_repo'] = local_repo
+    # # Path is static in the container
+    # local_repo = '/var/www/html'
+    # extravars['local_repo'] = local_repo
 
     if 'topic' in extravars.keys():
         print ("Topic is %s" % extravars['topic'])
@@ -76,7 +76,7 @@ def provision_and_test(extravars):
 
     r = ansible_runner.run(
         private_data_dir="/usr/share/dci-rhel-agent/",
-        inventory="/etc/dci-rhel-agent/hosts",
+        inventory="/etc/dci-rhel-agent/inventory",
         verbosity=1,
         playbook="dci-import.yml",
         extravars=extravars,
@@ -97,7 +97,7 @@ def provision_and_test(extravars):
         extravars['fqdn'] = fqdn
         thread, runner = ansible_runner.run_async(
             private_data_dir="/usr/share/dci-rhel-agent/",
-            inventory="/etc/dci-rhel-agent/hosts",
+            inventory="/etc/dci-rhel-agent/inventory",
             verbosity=1,
             playbook="dci-rhel-agent.yml",
             extravars=extravars,
