@@ -1,14 +1,23 @@
 ---
+- name: install the latest version of rsync
+  yum:
+    name: rsync
+    state: latest
+
+- name: Generate a unique uuid
+  command: uuidgen
+  run_once: true
+  delegate_to: localhost
+  register: uuid
+
 - name: Create a temporary directory for job_logs
-  tempfile:
+  file:
+    path: /tmp/{{ hostvars.localhost.job_id }}_{{ uuid.stdout_lines[0] }}_logs
     state: directory
-    prefix: "{{ job_id }}_"
-    suffix: _logs
   register: job_logs
 
 - name: Create a temporary directory for job_artifacts
-  tempfile:
+  file:
+    path: /tmp/{{ hostvars.localhost.job_id }}_{{ uuid.stdout_lines[0] }}_artifacts
     state: directory
-    prefix: "{{ job_id }}_"
-    suffix: _artifacts
   register: job_artifacts
