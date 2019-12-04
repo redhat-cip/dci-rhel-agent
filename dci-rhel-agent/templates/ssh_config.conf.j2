@@ -1,0 +1,9 @@
+Host 10.41.11.139
+  User cloud-user
+  IdentityFile /etc/dci-rhel-agent/secrets/id_rsa
+
+Host {{ fqdn }}
+  User {{ beaker_sut_user | default('root') }}
+  Hostname {{ fqdn }}
+  ProxyJump 10.41.11.139
+  ServerAliveInterval 60
