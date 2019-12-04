@@ -2,13 +2,13 @@
 - name: Create a temporary directory for job_logs
   tempfile:
     state: directory
-    prefix: "{{ job_id }}_"
+    prefix: "{{ hostvars.localhost.job_id }}_"
     suffix: _logs
   register: job_logs
 
 - name: Create a temporary directory for job_artifacts
   tempfile:
     state: directory
-    prefix: "{{ job_id }}_"
+    prefix: "{{ hostvars.localhost.job_id }}_"
     suffix: _artifacts
   register: job_artifacts

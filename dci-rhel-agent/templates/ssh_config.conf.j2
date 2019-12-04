@@ -1,0 +1,7 @@
+Host {{ fqdn }}
+  User {{ beaker_sut_user | default('root') }}
+  Hostname {{ fqdn }}
+  ProxyCommand ssh {{ hostvars.beaker_server.ansible_host }} -W %h:%p 2>/dev/null
+  GSSAPIAuthentication no
+  Compression yes
+  ServerAliveInterval 60
