@@ -1,2 +1,3 @@
 ---
-- include_tasks: logs.yml
+- debug:
+    msg: 'The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/{{ hostvars.localhost.job_info.job.id }}/jobStates'
