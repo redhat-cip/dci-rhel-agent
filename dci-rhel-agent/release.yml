@@ -1,5 +1,4 @@
 ---
-- name: Release sut
+- name: Release SUT
   shell: "bkr system-release {{ fqdn }}"
   ignore_errors: yes
-  delegate_to: localhost
