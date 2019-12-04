@@ -1,13 +1,15 @@
 ---
 - name: PREPARE LAB
-  hosts: beaker-lab
-  vars:
-    dci_status: 'pre-run'
+  hosts: beaker_server
+  gather_facts: no
   tasks:
     - block:
+        - name: Start dci-downloader
+          # Replace this by real dci-downloader
+          shell: hostname -a
+          become: true
         - name: Import the latest build
           shell: beaker-import -v --ignore-missing-tree-compose "http://{{ local_repo_ip }}/{{ topic }}/compose/"
+          become: true
       rescue:
         - include_tasks: failure.yml
-  tags:
-      - prepare_lab
