@@ -1,41 +1,67 @@
 ---
+#
+# Tasks included to run on beaker_server
+#
 - name: Collect and Upload logs
-  delegate_to: localhost
-  when: hostvars.localhost.bkrjobid is defined
+  when: hostvars.beaker_server.bkrjobid is defined
   block:
     - name: List all files
-      shell: 'bkr job-logs {{ hostvars.localhost.bkrjobid }}'
+      shell: 'bkr job-logs {{ hostvars.beaker_server.bkrjobid }}'
       register: bkr_files
 
-    - name: Grab logs from beaker
+    - name: Download logs on beaker server
       get_url:
         url: "{{ item }}"
-        dest: "{{ hostvars.localhost.job_logs.path }}"
+        dest: "{{ hostvars.beaker_server.job_logs.path }}"
       with_items: "{{ bkr_files.stdout_lines }}"
 
-    - name: Grab beaker junit results
-      shell: bkr job-results --format=junit-xml {{ hostvars.localhost.bkrjobid }} > {{ beaker_results }}
-      args:
-        creates: '{{ beaker_results }}'
-      vars:
-        beaker_results: '{{hostvars.localhost.job_artifacts.path }}/beaker-results.xml'
+    # This prevent faillure in case dci-rhel-agent can't reach HTTP (private IP, ACL, ...)
+    - name: Fetch logs from Beaker server into dci-rhel-agent
+      synchronize:
+        src: '{{ hostvars.beaker_server.job_logs.path }}'
+        dest: '/tmp'
+        mode: pull
+        private_key: '/etc/dci-rhel-agent/secrets/id_rsa'
+      delegate_to: localhost
+    # - name: Fetch logs from Beaker server into dci-rhel-agent
+    #   fetch:
+    #     src: '{{ item }}'
+    #     dest: '{{ item }}'
+    #     flat: yes
+    #   with_fileglob: "{{ hostvars.beaker_server.job_logs.path }}"
+
+    # - name: Download beaker junit results
+    #   shell: bkr job-results --format=junit-xml {{ hostvars.beaker_server.bkrjobid }} > {{ beaker_results }}
+    #   args:
+    #     creates: '{{ beaker_results }}'
+    #   vars:
+    #     beaker_results: '{{hostvars.beaker_server.job_artifacts.path }}/beaker-results.xml'
 
     - name: Upload logs files to DCI
+      delegate_to: localhost
+      environment:
+        - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
+        - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
+        - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
       dci_file:
         path: '{{ item }}'
         name: '{{ item | basename }}'
-        job_id: '{{ hostvars.localhost.job_id }}'
+        job_id: '{{ hostvars.beaker_server.job_id }}'
       with_fileglob:
         - '{{ hostvars.localhost.job_logs.path }}/*'
         - '{{ hostvars.localhost.job_artifacts.path }}/*.log'
 
-    - name: Upload junit files to DCI
-      dci_file:
-        path: '{{ item }}'
-        name: "{{ item | basename | regex_replace('^(.*\\.cli\\.)?(.*).xml$','\\2') }}"
-        job_id: '{{ hostvars.localhost.job_id }}'
-        mime: 'application/junit'
-      with_fileglob: '{{ hostvars.localhost.job_artifacts.path }}/*.xml'
+    # - name: Upload junit files to DCI
+    #   environment:
+    #     - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
+    #     - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
+    #     - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
+    #   dci_file:
+    #     path: '{{ item }}'
+    #     name: "{{ item | basename | regex_replace('^(.*\\.cli\\.)?(.*).xml$','\\2') }}"
+    #     job_id: '{{ hostvars.localhost.job_id }}'
+    #     mime: 'application/junit'
+    #   with_fileglob: '{{ hostvars.localhost.job_artifacts.path }}/*.xml'
 
     - name: Clean logs
       file:
