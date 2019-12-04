@@ -83,6 +83,7 @@ def provision_and_test(extravars):
       extravars=extravars,
       quiet=False
   )
+
   if r.rc != 0:
     print ("Error ! Distro(s) import in Beaker has failed. {}: {}".format(r.status, r.rc))
     sys.exit(1)
