@@ -57,9 +57,9 @@ def load_settings():
 
 
 def provision_and_test(extravars):
-    # Path is static in the container
-    local_repo = '/var/www/html'
-    extravars['local_repo'] = local_repo
+    # # Path is static in the container
+    # local_repo = '/var/www/html'
+    # extravars['local_repo'] = local_repo
 
     if 'topic' in extravars.keys():
         print ("Topic is %s" % extravars['topic'])
