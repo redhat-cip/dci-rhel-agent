@@ -1,5 +1,9 @@
 ---
-- name: Release sut
+#
+# This task is forced to run on bkr lc.
+# delegate_to: beaker_server.
+#
+- name: Release SUT
   shell: "bkr system-release {{ fqdn }}"
+  delegate_to: beaker_server
   ignore_errors: yes
-  delegate_to: localhost

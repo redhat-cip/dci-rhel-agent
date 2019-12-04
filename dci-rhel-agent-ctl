@@ -35,11 +35,22 @@ def load_settings(settings_path):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--start', action='store_true', help="Start dci-rhel-agent")
     parser.add_argument('-c', '--config', action='store', help="Path to config file. Default is `/etc/dci-rhel-agent/settings.yml`.", default=default_value['settings_path'])
     parser.add_argument('-u', '--url', action='store', help="Url for dci-rhel-agent. Default is `quay.io/distributedci/dci-rhel-agent:stable`.", default=default_value['dci_rhel_agent_url'])
     parser.add_argument('-d', '--debug', action='store_true', help="Start a shell in dci-rhel-agent container")
-    parser.add_argument('-s', '--start', action='store_true', help="Start dci-rhel-agent")
+    parser.add_argument('-l', '--local', action='store_true', help="[dev] Mount local ./dci-rhel-agent in the container.")
+    parser.add_argument('--build', action='store_true', help="[dev] Build the dci-rhel-agent container.")
+
     args = parser.parse_args()
+
+    global proc
+
+    if args.build:
+        myCmd = '/usr/bin/podman build -f Dockerfile -t dci-rhel-agent --no-cache'
+        proc = subprocess.Popen(myCmd, shell=True)
+        proc.wait()
+        exit(proc.returncode)
 
     if args.config:
         settings_path = args.config
@@ -59,32 +70,32 @@ def main():
             print ("local_repo is NOT set in %s. Using default value." % default_value['local_repo'])
             local_repo = default_value['local_repo']
 
-        if args.debug is False:
-          # Start dci-downloader
-          myCmd = 'source /etc/dci-rhel-agent/dcirc.sh &&  \
-          /bin/dci-downloader --settings %s' % (settings_path)
-          global proc
-          proc = subprocess.Popen(myCmd, shell=True)
-          proc.wait()
+        if args.debug is False and args.local is False:
           # Start dci-rhel-agent update
           myCmd = 'podman pull %s' % (dci_rhel_agent_url)
           proc = subprocess.Popen(myCmd, shell=True)
           proc.wait()
 
         # Start dci-rhel-agent
-        myCmd = 'source /etc/dci-rhel-agent/dcirc.sh &&  \
-        podman run --rm -ti --network host \
-        -e DCI_CLIENT_ID \
-        -e DCI_API_SECRET \
-        -e DCI_CS_URL \
-        -e PS1="\033[0;32m[container:\\w]\$\033[0m " \
-        -v /var/lib/tftpboot/:/var/lib/tftpboot/ \
-        -v /etc/dci-rhel-agent/hooks/:/etc/dci-rhel-agent/hooks/ \
-        -v %s:/etc/dci-rhel-agent/settings.yml \
-        -v /etc/dci-rhel-agent/hosts:/etc/dci-rhel-agent/hosts  \
-        -v %s:/var/www/html \
-        -v /etc/beaker:/etc/beaker/ \
-        %s %s' % (settings_path, local_repo, dci_rhel_agent_url, entrypoint)
+        volumes = {
+          '/etc/dci-rhel-agent/hooks':'/etc/dci-rhel-agent/hooks',
+          '/etc/dci-rhel-agent/secrets':'/etc/dci-rhel-agent/secrets',
+          '/etc/dci-rhel-agent/hosts':'/etc/dci-rhel-agent/hosts',
+          settings_path:'/etc/dci-rhel-agent/settings.yml',
+        }
+        if args.local:
+          volumes['./dci-rhel-agent'] = '/usr/share/dci-rhel-agent'
+        else :
+          volumes['/etc/beaker'] = '/etc/beaker'
+          volumes['/var/lib/tftpboot'] = '/var/lib/tftpboot'
+          volumes[local_repo] = '/var/www/html'
+
+        myCmd = 'source /etc/dci-rhel-agent/dcirc.sh && '
+        myCmd = myCmd + 'podman run --rm -ti --network host -e DCI_CLIENT_ID -e DCI_API_SECRET -e DCI_CS_URL'
+        for key, value in volumes.iteritems():
+          myCmd = myCmd + ' -v ' + key + ':' + value
+
+        myCmd = myCmd + ' %s %s' % (dci_rhel_agent_url, entrypoint)
         proc = subprocess.Popen(myCmd, shell=True)
         proc.wait()
 
