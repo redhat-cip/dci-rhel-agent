@@ -1,0 +1,7 @@
+linuxefi /images/{{ fqdn }}/kernel ks={{ ksurl }} ksdevice=bootif netboot_method=grub2
+initrdefi /images/{{ fqdn }}/initrd
+
+linux /images/{{ fqdn }}/kernel ks={{ ksurl }} ksdevice=bootif netboot_method=grub2
+initrd /images/{{ fqdn }}/initrd
+
+boot
