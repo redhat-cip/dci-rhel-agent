@@ -1,5 +1,10 @@
 ---
-- name: Release sut
-  shell: "bkr system-release {{ fqdn }}"
-  ignore_errors: yes
-  delegate_to: localhost
+#
+# Tasks are included to run on beaker_server host,
+# Delegate_to: localhost when needed.
+#
+- name: Release SUT
+  block:
+    - shell: "bkr system-release {{ fqdn }}"
+      ignore_errors: yes
+  when: hostvars.beaker_server.bkrjobid is defined
