@@ -1,7 +1,15 @@
 ---
 - name: NEW JOB
   hosts: localhost
+  gather_facts: false
   tasks:
+    - name: Read credentials
+      set_fact:
+        dci_client_id="{{ lookup('env','DCI_CLIENT_ID') }}"
+        dci_api_secret="{{ lookup('env','DCI_API_SECRET') }}"
+        dci_cs_url="{{ lookup('env','DCI_CS_URL') }}"
+      no_log: true
+
     - name: Schedule a new job
       dci_job:
         components: '{{ dci_components }}'
@@ -21,12 +29,34 @@
         id: "{{ job_id }}"
         tags: '{{ dci_tags }}'
       when: dci_tags
-
-    - include_tasks: create_temp_dir.yml
   tags:
       - new_job
 
-- name: ADD BEAKER_HOST
+- name: GENERATE SSH CONFIG FOR SUT
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - debug:
+        var: hostvars['beaker_server']
+    - block:
+        - name: Create ssh config file for SUT
+          template:
+            src: /usr/share/dci-rhel-agent/templates/ssh_config.conf.j2
+            dest: "/etc/dci-rhel-agent/secrets/ssh_config_{{ fqdn }}.cfg"
+
+        - name: Upload ssh config to DCI
+          dci_file:
+            path: "/etc/dci-rhel-agent/secrets/ssh_config_{{ fqdn }}.cfg"
+            name: 'ssh_config_sut.txt'
+            mime: 'text/plain'
+            job_id: '{{ hostvars.localhost.job_id }}'
+      rescue:
+      - include_tasks: failure.yml
+      when:
+        - fqdn is defined
+        - hostvars['beaker_server']['ansible_host'] != "local"
+
+- name: ADD BEAKER_SUT
   hosts: localhost
   vars:
     topic_interpreter:
@@ -40,27 +70,30 @@
       RHEL-8.2: '/usr/libexec/platform-python'
   tasks:
     - block:
-        - name: Add Beaker system to the Ansible group
+        - name: Add SUT to the Ansible group
           add_host:
             hostname: "{{ fqdn }}"
             ansible_python_interpreter: "{{ topic_interpreter[topic] }}"
             ansible_ssh_host: "{{ fqdn }}"
-            ansible_ssh_port: "{{ beaker_host_port | default('22') }}"
-            ansible_user: "{{ beaker_host_user | default('root') }}"
-            ansible_password: "{{ beaker_host_password | default('beaker') }}"
+            ansible_ssh_port: "{{ beaker_sut_port | default('22') }}"
+            ansible_user: "{{ beaker_sut_user | default('root') }}"
+            ansible_password: "{{ beaker_sut_password | default('beaker') }}"
+            ansible_ssh_common_args: "-F /etc/dci-rhel-agent/secrets/ssh_config_{{ fqdn }}.cfg"
             groups:
-              - beaker-host
+              - beaker_sut
       rescue:
         - include_tasks: failure.yml
       when: fqdn is defined
 
 - name: GET SUT ARCH
-  hosts: localhost
+  hosts: beaker_server
+  gather_facts: no
   tasks:
     - block:
         - name: Get SUT details
           shell: "bkr system-details {{ fqdn }}"
           register: system_details
+          become: true
 
         - name: Parse arch from SUT details
           xml:
@@ -79,51 +112,79 @@
          - include_tasks: failure.yml
       when: fqdn is defined
 
-- name: LAUNCH INSTALL
-  hosts: localhost
+
+- name: 'Prepare install'
+  hosts:
+    - localhost
+    - beaker_server
+  gather_facts: no
   vars:
     dci_status: 'running'
   tasks:
-    - block:
-        - include_tasks: install.yml
-      rescue:
-        - include_tasks: failure.yml
+    - include_tasks: create_temp_dir.yml
   tags:
       - install
 
-- name: TESTS
-  hosts: beaker-host
+- name: LAUNCH INSTALL
+  hosts: beaker_server
+  gather_facts: no
   vars:
-    dci_status: 'post-run'
+    dci_status: 'running'
   tasks:
-    - block:
-        - name: Launch RHEL Certification Test
-          import_role:
-            name: dci-rhel-certification
-          when:
-            - topic.startswith('RHEL-7')|bool
-            - dci_rhel_agent_cert|bool
-          become: true
-      rescue:
-        - include_tasks: release.yml
-        - include_tasks: failure.yml
+    - include_tasks: install.yml
   tags:
-      - test
+      - install
 
-- name: 'Launch customizable tests'
-  hosts: beaker-host
+# - name: TESTS
+#   hosts: beaker_sut
+#   vars:
+#     dci_status: 'post-run'
+#   tasks:
+#     - block:
+#         - name: Launch RHEL Certification Test
+#           import_role:
+#             name: dci-rhel-certification
+#           when:
+#             - topic.startswith('RHEL-7')|bool
+#             - dci_rhel_agent_cert|bool
+#           become: true
+#       rescue:
+#         - include_tasks: release.yml
+#         - include_tasks: failure.yml
+#   tags:
+#       - test
+
+- name: 'Launch of customizable tests'
+  hosts: beaker_sut
+  gather_facts: no
   vars:
     dci_status: 'post-run'
   tasks:
     - block:
         - include_tasks: '{{ dci_config_dir }}/hooks/user-tests.yml'
       rescue:
+        - name: Fail properly
+          fail:
+            msg: 'Something went wrong during the {{ dci_status }}. Review the log at: https://www.distributed-ci.io/jobs/{{ hostvars.localhost.job_info.job.id }}/jobStates'
+  tags:
+    - post-run
+
+- name: 'Upload logs to DCI'
+  hosts: beaker_server
+  gather_facts: no
+  vars:
+    dci_status: 'post-run'
+  tasks:
+    - block:
+        - include_tasks: logs.yml
+      rescue:
         - include_tasks: failure.yml
   tags:
     - post-run
 
-- name: RELEASE SERVER
-  hosts: beaker-host
+- name: 'Release SUT'
+  hosts: beaker_server
+  gather_facts: no
   vars:
     dci_status: 'post-run'
   tasks:
@@ -136,6 +197,7 @@
 
 - name: SUCCESS
   hosts: localhost
+  gather_facts: no
   vars:
     dci_status: 'success'
   tasks:
