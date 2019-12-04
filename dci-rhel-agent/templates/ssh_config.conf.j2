@@ -1,0 +1,15 @@
+{% if hostvars.beaker_server['ansible_connection'] is not defined %}
+Host {{ hostvars.beaker_server.ansible_host }}
+  User {{ hostvars.beaker_server['ansible_user'] | default('cloud-user') }}
+  IdentityFile /etc/dci-rhel-agent/secrets/id_rsa
+  UserKnownHostsFile=/dev/null
+  StrictHostKeyChecking=no
+{% endif %}
+
+Host {{ fqdn }}
+  User {{ beaker_sut_user | default('root') }}
+  Hostname {{ fqdn }}
+{% if hostvars.beaker_server['ansible_connection'] is not defined %}  ProxyJump {{ hostvars.beaker_server.ansible_host }}{% endif %}
+  ServerAliveInterval 60
+  UserKnownHostsFile=/dev/null
+  StrictHostKeyChecking=no
