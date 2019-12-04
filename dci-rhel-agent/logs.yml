@@ -1,6 +1,6 @@
 ---
 - name: Collect and Upload logs
-  delegate_to: localhost
+  delegate_to: beaker_server
   when: hostvars.localhost.bkrjobid is defined
   block:
     - name: List all files
@@ -21,6 +21,10 @@
         beaker_results: '{{hostvars.localhost.job_artifacts.path }}/beaker-results.xml'
 
     - name: Upload logs files to DCI
+      environment:
+        - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
+        - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
+        - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
       dci_file:
         path: '{{ item }}'
         name: '{{ item | basename }}'
@@ -30,6 +34,10 @@
         - '{{ hostvars.localhost.job_artifacts.path }}/*.log'
 
     - name: Upload junit files to DCI
+      environment:
+        - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
+        - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
+        - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
       dci_file:
         path: '{{ item }}'
         name: "{{ item | basename | regex_replace('^(.*\\.cli\\.)?(.*).xml$','\\2') }}"
