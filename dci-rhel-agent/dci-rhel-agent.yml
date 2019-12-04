@@ -1,8 +1,16 @@
 ---
 - name: NEW JOB
   hosts: localhost
+  gather_facts: false
   tasks:
-    - name: Schedule a new job
+    - name: Read credentials from env vars
+      set_fact:
+        dci_client_id="{{ lookup('env','DCI_CLIENT_ID') }}"
+        dci_api_secret="{{ lookup('env','DCI_API_SECRET') }}"
+        dci_cs_url="{{ lookup('env','DCI_CS_URL') }}"
+      no_log: true
+
+    - name: Schedule a new job in DCI Control Server
       dci_job:
         components: '{{ dci_components }}'
         topic: '{{ topic }}'
@@ -16,102 +24,45 @@
         components: "{{ job_info['job']['components'] }}"
         product: "{{ job_info['job']['topic']['product_id'] }}"
 
-    - name: Set the tags
+    - name: Set DCI tags for the current job
       dci_job:
         id: "{{ job_id }}"
         tags: '{{ dci_tags }}'
       when: dci_tags
 
-    - include_tasks: create_temp_dir.yml
-  tags:
-      - new_job
-
-- name: ADD BEAKER_HOST
-  hosts: localhost
-  vars:
-    topic_interpreter:
-      RHEL-7:   'python'
-      RHEL-7.6: 'python'
-      RHEL-7.7: 'python'
-      RHEL-7.8: 'python'
-      RHEL-8:   '/usr/libexec/platform-python'
-      RHEL-8.0: '/usr/libexec/platform-python'
-      RHEL-8.1: '/usr/libexec/platform-python'
-      RHEL-8.2: '/usr/libexec/platform-python'
-  tasks:
-    - block:
-        - name: Add Beaker system to the Ansible group
-          add_host:
-            hostname: "{{ fqdn }}"
-            ansible_python_interpreter: "{{ topic_interpreter[topic] }}"
-            ansible_ssh_host: "{{ fqdn }}"
-            ansible_ssh_port: "{{ beaker_host_port | default('22') }}"
-            ansible_user: "{{ beaker_host_user | default('root') }}"
-            ansible_password: "{{ beaker_host_password | default('beaker') }}"
-            groups:
-              - beaker-host
-      rescue:
-        - include_tasks: failure.yml
-      when: fqdn is defined
-
-- name: GET SUT ARCH
-  hosts: localhost
-  tasks:
-    - block:
-        - name: Get SUT details
-          shell: "bkr system-details {{ fqdn }}"
-          register: system_details
-
-        - name: Parse arch from SUT details
-          xml:
-            xmlstring: "{{ system_details.stdout }}"
-            xpath: inv:System/inv:supportsArch/inv:Arch/rdfs:label
-            namespaces:
-              inv: https://fedorahosted.org/beaker/rdfschema/inventory#
-              rdfs: http://www.w3.org/2000/01/rdf-schema#
-            content: text
-          register: supported_arch_info
-
-        - name: Register supported arch
-          set_fact:
-            system_arch: "{{ supported_arch_info.matches[0].values().pop() }}"
-      rescue:
-         - include_tasks: failure.yml
-      when: fqdn is defined
-
-- name: LAUNCH INSTALL
-  hosts: localhost
+- name: 'Configure SUT'
+  hosts:
+    - localhost
+  gather_facts: no
   vars:
     dci_status: 'running'
   tasks:
     - block:
-        - include_tasks: install.yml
+        - include_tasks: sut.yml
       rescue:
         - include_tasks: failure.yml
-  tags:
-      - install
 
-- name: TESTS
-  hosts: beaker-host
+- name: 'Prepare install'
+  hosts:
+    - localhost
+    - beaker_server
+  gather_facts: no
   vars:
-    dci_status: 'post-run'
+    dci_status: 'running'
   tasks:
-    - block:
-        - name: Launch RHEL Certification Test
-          import_role:
-            name: dci-rhel-certification
-          when:
-            - topic.startswith('RHEL-7')|bool
-            - dci_rhel_agent_cert|bool
-          become: true
-      rescue:
-        - include_tasks: release.yml
-        - include_tasks: failure.yml
-  tags:
-      - test
+    - include_tasks: create_temp_dir.yml
+
+- name: Install RHEL on SUT
+  hosts: beaker_server
+  gather_facts: no
+  vars:
+    dci_status: 'running'
+  tasks:
+    - include_tasks: install.yml
 
 - name: 'Launch customizable tests'
-  hosts: beaker-host
+  hosts: beaker_sut
+  gather_facts: no
   vars:
     dci_status: 'post-run'
   tasks:
@@ -119,11 +70,21 @@
         - include_tasks: '{{ dci_config_dir }}/hooks/user-tests.yml'
       rescue:
         - include_tasks: failure.yml
-  tags:
-    - post-run
 
-- name: RELEASE SERVER
-  hosts: beaker-host
+- name: 'Upload Beaker logs to DCI Control server'
+  hosts: beaker_server
+  gather_facts: no
+  vars:
+    dci_status: 'post-run'
+  tasks:
+    - block:
+        - include_tasks: logs.yml
+      rescue:
+        - include_tasks: failure.yml
+
+- name: 'Release SUT in Beaker'
+  hosts: beaker_server
+  gather_facts: no
   vars:
     dci_status: 'post-run'
   tasks:
@@ -131,14 +92,11 @@
         - include_tasks: release.yml
       rescue:
         - include_tasks: failure.yml
-  tags:
-    - post-run
 
 - name: SUCCESS
   hosts: localhost
+  gather_facts: no
   vars:
     dci_status: 'success'
   tasks:
     - include_tasks: success.yml
-  tags:
-      - success

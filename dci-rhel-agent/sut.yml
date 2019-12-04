@@ -1,0 +1,60 @@
+---
+#
+# Tasks are included to run on localhost host,
+# Delegate_to: beaker_server when needed.
+#
+- name: 'Generate SSH config for SUT'
+  template:
+    src: /usr/share/dci-rhel-agent/templates/ssh_config.conf.j2
+    dest: "/etc/dci-rhel-agent/secrets/ssh_config_{{ fqdn }}.cfg"
+
+- name: 'Upload ssh config to DCI'
+  dci_file:
+    path: "/etc/dci-rhel-agent/secrets/ssh_config_{{ fqdn }}.cfg"
+    name: 'ssh_config_sut.txt'
+    mime: 'text/plain'
+    job_id: '{{ hostvars.localhost.job_id }}'
+  when: hostvars['beaker_server']['ansible_host'] != "local"
+
+- name: 'Add SUT to the Ansible group'
+  vars:
+    topic_interpreter:
+      RHEL-7:   'python'
+      RHEL-7.6: 'python'
+      RHEL-7.7: 'python'
+      RHEL-7.8: 'python'
+      RHEL-8:   '/usr/libexec/platform-python'
+      RHEL-8.0: '/usr/libexec/platform-python'
+      RHEL-8.1: '/usr/libexec/platform-python'
+      RHEL-8.2: '/usr/libexec/platform-python'
+  add_host:
+    hostname: "{{ fqdn }}"
+    ansible_python_interpreter: "{{ topic_interpreter[topic] }}"
+    ansible_ssh_host: "{{ fqdn }}"
+    ansible_ssh_port: "{{ beaker_sut_port | default('22') }}"
+    ansible_user: "{{ beaker_sut_user | default('root') }}"
+    ansible_password: "{{ beaker_sut_password | default('beaker') }}"
+    ansible_ssh_common_args: "-F /etc/dci-rhel-agent/secrets/ssh_config_{{ fqdn }}.cfg"
+    groups:
+      - beaker_sut
+
+- name: 'Get SUT details'
+  delegate_to: beaker_server
+  shell: "bkr system-details {{ fqdn }}"
+  register: system_details
+  become: true
+
+- name: 'Parse CPU arch from SUT details (XML)'
+  delegate_to: beaker_server
+  xml:
+    xmlstring: "{{ system_details.stdout }}"
+    xpath: inv:System/inv:supportsArch/inv:Arch/rdfs:label
+    namespaces:
+      inv: https://fedorahosted.org/beaker/rdfschema/inventory#
+      rdfs: http://www.w3.org/2000/01/rdf-schema#
+    content: text
+  register: supported_arch_info
+
+- name: 'Register SUT CPU arch variable'
+  set_fact:
+    system_arch: "{{ supported_arch_info.matches[0].values().pop() }}"
