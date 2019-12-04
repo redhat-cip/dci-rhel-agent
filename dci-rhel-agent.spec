@@ -32,11 +32,11 @@ The RHEL's DCI agent
 %install
 install -p -D -m 644 systemd/%{name}.service %{buildroot}%{_unitdir}/%{name}.service
 install -p -D -m 644 dcirc.sh.dist %{buildroot}%{_sysconfdir}/dci-rhel-agent/dcirc.sh.dist
-install -p -D -m 644 hosts %{buildroot}%{_sysconfdir}/dci-rhel-agent/hosts
+install -p -D -m 644 inventory %{buildroot}%{_sysconfdir}/dci-rhel-agent/inventory
 install -p -D -m 644 settings.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/settings.yml
 install -p -D -m 644 hooks/user-tests.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
-install -p -D -m 644 Makefile %{buildroot}%{_sysconfdir}/dci-rhel-agent/Makefile
 install -p -D -m 755 dci-rhel-agent-ctl %{buildroot}%{_bindir}/dci-rhel-agent-ctl
+mkdir %{buildroot}%{_sysconfdir}/dci-rhel-agent/secrets
 
 %clean
 
@@ -53,14 +53,17 @@ install -p -D -m 755 dci-rhel-agent-ctl %{buildroot}%{_bindir}/dci-rhel-agent-ct
 
 %files
 %{_unitdir}/*
-%{_sysconfdir}/dci-rhel-agent/Makefile
 %{_bindir}/dci-rhel-agent-ctl
 %{_sysconfdir}/dci-rhel-agent/dcirc.sh.dist
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/settings.yml
-%config(noreplace) %{_sysconfdir}/dci-rhel-agent/hosts
+%config(noreplace) %{_sysconfdir}/dci-rhel-agent/inventory
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
+%dir  %{_sysconfdir}/dci-rhel-agent/secrets
 
 %changelog
+* Wed Dec 11 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-8
+- Add suport for external Beaker service
+- Remove Makefile
 * Tue Oct 29 2019 Michael Burke <miburke@redhat.com> - 0.1.2-7
 - Updates for PPC arch
 * Tue Oct 09 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-6
