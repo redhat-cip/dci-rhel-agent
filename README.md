@@ -229,6 +229,8 @@ For troubleshooting purposes, launch `dci-rhel-agent` foreground:
 # dci-rhel-agent-ctl --start
 ```
 
+The return code is the number of failed jobs.
+
 If you need advanced debug, you can spawn a new container with a shell:
 
 ```bash

@@ -87,6 +87,8 @@ def main():
         %s %s' % (settings_path, local_repo, dci_rhel_agent_url, entrypoint)
         proc = subprocess.Popen(myCmd, shell=True)
         proc.wait()
+        sys.exit(proc.returncode)
+
 
 if __name__ == "__main__":
     main()
