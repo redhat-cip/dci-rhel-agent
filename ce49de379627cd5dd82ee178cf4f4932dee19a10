@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "630df0a2_f23cda06",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 166
+      },
+      "writtenOn": "2019-12-11T14:37:11Z",
+      "side": 1,
+      "message": "ack",
+      "revId": "ce49de379627cd5dd82ee178cf4f4932dee19a10",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
