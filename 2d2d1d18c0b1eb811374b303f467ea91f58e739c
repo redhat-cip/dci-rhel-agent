@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "14e8ecf4_d152563e",
+        "filename": "dci-rhel-agent-ctl",
+        "patchSetId": 36
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 606
+      },
+      "writtenOn": "2019-12-13T17:15:03Z",
+      "side": 1,
+      "message": "This should exit with the return code..\n\nexit (proc.wait())",
+      "range": {
+        "startLine": 52,
+        "startChar": 17,
+        "endLine": 52,
+        "endChar": 19
+      },
+      "revId": "2d2d1d18c0b1eb811374b303f467ea91f58e739c",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b42d9076_139ae022",
+        "filename": "dci-rhel-agent/create_temp_dir.yml",
+        "patchSetId": 36
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 606
+      },
+      "writtenOn": "2019-12-13T17:15:03Z",
+      "side": 1,
+      "message": "It looks like the tempfile module defaults to creating in /tmp but /tmp is usually mounted as tmpfs and is based in ram.\nHow big could these logs get?  Should we move this to /var/tmp?\n\nObviously this isn\u0027t new to this PR.  Just wondering if it can cause issues.",
+      "revId": "2d2d1d18c0b1eb811374b303f467ea91f58e739c",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
