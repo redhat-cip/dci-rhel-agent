@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "261cfe99_e3e09fef",
+        "filename": "dci-rhel-agent-ctl",
+        "patchSetId": 35
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-12-13T20:03:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "750ffe39_c8619195",
+      "revId": "36760d0a5d82dd03e3cab81093ae1c43ee17a720",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e9f5c12d_9689ab06",
         "filename": "dci-rhel-agent/dci-import.yml",
         "patchSetId": 35
