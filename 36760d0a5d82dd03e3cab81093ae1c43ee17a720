@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "750ffe39_c8619195",
+        "filename": "dci-rhel-agent-ctl",
+        "patchSetId": 35
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 606
+      },
+      "writtenOn": "2019-12-13T15:12:29Z",
+      "side": 1,
+      "message": "shouldn\u0027t you exit with the return code from the build?",
+      "revId": "36760d0a5d82dd03e3cab81093ae1c43ee17a720",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
