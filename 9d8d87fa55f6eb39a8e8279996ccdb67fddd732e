@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "801907bd_879682ba",
+        "filename": "dci-rhel-agent/dci-import.yml",
+        "patchSetId": 34
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-12-13T14:21:31Z",
+      "side": 1,
+      "message": "In case beaker_server is remote, we need to check dci-downloader (and maybe more) are installed on it.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 36
+      },
+      "revId": "9d8d87fa55f6eb39a8e8279996ccdb67fddd732e",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e658b1c9_feba21a0",
+        "filename": "dci-rhel-agent/install.yml",
+        "patchSetId": 34
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-12-13T14:21:31Z",
+      "side": 1,
+      "message": "Move this code to executed from localhost. Beaker server might NOT have DCI api packages.",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 45
+      },
+      "revId": "9d8d87fa55f6eb39a8e8279996ccdb67fddd732e",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
