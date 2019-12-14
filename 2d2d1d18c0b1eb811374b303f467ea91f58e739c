@@ -63,6 +63,24 @@
       "revId": "2d2d1d18c0b1eb811374b303f467ea91f58e739c",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4974e2_347d26d8",
+        "filename": "dci-rhel-agent/create_temp_dir.yml",
+        "patchSetId": 36
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2019-12-14T00:36:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b42d9076_139ae022",
+      "revId": "2d2d1d18c0b1eb811374b303f467ea91f58e739c",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
