@@ -37,6 +37,7 @@ import yaml
 
 from os import environ
 
+number_of_failed_jobs = 0
 
 def sigterm_handler(signal, frame):
     # This does NOT work with ansible_runner.run_async().
@@ -109,15 +110,13 @@ def provision_and_test(extravars):
         t.join()
     print("All jobs terminated.")
 
-    number_of_failed_jobs = 0
+    global number_of_failed_jobs
     # check if some jobs failed
     for t, r in threads_runners:
         fqdn = threads_runners[(t, r)]
         if r.rc != 0:
             print("Job for %s failed, rc: %s, status: %s " % (fqdn, r.rc, r.status))
             number_of_failed_jobs += 1
-    sys.exit(number_of_failed_jobs)
-
 
 def main():
     if environ.get('DCI_CLIENT_ID') is None:
@@ -139,6 +138,7 @@ def main():
         # Legacy settings file format (single topic/job)
         # preserved for compatibility
         provision_and_test(sets)
+    sys.exit(number_of_failed_jobs)
 
 
 if __name__ == '__main__':
