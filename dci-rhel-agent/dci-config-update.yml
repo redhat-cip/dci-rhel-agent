@@ -1,0 +1,47 @@
+---
+- name: Update Beaker server config
+  hosts: beaker_server
+  gather_facts: false
+  tasks:
+    - name: Update dnsmasq arch options
+      blockinfile:
+        path: /etc/dnsmasq.d/beaker.conf
+        marker: "#{mark} Determine arch of requesting system"
+        block: |
+          # Legacy BIOS
+          dhcp-match=set:bios,option:client-arch,0
+          # 64 bit x86 EFI
+          dhcp-match=set:efi-x86_64,option:client-arch,7
+          # 64 bit x86 EFI (obsolete)
+          dhcp-match=set:efi-x86_64,option:client-arch,9
+          # 64 bit ARM EFI
+          dhcp-match=set:efi-ARM64,option:client-arch,11
+        insertafter: 'dhcp-option=option:ntp-server,0.0.0.0'
+        state: present
+      register: arch_options
+
+    - name: Remove dhcpboot line
+      lineinfile:
+        path: /etc/dnsmasq.d/beaker.conf
+        state: absent
+        regexp: 'dhcp-boot="pxelinux.0"'
+      register: remove_boot_line
+
+    - name: Add boot options for x86 and aarch64 EFI
+      blockinfile:
+        path: /etc/dnsmasq.d/beaker.conf
+        marker: "#{mark} Set up boot file for each arch"
+        block: |
+          dhcp-boot=tag:bios,"pxelinux.0"
+          dhcp-boot=tag:efi-x86_64,"BOOTX64.EFI"
+          dhcp-boot=tag:efi-ARM64,"BOOTAA64.EFI"
+        insertafter: 'tftp-root=/var/lib/tftpboot'
+        state: present
+      register: boot_options
+ 
+    - name: Restart dnsmasq
+      service:
+        name: dnsmasq
+        state: restarted
+      when: arch_options.changed or remove_boot_line.changed or boot_options.changed
+
