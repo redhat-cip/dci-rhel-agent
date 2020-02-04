@@ -56,6 +56,28 @@ def load_settings():
             print(exc)
             sys.exit(1)
 
+def cleanup_boot_files():
+    r = ansible_runner.run(
+        private_data_dir="/usr/share/dci-rhel-agent/",
+        inventory="/etc/dci-rhel-agent/inventory",
+        verbosity=1,
+        playbook="dci-cleanup.yml",
+        quiet=False
+    )
+    if r.rc != 0:
+        print("Warning: Unable to remove boot files copied to tftproot by agent.")
+
+def configure_beaker_server():
+    r = ansible_runner.run(
+        private_data_dir="/usr/share/dci-rhel-agent/",
+        inventory="/etc/dci-rhel-agent/inventory",
+        verbosity=1,
+        playbook="dci-config-update.yml",
+        quiet=False
+    )
+    if r.rc != 0:
+        print("Error: Unable to ensure proper configuration of DCI jumpbox, exiting...")
+        sys.exit(1)
 
 def provision_and_test(extravars):
     # # Path is static in the container
@@ -124,6 +146,8 @@ def main():
         sys.exit(1)
     # Read the settings file
     sets = load_settings()
+    # Ensure Beaker server is configured correctly before provisioning SUTs
+    configure_beaker_server()
     # Check if the settings contain multiple topics and process accordingly
     if 'topics' in sets:
         # Break up settings file into individual jobs by topic
@@ -134,10 +158,14 @@ def main():
             current_job['local_repo'] = sets['local_repo']
             current_job['local_repo_ip'] = sets['local_repo_ip']
             provision_and_test(current_job)
+            #Clean up all boot files copied for this topic
+            cleanup_boot_files()
     else:
         # Legacy settings file format (single topic/job)
         # preserved for compatibility
         provision_and_test(sets)
+        #Clean up all boot files copied for this topic
+        cleanup_boot_files()
     sys.exit(number_of_failed_jobs)
 
 
