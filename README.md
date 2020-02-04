@@ -121,6 +121,21 @@ The possible values are:
 
 | Variable | Required | Type | Description |
 |----------|----------|------|-------------|
+| beaker_lab.dhcp_start | True | IP | Beginning of range of IPs to apply to SUTs. |
+| beaker_lab.dhcp_end | True | IP | End of range of IPs to apply to SUTs. |
+| beaker_lab.jumpbox_ip | True | IP | IP of DCI jumpbox. |
+| beaker_lab.jumpbox_fqdn | True | String | FQDN of DCI jumpbox. |
+| system_inventory | True | String | FQDN of each SUT. |
+| system_inventory.ip_address | True | IP | IP address of SUT. |
+| system_inventory.mac | True | String | MAC address of SUT. |
+| system_inventory.arch | True | String | Architecture of SUT (x86_64, ppc64le, aarch64). |
+| system_inventory.power_address | True | String | Address to use to power on/off and reboot system. |
+| system_inventory.power_user | True | String | Username to use when powering system. |
+| system_inventory.power_password | False | String | Password associated with power_user if applicable. |
+| system_inventory.power_id | False | String | Typically this field identifies a particular plug, socket, port or virtual guest name.  Defaults to fqdn when not specified. |
+| system_inventory.power_type
+| system_inventory.efi | True | True/False | Identifies if this system uses EFI BIOS. |
+| system_inventory.petitboot | True | True/False | Identifies if a PPC system uses the Petitboot bootloader (applies to ppc64le arch only). |
 | topic | True | String | Name of the topic. |
 | local_repo_ip | True | IP | DCI Jumpbox lab static network IP. |
 | local_repo | True | String | Path to store DCI artefacts (Local RHEL mirror that will be exposed to SUT by `httpd`). Default is `/var/www/html`. |
@@ -135,6 +150,25 @@ The possible values are:
 Example:
 
 ```console
+beaker_lab:
+  dhcp_start: 192.168.1.20
+  dhcp_end: 192.168.1.30  
+  jumpbox_ip: 192.168.1.1
+  jumpbox_fqdn: dci-jumpbox
+  system_inventory:
+    test.x86.sut1:
+      ip_address: 192.168.1.20
+      mac: aa:bb:cc:dd:ee:ff
+      arch: x86_64
+      power_address: sut1.power.address
+      power_user: p_user1
+      power_password: p_pass1
+      power_id:
+      power_type: ipmilan
+      efi: false
+      petitiboot: false
+    #Repeat for each SUT in DCI lab
+
 local_repo_ip: 192.168.1.1
 local_repo: /var/www/html
 topics:
@@ -205,6 +239,9 @@ systems:
 Please note that all FQDN must resolve locally on the DCI jumpbox. If you don't have proper DNS records, please update `/etc/hosts` then reload `dnsmasq` service.  Also, the supported architecture of the systems must be entered in Beaker in order for the agent to properly provision a system with the correct architecture.
 
 Please also note that the RHEL agent does not currently support concurrent provisioning.  Running two instances of the agent simultaneously will cause installation issues on the systems under test.  This feature will be added in the near future and this readme will be updated to reflect the support.
+
+#### How to add additional SUTs to DCI lab ?
+If a new machine is added to a partner DCI lab, simply enter its information in the beaker_lab.system_inventory section of the settings.yml file and run the agent.  The agent will add and configure this new system in Beaker according to the information provided in settins.
 
 #### How to skip Red Hat Certification tests ?
 Some users might want to skip the certification tests suite. This can be done via `settings.yml` file by adding `dci_rhel_agent_cert: false`.
