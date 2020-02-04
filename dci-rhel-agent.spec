@@ -20,6 +20,9 @@ Requires:         podman
 Requires:         make
 Requires:         dci-downloader
 Requires:         PyYAML
+Requires:         xinetd
+Requires:         tftp
+Requires:         tftp-server
 
 %description
 The RHEL's DCI agent
@@ -44,9 +47,13 @@ mkdir %{buildroot}%{_sysconfdir}/dci-rhel-agent/secrets
 
 %post
 %systemd_post %{name}.service
+%systemd_post xinetd.service
+%systemd_post tftp.service
 
 %preun
 %systemd_preun %{name}.service
+%systemd_preun xinetd.service
+%systemd_preun tftp.service
 
 %postun
 %systemd_postun
@@ -61,6 +68,8 @@ mkdir %{buildroot}%{_sysconfdir}/dci-rhel-agent/secrets
 %dir  %{_sysconfdir}/dci-rhel-agent/secrets
 
 %changelog
+* Tue Apr 14 2020 Michael Burke <miburke@redhat.com> - 0.2.0-2
+- Multi-arch support, EFI BIOS support
 * Wed Apr 1 2020 Guillaume Vincent <gvincent@redhat.com> - 0.2.0-1
 - Add hooks folder support
 * Wed Dec 11 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-8
