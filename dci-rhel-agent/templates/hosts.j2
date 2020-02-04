@@ -1,0 +1,6 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+{{ beaker_lab.jumpbox_ip }} {{ beaker_lab.jumpbox_fqdn }}
+{% for system in beaker_lab.system_inventory %}
+{{ beaker_lab.system_inventory[system].ip_address }} {{ beaker_lab.system_inventory[system].fqdn }}
+{% endfor %}

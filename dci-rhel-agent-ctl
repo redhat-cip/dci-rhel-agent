@@ -35,6 +35,18 @@ def load_settings(settings_path):
       print(exc)
       sys.exit(1)
 
+def configure_beaker_server():
+    r = ansible_runner.run(
+        private_data_dir="/etc/dci-rhel-agent/",
+        inventory="/etc/dci-rhel-agent/inventory",
+        verbosity=1,
+        playbook="dci-config-update.yml",
+        quiet=False
+    )
+    if r.rc != 0:
+        print("Error: Unable to ensure proper configuration of DCI jumpbox, exiting...")
+        sys.exit(1)
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--start', action='store_true', help="Start dci-rhel-agent")
@@ -70,6 +82,10 @@ def main():
         else:
             print ("local_repo is NOT set in %s. Using default value." % default_value['local_repo'])
             local_repo = default_value['local_repo']
+ 
+        if 'beaker_lab' not in settings.keys():
+            print("beaker_lab is NOT present in settings file. Please update settings to latest format")
+            exit(1)
 
         if args.debug is False and args.local is False:
           # Start dci-rhel-agent update
@@ -79,6 +95,8 @@ def main():
           myCmd = 'podman pull %s' % (dci_rhel_agent_url)
           proc = subprocess.Popen(myCmd, shell=True)
           proc.wait()
+
+        configure_beaker_server() 
 
         # Start dci-rhel-agent
         volumes = {

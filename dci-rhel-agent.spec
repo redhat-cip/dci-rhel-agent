@@ -24,8 +24,10 @@ Requires:         make
 Requires:         dci-downloader
 %if 0%{?rhel} && 0%{?rhel} < 8
 Requires:         PyYAML
+Requires:         python2-ansible-runner
 %else
 Requires:         python3-pyyaml
+Requires:         python3-ansible-runner
 %endif
 
 %description
@@ -42,6 +44,9 @@ install -p -D -m 644 dcirc.sh.dist %{buildroot}%{_sysconfdir}/dci-rhel-agent/dci
 install -p -D -m 644 inventory %{buildroot}%{_sysconfdir}/dci-rhel-agent/inventory
 install -p -D -m 644 settings.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/settings.yml
 install -p -D -m 644 hooks/user-tests.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
+install -p -D -m 644 dci-rhel-agent/templates/hosts.j2 %{buildroot}%{_sysconfigdir}/dci-rhel-agent/templates/hosts.j2
+install -p -D -m 644 dci-rhel-agent/templates/beaker.conf.j2 %{buildroot}%{_sysconfigdir}/dci-rhel-agent/templates/beaker.conf.j2
+install -p -D -m 644 dci-config-update.yml %{buildroot}%{_sysconfigdir}/dci-rhel-agent/dci-config-update.yml
 install -p -D -m 755 dci-rhel-agent-ctl %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 mkdir %{buildroot}%{_sysconfdir}/dci-rhel-agent/secrets
 
@@ -70,6 +75,8 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 %dir  %{_sysconfdir}/dci-rhel-agent/secrets
 
 %changelog
+* Tue Apr 14 2020 Michael Burke <miburke@redhat.com> - 0.2.0-2
+- Multi-arch support, EFI BIOS support, agent SUT management
 * Wed Apr 1 2020 Guillaume Vincent <gvincent@redhat.com> - 0.2.0-1
 - Add hooks folder support
 * Wed Dec 11 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-8
