@@ -9,6 +9,7 @@
     - name: List all logs files available for the Beaker Job
       shell: 'bkr job-logs {{ hostvars.beaker_server.bkrjobid }}'
       register: bkr_files
+      become: true
 
     - name: Download all logs files to Beaker server
       get_url:
