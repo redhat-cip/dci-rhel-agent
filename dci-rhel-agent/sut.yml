@@ -16,21 +16,9 @@
     job_id: '{{ hostvars.localhost.job_id }}'
 
 - name: 'Add SUT to the Ansible group'
-  vars:
-    topic_interpreter:
-      RHEL-7:   'python'
-      RHEL-7.6: 'python'
-      RHEL-7.7: 'python'
-      RHEL-7.8: 'python'
-      RHEL-7-milestone: 'python'
-      RHEL-8:   '/usr/libexec/platform-python'
-      RHEL-8.0: '/usr/libexec/platform-python'
-      RHEL-8.1: '/usr/libexec/platform-python'
-      RHEL-8.2: '/usr/libexec/platform-python'
-      RHEL-8-milestone: '/usr/libexec/platform-python'
   add_host:
     hostname: "{{ fqdn }}"
-    ansible_python_interpreter: "{{ topic_interpreter[topic] }}"
+    ansible_python_interpreter: "{{ '/usr/libexec/platform-python' if topic.startswith('RHEL-8') else 'python' }}"
     ansible_ssh_host: "{{ fqdn }}"
     ansible_ssh_port: "{{ beaker_sut_port | default('22') }}"
     ansible_user: "{{ beaker_sut_user | default('root') }}"
