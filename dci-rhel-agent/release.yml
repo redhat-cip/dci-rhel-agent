@@ -7,3 +7,4 @@
   shell: "bkr system-release {{ fqdn }}"
   delegate_to: beaker_server
   ignore_errors: yes
+  become: true
