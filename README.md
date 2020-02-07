@@ -146,10 +146,10 @@ topics:
     systems:
       - my.x86_64.system.local
       - my.ppc64le.system.local
-  - topic_RHEL-7.8
+  - topic: RHEL-7.8
     dci_rhel_agent_cert: false
     download_only: false
-    variants
+    variants:
       - Server
     archs:
       - x86_64
