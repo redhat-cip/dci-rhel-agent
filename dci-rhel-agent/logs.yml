@@ -19,6 +19,7 @@
 
     - name: Download JUnit results to Beaker server
       shell: bkr job-results --format=junit-xml {{ hostvars.beaker_server.bkrjobid }} > {{ beaker_results }}
+      become: true
       args:
         creates: '{{ beaker_results }}'
       vars:
