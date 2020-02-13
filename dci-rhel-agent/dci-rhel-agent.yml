@@ -68,7 +68,7 @@
 
 - name: 'Launch customizable tests'
   hosts: beaker_sut
-  gather_facts: no
+  gather_facts: yes
   vars:
     dci_status: 'post-run'
   tasks:
