@@ -160,25 +160,6 @@ topics:
       - my.x86_64.system4.local
 ```
 
-Note that the prior format containing a single topic is also still supported as well:
-
-```console
-topic: RHEL-8.2
-local_repo_ip: 192.168.1.1
-local_repo: /var/www/html
-variants:
-  - BaseOS
-  - AppStream
-archs:
-  - x86_64
-with_debug: false
-dci_rhel_agent_cert: false
-systems:
-  - dci-client
-```
-
-Please note that `download_only` flag has been removed. Please consider using `dci-downloader` standalone tool instead.
-
 ### Advanced settings
 #### How to target a specific system in Beaker ?
 ##### Single system
