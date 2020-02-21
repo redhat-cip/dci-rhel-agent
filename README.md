@@ -67,17 +67,17 @@ The `dci-rhel-agent` is packaged and available as a RPM files.
 However,`dci-release` and `epel-release` must be installed first:
 
 ```bash
-# yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-# yum -y install https://packages.distributed-ci.io/dci-release.el7.noarch.rpm
-# yum -y install dci-rhel-agent
+$ yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+$ yum -y install https://packages.distributed-ci.io/dci-release.el7.noarch.rpm
+$ yum -y install dci-rhel-agent
 ```
 
 Next, install [Beaker](https://beaker-project.org/). Red Hat DCI maintains a [dedicated Ansible role](https://docs.distributed-ci.io/ansible-playbook-dci-beaker/) to help with this task.
 
 ```bash
-# subscription-manager repos --enable=rhel-7-server-extras-rpms
-# subscription-manager repos --enable=rhel-7-server-optional-rpms
-# su - dci-rhel-agent
+$ subscription-manager repos --enable=rhel-7-server-extras-rpms
+$ subscription-manager repos --enable=rhel-7-server-optional-rpms
+$ su - dci-rhel-agent
 $ git clone https://github.com/redhat-cip/ansible-playbook-dci-beaker
 $ cd ansible-playbook-dci-beaker/
 $ ansible-galaxy install -r requirements.yml -p roles/
@@ -226,7 +226,7 @@ To start a single job `dci-rhel-agent`, please use `systemctl start dci-rhel-age
 For troubleshooting purposes, launch `dci-rhel-agent` foreground:
 
 ```bash
-# dci-rhel-agent-ctl --start
+$ dci-rhel-agent-ctl --start
 ```
 
 The return code is the number of failed jobs.
@@ -234,10 +234,10 @@ The return code is the number of failed jobs.
 If you need advanced debug, you can spawn a new container with a shell:
 
 ```bash
-# dci-rhel-agent-ctl --start --debug
-[container]#
-[container]# ./entrypoint.py
-[container]# dcictl topic-list
+$ dci-rhel-agent-ctl --start --debug
+[container]$
+[container]$ ./entrypoint.py
+[container]$ dcictl topic-list
 ```
 
 ## How to run your own set of tests ?
