@@ -1,9 +1,16 @@
+local_repo_ip: 192.168.1.1
+local_repo: /var/www/html
 topics:
   - topic: RHEL-8.1
+    dci_rhel_agent_cert: false
+    download_only: false
     variants:
       - AppStream
       - BaseOS
     archs:
       - x86_64
+      - ppc64le
     with_debug: false
-    local_repo: /var/www/html
+    systems:
+      - my.x86_64.system.local
+      - my.ppc64le.system.local

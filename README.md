@@ -120,7 +120,7 @@ The possible values are:
 |----------|----------|------|-------------|
 | topic | True | String | Name of the topic. |
 | local_repo_ip | True | IP | DCI Jumpbox lab static network IP. |
-| local_repo | String | True | Path to store DCI artefacts (Local RHEL mirror that will be exposed to SUT by `httpd`). Default is `/var/www/html`. |
+| local_repo | True | String | Path to store DCI artefacts (Local RHEL mirror that will be exposed to SUT by `httpd`). Default is `/var/www/html`. |
 | dci_rhel_agent_cert | True | True/False | Enable or disable the certification tests suite. |
 | systems | False | List of string | List of all systems that will be deployed using RHEL from DCI. |
 | beaker_xml | False | String | Path to a custom XML file to use with Beaker job. |
@@ -130,7 +130,7 @@ The possible values are:
 Example:
 
 ```console
-local_repo_ip: 172.23.100.1
+local_repo_ip: 192.168.1.1
 local_repo: /var/www/html
 topics:
   - topic: RHEL-8.1
