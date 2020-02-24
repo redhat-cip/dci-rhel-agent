@@ -2,10 +2,11 @@
     <whiteboard>This job was scheduled from the dci-rhel-agent using XML template.</whiteboard>
     <recipeSet priority="Normal">
         {% if hostvars.localhost.system_arch == 'ppc64le' %}
-                <recipe ks_meta="selinux=--permissive autopart_type=plain harness='restraint'" whiteboard="" kernel_options="netbootloader=boot/grub2/{{ fqdn }}/powerpc-ieee1275/core.elf">
+            <recipe ks_meta="selinux=--permissive autopart_type=plain harness='restraint beakerlib'" whiteboard="" kernel_options="netbootloader=boot/grub2/{{ fqdn }}/powerpc-ieee1275/core.elf">
         {% else %}
-                <recipe ks_meta="selinux=--permissive autopart_type=plain harness='restraint'" whiteboard="">
+            <recipe ks_meta="selinux=--permissive autopart_type=plain harness='restraint beakerlib'" whiteboard="">
         {% endif %}
+            <watchdog panic="ignore"/>
             <distroRequires>
                 <and>
                     <distro_name op="=" value="{{ distro_name }}"/>
@@ -23,11 +24,10 @@
             </repos>
             {% endif %}
             <partitions/>
-            <task name="/distribution/check-install" role="STANDALONE">
-                <params>
-                </params>
+            <task name="/distribution/check-install" role="STANDALONE"/>
+            <task name="LTP" role="STANDALONE">
+                <fetch url="http://{{ local_repo_ip }}/{{ topic }}/cki/master.zip#distribution/ltp-upstream/lite"/>
             </task>
-            <reservesys/>
         </recipe>
     </recipeSet>
 </job>
