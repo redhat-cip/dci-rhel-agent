@@ -1,0 +1,9 @@
+Code-Review+2: User miburke <miburke@redhat.com>
+Code-Review+2: Haïkel Guémar <hguemar@fedoraproject.org>
+Workflow+1: Haïkel Guémar <hguemar@fedoraproject.org>
+Verified+2: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-by: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-at: Mon, 24 Feb 2020 15:27:33 +0000
+Reviewed-on: https://softwarefactory-project.io/r/17611
+Project: dci-rhel-agent
+Branch: refs/heads/master
