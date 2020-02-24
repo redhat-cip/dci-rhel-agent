@@ -93,6 +93,10 @@ def main():
           volumes['/var/lib/tftpboot'] = '/var/lib/tftpboot'
           volumes[local_repo] = local_repo
 
+        # if 'cki' in settings.keys():
+        #   if settings['cki'] == True:
+        #     print("CKI is true")
+        #     sys.exit()
         myCmd = 'source /etc/dci-rhel-agent/dcirc.sh && '
         myCmd = myCmd + 'podman run --rm -ti --network host -e DCI_CLIENT_ID -e DCI_API_SECRET -e DCI_CS_URL'
         for key, value in volumes.items():

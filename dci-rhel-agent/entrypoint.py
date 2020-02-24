@@ -68,23 +68,23 @@ def provision_and_test(extravars):
         print ("Error ! No topic found in settings.")
         sys.exit(1)
 
-    # This function is kept for backward compatibility.
-    if 'download_only' in extravars.keys():
-        if extravars['download_only'] == True:
-            print ('The dci-rhel-agent is configured in download-only mode.')
-            sys.exit(0)
+    # # This function is kept for backward compatibility.
+    # if 'download_only' in extravars.keys():
+    #     if extravars['download_only'] == True:
+    #         print ('The dci-rhel-agent is configured in download-only mode.')
+    #         sys.exit(0)
 
-    r = ansible_runner.run(
-        private_data_dir="/usr/share/dci-rhel-agent/",
-        inventory="/etc/dci-rhel-agent/inventory",
-        verbosity=1,
-        playbook="dci-import.yml",
-        extravars=extravars,
-        quiet=False
-    )
-    if r.rc != 0:
-        print ("Distro(s) import in Beaker has failed. {}: {}".format(r.status, r.rc))
-        sys.exit(1)
+    # r = ansible_runner.run(
+    #     private_data_dir="/usr/share/dci-rhel-agent/",
+    #     inventory="/etc/dci-rhel-agent/inventory",
+    #     verbosity=1,
+    #     playbook="dci-import.yml",
+    #     extravars=extravars,
+    #     quiet=False
+    # )
+    # if r.rc != 0:
+    #     print ("Distro(s) import in Beaker has failed. {}: {}".format(r.status, r.rc))
+    #     sys.exit(1)
 
     if 'systems' not in extravars.keys():
         print ('No hosts found in settings. You should configure download-only mode or add systems[].')
