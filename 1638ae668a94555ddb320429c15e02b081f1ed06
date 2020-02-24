@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1fbf56cd_18f47da6",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 166
+      },
+      "writtenOn": "2020-02-24T15:21:00Z",
+      "side": 1,
+      "message": "Disagree, # signifies here that you need a superuser shell",
+      "revId": "1638ae668a94555ddb320429c15e02b081f1ed06",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
