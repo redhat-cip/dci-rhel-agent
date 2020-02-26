@@ -8,6 +8,7 @@
         dci_client_id="{{ lookup('env','DCI_CLIENT_ID') }}"
         dci_api_secret="{{ lookup('env','DCI_API_SECRET') }}"
         dci_cs_url="{{ lookup('env','DCI_CS_URL') }}"
+        skip_download="{{ lookup('env','SKIPDOWNLOAD') }}"
       no_log: true
 
 - name: Download and import RHEL in Beaker
@@ -41,6 +42,7 @@
         - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
       shell: /bin/dci-downloader --settings {{ dci_config_file }}
       become: true
+      when: hostvars.localhost.skip_download == False
 
     - name: Import the latest build
       shell: beaker-import -v --ignore-missing-tree-compose "http://{{ local_repo_ip }}/{{ topic }}/compose/"

@@ -41,6 +41,7 @@ def main():
     parser.add_argument('-d', '--debug', action='store_true', help="Start a shell in dci-rhel-agent container")
     parser.add_argument('-l', '--local', action='store_true', help="[dev] Mount local ./dci-rhel-agent in the container.")
     parser.add_argument('--build', action='store_true', help="[dev] Build the dci-rhel-agent container.")
+    parser.add_argument('--skip_download', action='store_true', help="Skip the download of RHEL topics.")
 
     args = parser.parse_args()
 
@@ -94,7 +95,7 @@ def main():
           volumes[local_repo] = local_repo
 
         myCmd = 'source /etc/dci-rhel-agent/dcirc.sh && '
-        myCmd = myCmd + 'podman run --rm -ti --network host -e DCI_CLIENT_ID -e DCI_API_SECRET -e DCI_CS_URL'
+        myCmd = myCmd + 'podman run --rm -ti --network host -e DCI_CLIENT_ID -e DCI_API_SECRET -e DCI_CS_URL -e SKIPDOWNLOAD=%s' % args.skip_download
         for key, value in volumes.items():
           myCmd = myCmd + ' -v ' + key + ':' + value
 
