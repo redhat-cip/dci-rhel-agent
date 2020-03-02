@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "48dc511f_2d1dee6b",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-03-02T18:12:29Z",
+      "side": 1,
+      "message": "This will \"only\" make dci-rhel-agent to start a job at boot.",
+      "range": {
+        "startLine": 171,
+        "startChar": 0,
+        "endLine": 171,
+        "endChar": 31
+      },
+      "revId": "7eb2b97d12293c53d97747adf78cde59b2712494",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a466b63_84ef96cd",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-03-02T18:12:29Z",
+      "side": 1,
+      "message": "space to remove.",
+      "range": {
+        "startLine": 242,
+        "startChar": 42,
+        "endLine": 242,
+        "endChar": 43
+      },
+      "revId": "7eb2b97d12293c53d97747adf78cde59b2712494",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3772c563_9794f379",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-03-02T18:12:29Z",
+      "side": 1,
+      "message": "Not necessary here.",
+      "range": {
+        "startLine": 246,
+        "startChar": 0,
+        "endLine": 246,
+        "endChar": 31
+      },
+      "revId": "7eb2b97d12293c53d97747adf78cde59b2712494",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
