@@ -69,14 +69,15 @@ However,`dci-release` and `epel-release` must be installed first:
 ```bash
 # yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 # yum -y install https://packages.distributed-ci.io/dci-release.el7.noarch.rpm
+# subscription-manager repos --enable=rhel-7-server-extras-rpms
+# subscription-manager repos --enable=rhel-7-server-optional-rpms
 # yum -y install dci-rhel-agent
+# yum -y install ansible
 ```
 
 Next, install [Beaker](https://beaker-project.org/). Red Hat DCI maintains a [dedicated Ansible role](https://docs.distributed-ci.io/ansible-playbook-dci-beaker/) to help with this task.
 
 ```bash
-# subscription-manager repos --enable=rhel-7-server-extras-rpms
-# subscription-manager repos --enable=rhel-7-server-optional-rpms
 # su - dci-rhel-agent
 $ git clone https://github.com/redhat-cip/ansible-playbook-dci-beaker
 $ cd ansible-playbook-dci-beaker/
@@ -96,6 +97,8 @@ For more details, read the official [documentation](https://beaker-project.org/d
 There are two configuration files for `dci-rhel-agent`: `/etc/dci-rhel-agent/dcirc.sh` and `/etc/dci-rhel-agent/settings.yml`.
 
   * `/etc/dci-rhel-agent/dcirc.sh`
+
+Note: The initial copy of `dcirc.sh` is shipped as `/etc/dci-rhel-agent/dcirc.sh.dist`. Copy this to `/etc/rhel-agent/dcirc.sh` to get started.
 
 This file has the credential associated to the lab (also kwnown as a `RemoteCI` in the [DCI web dashboard](https://www.distributed-ci.io). The partner team administrator has to create a Remote CI in the DCI web dashboard, copy the relative credential and paste it locally on the Jumpbox to `/etc/dci-rhel-agent/dcirc.sh`.
 
@@ -160,7 +163,22 @@ topics:
       - my.x86_64.system4.local
 ```
 
-### Advanced settings
+## Starting the DCI RHEL Agent and Accessing Beaker
+
+Now that you have configured the DCI RHEL Agent, you need to enable and start the service:
+
+```
+systemctl enable dci-rhel-agent
+systemctl start dci-rhel-agent
+```
+
+You may access Beaker at:
+
+```
+http://<hostname>/bkr
+```
+
+### Further settings
 #### How to target a specific system in Beaker ?
 ##### Single system
 If you have registred several systems in Beaker, you might want to configure where the DCI job will be executed.
@@ -221,15 +239,20 @@ The SSH private key files need to be located in the `/etc/dci-rhel-agent/secrets
 Please leave `[beaker_sut]` group empty.
 
 ## Usage
-To start a single job `dci-rhel-agent`, please use `systemctl start dci-rhel-agent`.
+To start a single DCI RHEL Agent job, run: 
 
-For troubleshooting purposes, launch `dci-rhel-agent` foreground:
+```
+systemctl start dci-rhel-agent
+systemctl enable dci-rhel-agent
+```
+
+To explicitly run a job and for troubleshooting purposes, launch `dci-rhel-agent` in the foreground:
 
 ```bash
 # dci-rhel-agent-ctl --start
 ```
 
-The return code is the number of failed jobs.
+The return code is the number of failed jobs. This is also a good time to go get a coffee as this will take a little while. You may also wish to use screen on RHEL 7 and earlier or tmux on RHEL 8 in order to be able to detach your session and return to it later.
 
 If you need advanced debug, you can spawn a new container with a shell:
 
