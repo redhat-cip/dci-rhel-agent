@@ -22,6 +22,30 @@
       "revId": "0ff29a73d9c838a8991a26db42a668e3745d0909",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d55c1178_4bed1cfe",
+        "filename": "dci-rhel-agent-ctl",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-03-02T20:49:03Z",
+      "side": 1,
+      "message": "Confirmed current setting is correct.  If arg is supplied, value is true.  If arg is not supplied, value is false.",
+      "parentUuid": "e61ef05a_2ea0cec3",
+      "range": {
+        "startLine": 44,
+        "startChar": 25,
+        "endLine": 44,
+        "endChar": 103
+      },
+      "revId": "0ff29a73d9c838a8991a26db42a668e3745d0909",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
