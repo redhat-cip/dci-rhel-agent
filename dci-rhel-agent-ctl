@@ -41,7 +41,7 @@ def main():
     parser.add_argument('-d', '--debug', action='store_true', help="Start a shell in dci-rhel-agent container")
     parser.add_argument('-l', '--local', action='store_true', help="[dev] Mount local ./dci-rhel-agent in the container.")
     parser.add_argument('--build', action='store_true', help="[dev] Build the dci-rhel-agent container.")
-    parser.add_argument('--skip_download', action='store_true', help="Skip the download of RHEL topics.")
+    parser.add_argument('--skip-download', action='store_true', help="Skip the download of RHEL topics.")
 
     args = parser.parse_args()
 
