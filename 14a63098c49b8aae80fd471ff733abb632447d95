@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d27a25ee_2c04416e",
+        "filename": "Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-03-09T22:09:24Z",
+      "side": 1,
+      "message": "We also need beaker-harness repo and package: restraint-client for CKI tests.",
+      "range": {
+        "startLine": 11,
+        "startChar": 2,
+        "endLine": 14,
+        "endChar": 92
+      },
+      "revId": "14a63098c49b8aae80fd471ff733abb632447d95",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
