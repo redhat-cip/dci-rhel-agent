@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa75ff6_b699eff8",
+        "filename": "dci-rhel-agent/dci-rhel-agent.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-03-10T19:41:21Z",
+      "side": 1,
+      "message": "hosts: beaker_sut",
+      "range": {
+        "startLine": 82,
+        "startChar": 9,
+        "endLine": 82,
+        "endChar": 20
+      },
+      "revId": "1b20e62b1087107700041643faaaed87f288d4ac",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
