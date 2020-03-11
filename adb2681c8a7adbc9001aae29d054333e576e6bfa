@@ -22,6 +22,30 @@
       "revId": "adb2681c8a7adbc9001aae29d054333e576e6bfa",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eb3efb6c_a64dba87",
+        "filename": "dci-rhel-agent/dci-rhel-agent.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 606
+      },
+      "writtenOn": "2020-03-11T12:31:31Z",
+      "side": 1,
+      "message": "yes - I\u0027ll add that.",
+      "parentUuid": "d089eed7_a8db8505",
+      "range": {
+        "startLine": 87,
+        "startChar": 10,
+        "endLine": 87,
+        "endChar": 36
+      },
+      "revId": "adb2681c8a7adbc9001aae29d054333e576e6bfa",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
