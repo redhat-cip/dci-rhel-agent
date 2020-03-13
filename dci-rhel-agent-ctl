@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # dci-rhel-agent-ctl controls dci-rhel-agent (start, stop and kill).
+# hihi
 
 import argparse
 import subprocess
@@ -48,7 +49,7 @@ def main():
     global proc
 
     if args.build:
-        myCmd = '/usr/bin/podman build -f Dockerfile -t dci-rhel-agent --no-cache'
+        myCmd = '/usr/bin/podman build -f Dockerfile -t dci-rhel-agent'
         proc = subprocess.Popen(myCmd, shell=True)
         exit (proc.wait())
 
