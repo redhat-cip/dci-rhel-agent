@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # dci-rhel-agent-ctl controls dci-rhel-agent (start, stop and kill).
+# hihi haha 
 
 import argparse
 import subprocess
@@ -48,7 +49,7 @@ def main():
     global proc
 
     if args.build:
-        myCmd = '/usr/bin/podman build -f Dockerfile -t dci-rhel-agent --no-cache'
+        myCmd = '/usr/bin/podman build -f Dockerfile -t dci-rhel-agent'
         proc = subprocess.Popen(myCmd, shell=True)
         exit (proc.wait())
 
@@ -88,7 +89,7 @@ def main():
         }
         # if "-l" is in used, we assume beaker_server to be remote.
         if args.local:
-          volumes['./dci-rhel-agent'] = '/usr/share/dci-rhel-agent'
+          volumes['/home/dci/dci-rhel-agent'] = '/usr/share/dci-rhel-agent'
         else :
           volumes['/etc/beaker'] = '/etc/beaker'
           volumes['/var/lib/tftpboot'] = '/var/lib/tftpboot'
