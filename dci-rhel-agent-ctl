@@ -12,6 +12,7 @@ import yaml
 default_value =	{
   "local_repo": "/var/www/html",
   "settings_path": "/etc/dci-rhel-agent/settings.yml",
+  "hooks_path": "/etc/dci-rhel-agent/hooks",
   "dci_rhel_agent_url":"quay.io/distributedci/dci-rhel-agent:stable"
 }
 
@@ -36,12 +37,13 @@ def load_settings(settings_path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--start', action='store_true', help="Start dci-rhel-agent")
-    parser.add_argument('-c', '--config', action='store', help="Path to config file. Default is `/etc/dci-rhel-agent/settings.yml`.", default=default_value['settings_path'])
-    parser.add_argument('-u', '--url', action='store', help="Url for dci-rhel-agent. Default is `quay.io/distributedci/dci-rhel-agent:stable`.", default=default_value['dci_rhel_agent_url'])
+    parser.add_argument('-c', '--config', action='store', help="Path to config file. Default is `%s`." % default_value['settings_path'], default=default_value['settings_path'])
+    parser.add_argument('-u', '--url', action='store', help="Url for dci-rhel-agent. Default is `%s`." % default_value['dci_rhel_agent_url'], default=default_value['dci_rhel_agent_url'])
     parser.add_argument('-d', '--debug', action='store_true', help="Start a shell in dci-rhel-agent container")
     parser.add_argument('-l', '--local', action='store_true', help="[dev] Mount local ./dci-rhel-agent in the container.")
     parser.add_argument('--build', action='store_true', help="[dev] Build the dci-rhel-agent container.")
     parser.add_argument('--skip-download', action='store_true', help="Skip the download of RHEL topics.")
+    parser.add_argument('--hooks', action='store', help="Path to hooks folder. Default is `%s`." % default_value['hooks_path'], default=default_value['hooks_path'])
 
     args = parser.parse_args()
 
@@ -52,11 +54,9 @@ def main():
         proc = subprocess.Popen(myCmd, shell=True)
         exit (proc.wait())
 
-    if args.config:
-        settings_path = args.config
-
-    if args.url:
-        dci_rhel_agent_url = args.url
+    settings_path = args.config
+    dci_rhel_agent_url = args.url
+    hooks_path = args.hooks
 
     entrypoint = ""
     if args.debug:
@@ -81,7 +81,7 @@ def main():
 
         # Start dci-rhel-agent
         volumes = {
-          '/etc/dci-rhel-agent/hooks':'/etc/dci-rhel-agent/hooks',
+          hooks_path:'/etc/dci-rhel-agent/hooks',
           '/etc/dci-rhel-agent/secrets':'/etc/dci-rhel-agent/secrets',
           '/etc/dci-rhel-agent/inventory':'/etc/dci-rhel-agent/inventory',
           settings_path:'/etc/dci-rhel-agent/settings.yml',

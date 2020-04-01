@@ -1,5 +1,5 @@
 Name:             dci-rhel-agent
-Version:          0.1.2
+Version:          0.2.0
 Release:          1.VERS%{?dist}
 Summary:          The RHEL's DCI agent
 License:          ASL 2.0
@@ -61,6 +61,8 @@ mkdir %{buildroot}%{_sysconfdir}/dci-rhel-agent/secrets
 %dir  %{_sysconfdir}/dci-rhel-agent/secrets
 
 %changelog
+* Wed Apr 1 2020 Guillaume Vincent <gvincent@redhat.com> - 0.2.0-1
+- Add hooks folder support
 * Wed Dec 11 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-8
 - Add suport for external Beaker service
 - Remove Makefile
