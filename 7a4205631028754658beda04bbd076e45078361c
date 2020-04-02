@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4e2020c1_f3d256b7",
+        "filename": "dci-rhel-agent-ctl",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-04-02T01:30:19Z",
+      "side": 1,
+      "message": "Thanks :)",
+      "range": {
+        "startLine": 40,
+        "startChar": 95,
+        "endLine": 40,
+        "endChar": 114
+      },
+      "revId": "7a4205631028754658beda04bbd076e45078361c",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
