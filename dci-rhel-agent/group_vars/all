@@ -4,4 +4,5 @@ local_repo_ip: localhost
 dci_components: []
 dci_config_file: /etc/dci-rhel-agent/settings.yml
 dci_tags: ['debug']
-dci_rhel_agent_cert: true
+dci_rhel_agent_cert: false
+dci_rhel_agent_cki: false

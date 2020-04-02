@@ -83,16 +83,13 @@
   vars:
     dci_status: 'post-run'
   tasks:
-    - block:
-        - name: Launch RHEL CKI Test
-          ignore_errors: yes
-          import_role:
-            name: dci-rhel-cki
-          when:
-            - dci_rhel_agent_cki|bool
-          become: true
-      rescue:
-        - include_tasks: failure.yml
+    - name: Launch RHEL CKI Test
+      ignore_errors: yes
+      import_role:
+        name: dci-rhel-cki
+      when:
+        - dci_rhel_agent_cki|bool
+      become: true
   tags:
       - test
 
