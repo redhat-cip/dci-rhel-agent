@@ -7,6 +7,7 @@ import subprocess
 import signal
 import sys
 import yaml
+import os
 
 # dci-rhel-agent-ctl default values
 default_value =	{
@@ -88,7 +89,8 @@ def main():
         }
         # if "-l" is in used, we assume beaker_server to be remote.
         if args.local:
-          volumes['./dci-rhel-agent'] = '/usr/share/dci-rhel-agent'
+          os.environ.get('LOCAL_SOURCE_PATH', './dci-rhel-agent')
+          volumes[local_source_path] = '/usr/share/dci-rhel-agent'
         else :
           volumes['/etc/beaker'] = '/etc/beaker'
           volumes['/var/lib/tftpboot'] = '/var/lib/tftpboot'
@@ -103,7 +105,8 @@ def main():
         proc = subprocess.Popen(myCmd, shell=True)
         proc.wait()
         sys.exit(proc.returncode)
-
+    else:
+      parser.print_help(sys.stderr)
 
 if __name__ == "__main__":
     main()
