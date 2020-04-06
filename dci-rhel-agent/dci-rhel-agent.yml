@@ -16,6 +16,10 @@
         topic: '{{ topic }}'
       register: job_info
 
+    - name: 'debug dci_job_id'
+      debug:
+        msg: dci_job_id:"{{ job_info['job']['id'] }}"
+
     - name: 'Set global variables'
       set_fact:
         job_id: "{{ job_info['job']['id'] }}"
