@@ -7,6 +7,7 @@ import subprocess
 import signal
 import sys
 import yaml
+import os
 
 # dci-rhel-agent-ctl default values
 default_value =	{
@@ -40,7 +41,7 @@ def main():
     parser.add_argument('-c', '--config', action='store', help="Path to config file. Default is `%s`." % default_value['settings_path'], default=default_value['settings_path'])
     parser.add_argument('-u', '--url', action='store', help="Url for dci-rhel-agent. Default is `%s`." % default_value['dci_rhel_agent_url'], default=default_value['dci_rhel_agent_url'])
     parser.add_argument('-d', '--debug', action='store_true', help="Start a shell in dci-rhel-agent container")
-    parser.add_argument('-l', '--local', action='store_true', help="[dev] Mount local ./dci-rhel-agent in the container.")
+    parser.add_argument('-l', '--local', action='store_true', help="[dev] Mount local directory `./dci-rhel-agent` in the container. This path can be overridden with env var `LOCAL_SOURCE_PATH`.")
     parser.add_argument('--build', action='store_true', help="[dev] Build the dci-rhel-agent container.")
     parser.add_argument('--skip-download', action='store_true', help="Skip the download of RHEL topics.")
     parser.add_argument('--hooks', action='store', help="Path to hooks folder. Default is `%s`." % default_value['hooks_path'], default=default_value['hooks_path'])
@@ -88,7 +89,8 @@ def main():
         }
         # if "-l" is in used, we assume beaker_server to be remote.
         if args.local:
-          volumes['./dci-rhel-agent'] = '/usr/share/dci-rhel-agent'
+          local_source_path = os.environ.get('LOCAL_SOURCE_PATH', './dci-rhel-agent')
+          volumes[local_source_path] = '/usr/share/dci-rhel-agent'
         else :
           volumes['/etc/beaker'] = '/etc/beaker'
           volumes['/var/lib/tftpboot'] = '/var/lib/tftpboot'
@@ -103,7 +105,8 @@ def main():
         proc = subprocess.Popen(myCmd, shell=True)
         proc.wait()
         sys.exit(proc.returncode)
-
+    else:
+      parser.print_help(sys.stderr)
 
 if __name__ == "__main__":
     main()
