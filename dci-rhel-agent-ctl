@@ -13,7 +13,8 @@ default_value =	{
   "local_repo": "/var/www/html",
   "settings_path": "/etc/dci-rhel-agent/settings.yml",
   "hooks_path": "/etc/dci-rhel-agent/hooks",
-  "dci_rhel_agent_url":"quay.io/distributedci/dci-rhel-agent:stable"
+  "dci_rhel_agent_url":"quay.io/distributedci/dci-rhel-agent:stable",
+  "local_path": "/home/dci/dci-rhel-agent/dci-rhel-agent"
 }
 
 proc = None
@@ -40,8 +41,8 @@ def main():
     parser.add_argument('-c', '--config', action='store', help="Path to config file. Default is `%s`." % default_value['settings_path'], default=default_value['settings_path'])
     parser.add_argument('-u', '--url', action='store', help="Url for dci-rhel-agent. Default is `%s`." % default_value['dci_rhel_agent_url'], default=default_value['dci_rhel_agent_url'])
     parser.add_argument('-d', '--debug', action='store_true', help="Start a shell in dci-rhel-agent container")
-    parser.add_argument('-l', '--local', action='store_true', help="[dev] Mount local ./dci-rhel-agent in the container.")
-    parser.add_argument('--build', action='store_true', help="[dev] Build the dci-rhel-agent container.")
+    parser.add_argument('-l', '--local', action='store', help="Mount local path in the container. Default is `%s`." % default_value['local_path'], default=default_value['local_path'])
+    parser.add_argument('--build', action='store_true', help="Build the dci-rhel-agent container.")
     parser.add_argument('--skip-download', action='store_true', help="Skip the download of RHEL topics.")
     parser.add_argument('--hooks', action='store', help="Path to hooks folder. Default is `%s`." % default_value['hooks_path'], default=default_value['hooks_path'])
 
@@ -88,7 +89,7 @@ def main():
         }
         # if "-l" is in used, we assume beaker_server to be remote.
         if args.local:
-          volumes['./dci-rhel-agent'] = '/usr/share/dci-rhel-agent'
+          volumes[local_path] = '/usr/share/dci-rhel-agent'
         else :
           volumes['/etc/beaker'] = '/etc/beaker'
           volumes['/var/lib/tftpboot'] = '/var/lib/tftpboot'
@@ -103,7 +104,8 @@ def main():
         proc = subprocess.Popen(myCmd, shell=True)
         proc.wait()
         sys.exit(proc.returncode)
-
+    else:
+      parser.print_help(sys.stderr)
 
 if __name__ == "__main__":
     main()
