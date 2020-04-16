@@ -60,12 +60,6 @@
     mime: 'text/xml'
     job_id: '{{ hostvars.localhost.job_id }}'
 
-- name: Upload wait.py to Beaker server
-  copy:
-    src: "{{ playbook_dir }}/wait.py"
-    dest: /tmp/wait.py
-    mode: '0755'
-
 - name: Launch Beaker install
   shell: "bkr job-submit {{ beaker_xml }}"
   register: bkr_jobid
@@ -76,5 +70,7 @@
     bkrjobid: "{{ bkr_jobid.stdout | regex_replace(\".*\\s\\[\\'(.*)\\'\\]\",'\\1') }}"
 
 - name: Wait system to be installed
-  shell: "/tmp/wait.py {{ bkrjobid }}"
+  bkr_info:
+    job_id: "{{ bkrjobid }}"
+    task: "/distribution/check-install"
   become: true
