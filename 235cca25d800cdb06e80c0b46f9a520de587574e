@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e2f2ee25_84a88b71",
+        "filename": "dci-rhel-agent.spec",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 606
+      },
+      "writtenOn": "2020-04-16T20:45:24Z",
+      "side": 1,
+      "message": "Shouldn\u0027t we still use the macros for all these other services??\n\n%post\n%systemd_post apache-httpd.service\n\n%preun\n%systemd_preun apache-httpd.service\n\n%postun\n%systemd_postun_with_restart apache-httpd.service",
+      "revId": "235cca25d800cdb06e80c0b46f9a520de587574e",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
