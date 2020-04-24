@@ -13,7 +13,7 @@ RUN yum upgrade -y && \
   yum -y install gcc ansible python python2-devel python2-pip beaker-client beaker-lab-controller \
                  ansible-role-dci-import-keys ansible-role-dci-retrieve-component \
                  dci-ansible ansible-role-dci-rhel-certification rsync \
-                 ansible-role-dci-rhel-cki git restraint-client && \
+                 ansible-role-dci-rhel-cki git restraint-client beaker-common && \
   yum clean all
 
 ADD dci-rhel-agent /usr/share/dci-rhel-agent/
