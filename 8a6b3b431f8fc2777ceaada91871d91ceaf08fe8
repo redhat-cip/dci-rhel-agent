@@ -1,0 +1,9 @@
+Verified+1: dci-ci-bot <dci-ci-bot@redhat.com>
+Workflow+1: Bill Peck <bill@pecknet.com>
+Code-Review+2: Thomas Vassilian <tvassili@redhat.com>
+Verified+2: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-by: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-at: Mon, 04 May 2020 02:43:26 +0000
+Reviewed-on: https://softwarefactory-project.io/r/18155
+Project: dci-rhel-agent
+Branch: refs/heads/master
