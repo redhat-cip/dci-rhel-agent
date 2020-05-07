@@ -8,18 +8,23 @@ BuildArch:        noarch
 Source0:          dci-rhel-agent-%{version}.tar.gz
 
 BuildRequires:    systemd
-BuildRequires:    systemd-units
+%if 0%{?rhel} && 0%{?rhel} < 8
 BuildRequires:    PyYAML
+%else
+BuildRequires:    python3-pyyaml
+%endif
 
 Requires(pre):    shadow-utils
-Requires(post):   systemd
-Requires(preun):  systemd
-Requires(postun): systemd
+%{?systemd_requires}
 
 Requires:         podman
 Requires:         make
 Requires:         dci-downloader
+%if 0%{?rhel} && 0%{?rhel} < 8
 Requires:         PyYAML
+%else
+Requires:         python3-pyyaml
+%endif
 
 %description
 The RHEL's DCI agent
