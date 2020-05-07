@@ -8,18 +8,25 @@ BuildArch:        noarch
 Source0:          dci-rhel-agent-%{version}.tar.gz
 
 BuildRequires:    systemd
-BuildRequires:    systemd-units
+BuildRequires:    /usr/bin/pathfix.py
+%if 0%{?rhel} && 0%{?rhel} < 8
+BuildRequires:    python2-devel
 BuildRequires:    PyYAML
+%else
+BuildRequires:    python3-devel
+BuildRequires:    python3-pyyaml
+%endif
 
-Requires(pre):    shadow-utils
-Requires(post):   systemd
-Requires(preun):  systemd
-Requires(postun): systemd
+%{?systemd_requires}
 
 Requires:         podman
 Requires:         make
 Requires:         dci-downloader
+%if 0%{?rhel} && 0%{?rhel} < 8
 Requires:         PyYAML
+%else
+Requires:         python3-pyyaml
+%endif
 
 %description
 The RHEL's DCI agent
@@ -38,9 +45,11 @@ install -p -D -m 644 hooks/user-tests.yml %{buildroot}%{_sysconfdir}/dci-rhel-ag
 install -p -D -m 755 dci-rhel-agent-ctl %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 mkdir %{buildroot}%{_sysconfdir}/dci-rhel-agent/secrets
 
-%clean
-
-%pre
+%if 0%{?rhel} && 0%{?rhel} < 8
+pathfix -pni "%{__python2}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
+%else
+pathfix -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
+%endif
 
 %post
 %systemd_post %{name}.service
