@@ -58,6 +58,19 @@
       rescue:
         - include_tasks: failure.yml
 
+- name: 'Launch pre-run'
+  hosts: localhost
+  tags:
+    - pre-run
+  vars:
+    dci_status: 'pre-run'
+  tasks:
+    - block:
+        - name: Run the pre-run hook
+          include_tasks: '/etc/dci-rhel-agent/hooks/pre-run.yml'
+      rescue:
+        - include_tasks: failure.yml
+
 - name: Install RHEL on SUT
   hosts: beaker_server
   gather_facts: no

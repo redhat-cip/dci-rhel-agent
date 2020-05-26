@@ -7,6 +7,7 @@
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
+- [How to execute tasks before SUT deployment](#how-to-execute-tasks-before-SUT-deployment)
 - [How to run your own set of tests](#how-to-run-your-own-set-of-tests)
 - [Create your DCI account on distributed-ci.io](#create-your-dci-account-on-distributed-ciio)
 - [License](#license)
@@ -267,6 +268,11 @@ If you need advanced debug, you can spawn a new container with a shell:
 [container]# ./entrypoint.py
 [container]# dcictl topic-list
 ```
+
+
+## How to execute tasks before SUT deployment ?
+By default, `dci-rhel-agent` provides an empty Ansible list of tasks located at `/etc/dci-rhel-agent/hooks/pre-run.yml`.
+It can be modified to include any task needed to run **before** the system Under Test is provisionned for the job. 
 
 ## How to run your own set of tests ?
 By default, `dci-rhel-agent` provides an empty Ansible list of tasks located at `/etc/dci-rhel-agent/hooks/user-tests.yml`.

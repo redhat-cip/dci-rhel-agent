@@ -42,6 +42,7 @@ install -p -D -m 644 dcirc.sh.dist %{buildroot}%{_sysconfdir}/dci-rhel-agent/dci
 install -p -D -m 644 inventory %{buildroot}%{_sysconfdir}/dci-rhel-agent/inventory
 install -p -D -m 644 settings.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/settings.yml
 install -p -D -m 644 hooks/user-tests.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
+install -p -D -m 644 hooks/pre-run.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/pre-run.yml
 install -p -D -m 755 dci-rhel-agent-ctl %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 mkdir %{buildroot}%{_sysconfdir}/dci-rhel-agent/secrets
 
@@ -67,6 +68,7 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/settings.yml
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/inventory
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
+%config(noreplace) %{_sysconfdir}/dci-rhel-agent/hooks/pre-run.yml
 %dir  %{_sysconfdir}/dci-rhel-agent/secrets
 
 %changelog
