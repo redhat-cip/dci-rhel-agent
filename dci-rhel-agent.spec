@@ -72,6 +72,8 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 %dir  %{_sysconfdir}/dci-rhel-agent/secrets
 
 %changelog
+* Wed Jun 3 2020 Michael Burke <miburke@redhat.com> - 0.2.0-2
+- Update dci-rhel-agent to execute tasks iver ssh
 * Wed Apr 1 2020 Guillaume Vincent <gvincent@redhat.com> - 0.2.0-1
 - Add hooks folder support
 * Wed Dec 11 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-8
