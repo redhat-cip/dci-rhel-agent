@@ -11,7 +11,6 @@ import os
 
 # dci-rhel-agent-ctl default values
 default_value =	{
-  "local_repo": "/var/www/html",
   "settings_path": "/etc/dci-rhel-agent/settings.yml",
   "hooks_path": "/etc/dci-rhel-agent/hooks",
   "dci_rhel_agent_url":"quay.io/distributedci/dci-rhel-agent:stable"
@@ -65,11 +64,6 @@ def main():
 
     if args.start:
         settings = load_settings(settings_path)
-        if 'local_repo' in settings.keys():
-            local_repo = settings['local_repo']
-        else:
-            print ("local_repo is NOT set in %s. Using default value." % default_value['local_repo'])
-            local_repo = default_value['local_repo']
 
         if args.debug is False and args.local is False:
           # Start dci-rhel-agent update
@@ -91,10 +85,6 @@ def main():
         if args.local:
           local_source_path = os.environ.get('LOCAL_SOURCE_PATH', './dci-rhel-agent')
           volumes[local_source_path] = '/usr/share/dci-rhel-agent'
-        else :
-          volumes['/etc/beaker'] = '/etc/beaker'
-          volumes['/var/lib/tftpboot'] = '/var/lib/tftpboot'
-          volumes[local_repo] = local_repo
 
         myCmd = 'source /etc/dci-rhel-agent/dcirc.sh && '
         myCmd = myCmd + 'podman run --rm -ti --network host -e DCI_CLIENT_ID -e DCI_API_SECRET -e DCI_CS_URL -e SKIP_DOWNLOAD=%s' % args.skip_download

@@ -1,0 +1,21 @@
+---
+hosts: localhost
+gather_facts: false
+- stat:
+    path: '/etc/dci-rhel-agent/secrets/id_rsa'
+    register: check_id_rsa
+- openssh_keypair:
+    path: '/etc/dci-rhel-agent/secrets/id_rsa'
+    when: check_id_rsa.stat.exists == False
+
+# - name: Update settings file from version 0 to version 1
+#     hosts: localhost
+#     gather_facts: false
+#     tasks:
+
+#      To do:
+#        - Migration taks from 0 to 1
+#        - Generate ssh keys if not present
+#        - Add "version=1" to `settings.yml`
+
+#       when: version is not defined
