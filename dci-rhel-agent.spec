@@ -54,6 +54,7 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 
 %post
 %systemd_post %{name}.service
+#if ! test -f /etc/dci-rhel-agent/secrets/id_rsa; then yes y | ssh-keygen -t rsa -N "" -f /etc/dci-rhel-agent/secrets/id_rsa; fi
 
 %preun
 %systemd_preun %{name}.service
@@ -72,6 +73,8 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 %dir  %{_sysconfdir}/dci-rhel-agent/secrets
 
 %changelog
+* Wed Jun 3 2020 Michael Burke <miburke@redhat.com> - 0.2.0-2
+- Add creation of ssh key if one does not exist
 * Wed Apr 1 2020 Guillaume Vincent <gvincent@redhat.com> - 0.2.0-1
 - Add hooks folder support
 * Wed Dec 11 2019 Thomas Vassilian <tvassili@redhat.com> - 0.1.2-8
