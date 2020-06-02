@@ -95,6 +95,10 @@ For more details, read the official [documentation](https://beaker-project.org/d
 
 ## Configuration
 
+In order to ensure the agent is able to connect to all applicable hosts, please copy the ssh key located in /etc/dci-rhel-agent/secrets/id_rsa to the hosts running Beaker and dnsmasq.  Normally, these will be on the same machine running the agent.
+```console
+ssh-copy-id -i /etc/dci-rhel-agent/secrets/id_rsa <user>@<host>
+```
 There are two configuration files for `dci-rhel-agent`: `/etc/dci-rhel-agent/dcirc.sh` and `/etc/dci-rhel-agent/settings.yml`.
 
   * `/etc/dci-rhel-agent/dcirc.sh`
@@ -114,6 +118,9 @@ export DCI_CLIENT_ID
 export DCI_API_SECRET
 export DCI_CS_URL
 ```
+
+* `/etc/dci-rhel-agent/inventory`
+This file should be edited once upon installation.  The ansible_host (set to 192.168.1.1 as delivered) should be updated to the IP of the machine running the DCI RHEL agent.
 
 * `/etc/dci-rhel-agent/settings.yml`
 
