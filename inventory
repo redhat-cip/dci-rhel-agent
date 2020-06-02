@@ -1,15 +1,7 @@
-
-# By default, beaker_server is local.
-# If you use an external Beaker service (not along the dci-rhel-agent),
-# please configure the Ansible connexion NOT to be local.
+#Please ensure the ansible_host is set to the IP of the machine where the DCI RHEL agent is running
 #
-# As dci-rhel-agent use a container, please ensure ssh key is located
-# at `/etc/dci-rhel-agent/secrets/id_rsa` if needed.
-# ie:
-# beaker_server ansible_host=10.150.70.1 ansible_ssh_user=root ansible_ssh_private_key_file=/etc/dci-rhel-agent/secrets/id_rsa
+beaker_server ansible_host=192.168.1.1 ansible_ssh_user=root ansible_ssh_private_key_file=/etc/dci-rhel-agent/secrets/id_rsa
 #
-
-beaker_server ansible_connection=local
 
 # The [beaker_sut] is empty. Do not touch.
 # Add SUT via settings.yml.

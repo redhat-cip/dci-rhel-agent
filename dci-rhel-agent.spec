@@ -54,6 +54,7 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 
 %post
 %systemd_post %{name}.service
+yes y | ssh-keygen -t rsa -N "" -f /etc/dci-rhel-agent/secrest/id_rsa
 
 %preun
 %systemd_preun %{name}.service
