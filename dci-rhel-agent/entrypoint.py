@@ -60,7 +60,7 @@ def load_settings():
 
 
 def provision_and_test(extravars):
-    # # Path is static in the container
+    # Path is static in the container
     # local_repo = '/var/www/html'
     # extravars['local_repo'] = local_repo
 
@@ -76,6 +76,17 @@ def provision_and_test(extravars):
             print ('The dci-rhel-agent is configured in download-only mode.')
             sys.exit(0)
 
+    # 1. Run the update playbook
+    r = ansible_runner.run(
+        private_data_dir="/usr/share/dci-rhel-agent/",
+        inventory="/etc/dci-rhel-agent/inventory",
+        verbosity=1,
+        playbook="dci-update.yml",
+        extravars=extravars,
+        quiet=False
+    )
+
+    # 2. Download and import Compose
     r = ansible_runner.run(
         private_data_dir="/usr/share/dci-rhel-agent/",
         inventory="/etc/dci-rhel-agent/inventory",
@@ -88,6 +99,7 @@ def provision_and_test(extravars):
         print ("Distro(s) import in Beaker has failed. {}: {}".format(r.status, r.rc))
         sys.exit(1)
 
+    # 3. Provision and install SUT
     if 'systems' not in extravars.keys():
         print ('No hosts found in settings. You should configure download-only mode or add systems[].')
         sys.exit(1)
