@@ -1,0 +1,12 @@
+---
+# - name: Update settings file from version 0 to version 1
+#     hosts: localhost
+#     gather_facts: false
+#     tasks:
+
+#      To do:
+#        - Migration taks from 0 to 1
+#        - Generate ssh keys if not present
+#        - Add "version=1" to `settings.yml`
+
+#       when: version_settings is is not defined

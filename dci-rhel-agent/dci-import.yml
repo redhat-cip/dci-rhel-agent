@@ -15,6 +15,7 @@
   hosts: beaker_server
   gather_facts: no
   tasks:
+    # note for later, we need to fix this ...
     - name: Create a temporary file
       tempfile:
         state: file
