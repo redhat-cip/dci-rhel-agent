@@ -33,7 +33,6 @@
         mode: pull
         private_key: '/etc/dci-rhel-agent/secrets/id_rsa'
       delegate_to: localhost
-      when: hostvars.beaker_server['ansible_connection'] is not defined
 
     - name: Synchronize artifacts directory from Beaker server to dci-rhel-agent
       synchronize:
@@ -42,7 +41,6 @@
         mode: pull
         private_key: '/etc/dci-rhel-agent/secrets/id_rsa'
       delegate_to: localhost
-      when: hostvars.beaker_server['ansible_connection'] is not defined
 
     - name: Upload logs directory to DCI Control Server
       delegate_to: localhost

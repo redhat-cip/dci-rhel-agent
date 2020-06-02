@@ -21,19 +21,16 @@
         prefix: "dci_"
         suffix: _settings.yml
       register: setting_yml
-      when: hostvars.beaker_server['ansible_connection'] is not defined
 
     - name: Upload settings.yml to Beaker server
       copy:
         src: '/etc/dci-rhel-agent/settings.yml'
         dest: "{{ setting_yml.path }}"
         mode: '0755'
-      when: hostvars.beaker_server['ansible_connection'] is not defined
 
     - name: Configure settings path
       set_fact:
         dci_config_file: "{{ setting_yml.path }}"
-      when: hostvars.beaker_server['ansible_connection'] is not defined
 
     - name: Start dci-downloader
       environment:
@@ -48,8 +45,11 @@
       shell: beaker-import -v --ignore-missing-tree-compose "http://{{ local_repo_ip }}/{{ topic }}/compose/"
       become: true
 
+    - name: Start beaker-repo-update
+      shell: beaker-repo-update
+      become: true
+
     - name: Delete the temporary file
       file:
         path: "{{ setting_yml.path }}"
         state: absent
-      when: hostvars.beaker_server['ansible_connection'] is not defined

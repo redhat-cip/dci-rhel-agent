@@ -8,12 +8,10 @@ ENV LANG en_US.UTF-8
 
 RUN yum upgrade -y && \
   yum -y install epel-release https://packages.distributed-ci.io/dci-release.el7.noarch.rpm && \
-  yum-config-manager --add-repo https://beaker-project.org/yum/beaker-server-RedHatEnterpriseLinux.repo && \
-  yum-config-manager --add-repo https://beaker-project.org/yum/beaker-harness-CentOS.repo && \
-  yum -y install gcc ansible python python2-devel python2-pip beaker-client beaker-lab-controller \
+  yum -y install gcc ansible python python2-devel python2-pip \
                  ansible-role-dci-import-keys ansible-role-dci-retrieve-component \
                  dci-ansible ansible-role-dci-rhel-certification rsync \
-                 ansible-role-dci-rhel-cki git restraint-client beaker-common && \
+                 ansible-role-dci-rhel-cki git && \
   yum clean all
 
 ADD dci-rhel-agent /usr/share/dci-rhel-agent/
