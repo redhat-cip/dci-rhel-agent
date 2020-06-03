@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a9692960_4524817f",
+        "filename": "dci-rhel-agent.spec",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-06-03T15:23:06Z",
+      "side": 1,
+      "message": "I am wondering if this will be executed each time the RPM is updated ?",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 69
+      },
+      "revId": "39d9062baef53e2a9602571f6415073394636c75",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
