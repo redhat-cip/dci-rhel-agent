@@ -121,6 +121,18 @@ def main():
         sys.exit(1)
     # Read the settings file
     sets = load_settings()
+    # Run the update playbook once before jobs.
+    r = ansible_runner.run(
+        private_data_dir="/usr/share/dci-rhel-agent/",
+        inventory="/etc/dci-rhel-agent/inventory",
+        verbosity=1,
+        playbook="dci-update.yml",
+        extravars=sets,
+        quiet=False
+    )
+    if r.rc != 0:
+        print ("Update playbook failed. {}: {}".format(r.status, r.rc))
+        sys.exit(1)
     # Check if the settings contain multiple topics and process accordingly
     if 'topics' in sets:
         # Break up settings file into individual jobs by topic
