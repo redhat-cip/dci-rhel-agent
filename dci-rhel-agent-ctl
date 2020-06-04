@@ -71,6 +71,8 @@ def main():
         else:
             print ("local_repo is NOT set in %s. Using default value." % default_value['local_repo'])
             local_repo = default_value['local_repo']
+        if 'beaker_lab' not in settings.keys():
+            print ("beaker_lab was not found in settings.yml.  Beaker server updates and SUT management will NOT be performed.")
 
         # If agent is NOT in dev/debug mode, update automatically.
         if args.debug is False and args.local is False:
