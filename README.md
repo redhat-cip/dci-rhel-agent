@@ -132,6 +132,10 @@ The possible values are:
 | variants | False | List of string | List of RHEL 8.x variant to enable (AppStream, BaseOS, CRB, HighAvailability, NFV, RT, ResilientStorage, SAP, SAPHANA and unified). |
 | archs | False | List of string | CPU arch to enable (aarch64, ppc64le, s390x and x86_64). |
 | with_debug | False | True/False | Use RPM with debug symbols.  |
+| beaker_lab.dhcp_start | False | IP | Starting IP address range to assign to DCI test systems via DHCP. |
+| beaker_lab.dhcp_end | False | IP | Ending IP address range to assigne to DCI test systems via DHCP. |
+| beaker_lab.jumpbox_fqdn | False | FQDN | FQDN of DCI lab jumpbox. |
+| system_inventory | False | various | List of all DCI tests systems and corresponding Beaker information |
 Example:
 
 ```console
@@ -163,6 +167,53 @@ topics:
       - my.x86_64.system2.local
       - my.x86_64.system3.local
       - my.x86_64.system4.local
+beaker_lab:
+  dhcp_start: 192.168.1.20
+  dhcp_end: 192.168.1.30
+  dhcp_netmask: 255.255.255.0
+
+  jumpbox_fqdn: dci-jumpbox
+
+  system_inventory:
+    test.x86.sut1:
+      ip_address: 192.168.1.20
+      mac: aa:bb:cc:dd:ee:ff
+      arch: x86_64
+      power_address: sut1.power.address
+      power_user: p_user1
+      power_password: p_pass1
+      # Power ID depends on which power type is selected.  Typically this field identifies
+      # a particular plug, socket, port, or virtual guest name. Defaults to fqdn when not
+      # specified here
+      #power_id:
+      power_type: ipmilan
+    test.x86.sut2
+      ip_address: 192.168.1.21
+      mac: ff:ee:dd:cc:bb:aa
+      arch: x86_64
+      power_address: sut2.power.address
+      power_user: p_user2
+      power_password: p_pass2
+      #power_id:
+      power_type: wti
+    test.ppc.sut3
+      ip_address: 192.168.1.23
+      mac: aa:cc:bb:dd:ee:ff
+      arch: ppc64le
+      power_address: sut4.power.address
+      power_user: p_user4
+      power_password: p_pass4
+      #power_id:
+      power_type: apc_snmp
+    test.ppc.sut4
+      ip_address: 192.168.1.24
+      mac: aa:cc:bb:dd:ee:ff
+      arch: ppc64le
+      power_address: sut5.power.address
+      power_user: p_user5
+      power_password: p_pass5
+      #power_id:
+      power_type: apc_snmp
 ```
 
 ## Starting the DCI RHEL Agent and Accessing Beaker
@@ -202,7 +253,7 @@ systems:
 
 Please note that all FQDN must resolve locally on the DCI jumpbox. If you don't have proper DNS records, please update `/etc/hosts` then reload `dnsmasq` service.  Also, the supported architecture of the systems must be entered in Beaker in order for the agent to properly provision a system with the correct architecture.
 
-Please also note that the RHEL agent does not currently support concurrent provisioning.  Running two instances of the agent simultaneously will cause installation issues on the systems under test.  This feature will be added in the near future and this readme will be updated to reflect the support.
+Please also note that the RHEL agent does not currently support concurrent provisioning of different topics.  All provision jobs in the same topic will run concurrently, but each topic will run consecutively.  Running two instances of the agent simultaneously will cause installation issues on the systems under test.  This feature will be added in the near future and this readme will be updated to reflect the support.
 
 #### How to skip Red Hat Certification tests ?
 Some users might want to skip the certification tests suite. This can be done via `settings.yml` file by adding `dci_rhel_agent_cert: false`.
@@ -226,10 +277,6 @@ Please note the XML file has to be in `/etc/dci-rhel-agent/hooks/` directory.
 
 #### How to use an external Beaker service ?
 It is possible to configure the `dci-rhel-agent` to use an external Beaker service (therefore not to use the Beaker service that runs on the `dci-jumpbox`).
-
-In this case, you can adapt directly the Ansible inventory file (`/etc/dci-rhel-agent/inventory`) of the agent.
-Change the connexion line for the host `beaker_server`.
-By default, it is configured `ansible_connection=local`.
 
 For example:
 
