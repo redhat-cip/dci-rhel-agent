@@ -1,0 +1,50 @@
+---
+- name: Update Beaker server config
+  hosts: beaker_server
+  gather_facts: false
+  tasks:
+
+    - name: Update beaker.conf file
+      template:
+        src: /usr/share/dci-rhel-agent/templates/beaker.conf.j2
+        dest: /etc/dnsmasq.d/beaker.conf
+      register: beaker_file_update
+
+    - name: Update hosts file with any new systems
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars.localhost.beaker_lab.system_inventory[item.key].ip_address }} {{ item.key }}"
+      loop: "{{ lookup('dict', hostvars.localhost.beaker_lab['system_inventory']) }}"
+      register: hosts_file_update
+
+    - name: Restart dnsmasq if any config files were changed
+      service:
+        name: dnsmasq
+        state: restarted
+      when: beaker_file_update.changed or hosts_file_update.changed
+
+    - name: Query systems list
+      command: bkr system-list
+      register: bkr_systems
+      changed_when: false
+      become: true
+      failed_when: false
+
+    - debug:
+        msg: "Current Beaker Systems: {{ bkr_systems.stdout_lines }}"
+
+    - name: Create any systems in Beaker which were not already present
+      command: >
+        bkr system-create
+        --lab-controller={{ hostvars.localhost.beaker_lab.jumpbox_fqdn }}
+        --arch={{ hostvars.localhost.beaker_lab.system_inventory[item.key].arch }}
+        --power-type={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_type }}
+        --power-address={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_address }}
+        --power-user={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_user }}
+        --power-password={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_password }}
+        --power-id={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_id | default(item.key) }}
+        --condition=Automated
+        {{ item.key }}
+      when: item.key not in bkr_systems.stdout_lines
+      become: true
+      loop: "{{ lookup('dict', hostvars.localhost.beaker_lab.system_inventory) }}"

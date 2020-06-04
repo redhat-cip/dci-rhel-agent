@@ -1,0 +1,18 @@
+dhcp-range={{ hostvars.localhost.beaker_lab.dhcp_start }},{{ hostvars.localhost.beaker_lab.dhcp_end }},{{ hostvars.localhost.beaker_lab.dhcp_netmask }}
+dhcp-ignore=tag:!known
+dhcp-option=option:router,{{ hostvars.localhost.local_repo_ip }}
+
+# Use this server as a time and name server for machines in the lab
+dhcp-option=option:dns-server,0.0.0.0
+dhcp-option=option:ntp-server,0.0.0.0
+
+enable-tftp
+tftp-root=/var/lib/tftpboot
+dhcp-boot=pxelinux.0
+
+# Use a combination of /etc/ethers & /etc/hosts instead of this ?
+{% for system in beaker_lab.system_inventory %}
+dhcp-host={{ hostvars.localhost.beaker_lab.system_inventory[system].mac }},{{ system }},{{ hostvars.localhost.beaker_lab.system_inventory[system].ip_address }}
+{% endfor %}
+
+# vim: set ft=dnsmasq:

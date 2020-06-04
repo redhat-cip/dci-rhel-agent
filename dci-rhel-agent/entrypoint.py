@@ -58,6 +58,18 @@ def load_settings():
             print(exc)
             sys.exit(1)
 
+def configure_beaker_server(extravars):
+    r = ansible_runner.run(
+        private_data_dir="/usr/share/dci-rhel-agent/",
+        inventory="/etc/dci-rhel-agent/inventory",
+        verbosity=1,
+        playbook="dci-update.yml",
+        extravars=extravars,
+        quiet=False
+    )
+    if r.rc != 0:
+        print("Error: Unable to ensure proper configuration of DCI jumpbox, exiting...")
+        sys.exit(1)
 
 def provision_and_test(extravars):
     # # Path is static in the container
@@ -126,6 +138,8 @@ def main():
         sys.exit(1)
     # Read the settings file
     sets = load_settings()
+    # Ensure Beaker Server is configured correctly before provisioning SUTs
+    configure_beaker_server(sets)
     # Check if the settings contain multiple topics and process accordingly
     if 'topics' in sets:
         # Break up settings file into individual jobs by topic
