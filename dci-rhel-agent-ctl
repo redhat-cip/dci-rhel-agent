@@ -70,6 +70,9 @@ def main():
         else:
             print ("local_repo is NOT set in %s. Using default value." % default_value['local_repo'])
             local_repo = default_value['local_repo']
+        if 'beaker_lab' not in settings.keys():
+            print ("beaker_lab was not found in settings.yml.  Please ensure you are using the latest settings file configuration")
+            sys.exit(1)
 
         if args.debug is False and args.local is False:
           # Start dci-rhel-agent update
@@ -93,7 +96,6 @@ def main():
           volumes[local_source_path] = '/usr/share/dci-rhel-agent'
         else :
           volumes['/etc/beaker'] = '/etc/beaker'
-          volumes['/var/lib/tftpboot'] = '/var/lib/tftpboot'
           volumes[local_repo] = local_repo
 
         myCmd = 'source /etc/dci-rhel-agent/dcirc.sh && '
