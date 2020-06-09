@@ -1,0 +1,17 @@
+dhcp-range={{ hostvars.localhost.beaker_lab.dhcp_start }},{{ hostvars.localhost.beaker_lab.dhcp_end }},255.255.255.0
+dhcp-ignore=tag:!known
+dhcp-option=option:router,{{ hostvars.localhost.beaker_lab.jumpbox_ip }}
+
+# Use this server as a time and name server for machines in the lab
+dhcp-option=option:dns-server,0.0.0.0
+dhcp-option=option:ntp-server,0.0.0.0
+
+{% for system in hostvars.localhost.beaker_lab.system_inventory %}
+dhcp-boot=tag:{{ system }}_boot,bootloader/{{ system }}/image,{{ hostvars.localhost.beaker_lab.jumpbox_ip }}
+{% endfor %}
+
+{% for system in hostvars.localhost.beaker_lab.system_inventory %}
+dhcp-host={{ hostvars.localhost.beaker_lab.system_inventory[system].mac }},{{ system }},{{ hostvars.localhost.beaker_lab.system_inventory[system].ip_address }},set:{{ system }}_boot
+{% endfor %}
+
+# vim: set ft=dnsmasq:

@@ -1,0 +1,94 @@
+---
+- name: Update Beaker server config
+  hosts: beaker_server
+  gather_facts: false
+  tasks:
+    - name: Ensure an ssh key exists
+      stat:
+        path: '/etc/dci-rhel-agent/secrets/id_rsa'
+      register: check_id_rsa
+
+    - name: Create an ssh keypair if one does not exist
+      openssh_keypair:
+        path: '/etc/dci-rhel-agent/secrets/id_rsa'
+        comment: 'self-generated@dci-rhel-agent'
+      when: check_id_rsa.stat.exists == False
+
+    - name: Ensure dnsmasq, tftp, xinetd installed
+      package:
+        name: {{ item }}
+      with_items:
+        - dnsmasq
+        - tftp
+        - tftp-server
+        - xinetd
+
+    - name: Verify xinetd tftp config file exists
+      stat:
+        path: /etc/xinetd.d/tftp
+      register: tftp_cfg
+
+    - name: Update xinetd tftp config to enable tftp
+      lineinfile:
+        path: /etc/xinetd.d/tftp
+        regexp: 'disable\s*= yes'
+        line: '        disable                 = no'
+      when: tftp_cfg.stat.exists
+      register: tftp_cfg_updated
+
+    - name: Restart and enable tftp, and xinetd packages when cfg updated
+      service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      with_items:
+        - tftp
+        - xinetd
+      when: tftp_cfg_updated
+
+    - name: Update beaker.conf file
+      template:
+        src: /usr/share/dci-rhel-agent/templates/beaker.conf.j2
+        dest: /etc/dnsmasq.d/beaker.conf
+      register: beaker_file_update
+      when: hostvars.localhost.beaker_lab is defined
+
+    - name: Update hosts file with any new systems
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars.localhost.beaker_lab.system_inventory[item.key].ip_address }} {{ item.key }}"
+      loop: "{{ q('dict', hostvars.localhost.beaker_lab['system_inventory'] | default({})) }}"
+      register: hosts_file_update
+      when: hostvars.localhost.beaker_lab is defined
+
+    - name: Restart dnsmasq if any config files were changed
+      service:
+        name: dnsmasq
+        state: restarted
+      when: beaker_file_update.changed or hosts_file_update.changed
+
+    - name: Query systems list
+      command: bkr system-list
+      register: bkr_systems
+      changed_when: false
+      become: true
+      failed_when: false
+
+    - debug:
+        msg: "Current Beaker Systems: {{ bkr_systems.stdout_lines }}"
+
+    - name: Create any systems in Beaker which were not already present
+      command: >
+        bkr system-create
+        --lab-controller={{ beaker_lab.jumpbox_fqdn }}
+        --arch={{ beaker_lab.system_inventory[item.key].arch }}
+        --power-type={{ beaker_lab.system_inventory[item.key].power_type }}
+        --power-address={{ beaker_lab.system_inventory[item.key].power_address }}
+        --power-user={{ beaker_lab.system_inventory[item.key].power_user }}
+        --power-password={{ beaker_lab.system_inventory[item.key].power_password }}
+        --power-id={{ beaker_lab.system_inventory[item.key].power_id | default(item.key) }}
+        --condition=Automated
+        {{ item.key }}
+      when: (item.key not in bkr_systems.stdout_lines) and (hostvars.localhost.beaker_lab is defined)
+      become: true
+      loop: "{{ q('dict', hostvars.localhost.beaker_lab.system_inventory | default({})) }}"
