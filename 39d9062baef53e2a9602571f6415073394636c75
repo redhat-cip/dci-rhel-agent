@@ -22,6 +22,30 @@
       "revId": "39d9062baef53e2a9602571f6415073394636c75",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ce787035_b7a45a3f",
+        "filename": "dci-rhel-agent.spec",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-06-09T16:29:40Z",
+      "side": 1,
+      "message": "Yes, you are right.  We don\u0027t want that.  How about a test to see if the id_rsa file exists and only create if it does not?",
+      "parentUuid": "a9692960_4524817f",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 69
+      },
+      "revId": "39d9062baef53e2a9602571f6415073394636c75",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
