@@ -6,13 +6,13 @@ dhcp-option=option:router,{{ hostvars.localhost.local_repo_ip }}
 dhcp-option=option:dns-server,0.0.0.0
 dhcp-option=option:ntp-server,0.0.0.0
 
-enable-tftp
-tftp-root=/var/lib/tftpboot
-dhcp-boot=pxelinux.0
-
 # Use a combination of /etc/ethers & /etc/hosts instead of this ?
-{% for system in beaker_lab.system_inventory %}
-dhcp-host={{ hostvars.localhost.beaker_lab.system_inventory[system].mac }},{{ system }},{{ hostvars.localhost.beaker_lab.system_inventory[system].ip_address }}
+{% for system in hostvars.localhost.beaker_lab.system_inventory %}
+dhcp-boot=tag:{{ system }}_boot,bootloader/{{ system }}/image,{{ hostvars.localhost.local_repo_ip }}
+{% endfor %}
+
+{% for system in hostvars.localhost.beaker_lab.system_inventory %}
+dhcp-host={{ hostvars.localhost.beaker_lab.system_inventory[system].mac }},{{ system }},{{ hostvars.localhost.beaker_lab.system_inventory[system].ip_address }},set:{{ system }}_boot
 {% endfor %}
 
 # vim: set ft=dnsmasq:
