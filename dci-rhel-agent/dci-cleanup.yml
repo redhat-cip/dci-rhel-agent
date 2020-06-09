@@ -1,0 +1,20 @@
+---
+- name: Cleanup boot files on Beaker server copied by agent
+  hosts: beaker_server
+  gather_facts: false
+  tasks:
+    - name: Remove bootx and grubx files copied by agent
+      file:
+        path: "/var/lib/tftpboot/{{ item }}"
+        state: absent
+      with_items:
+        - grubx64.efi
+        - grubaa64.efi
+
+    - name: Remove ppc64le directories and files copied by agent
+      shell: "{{ item }}"
+      args:
+        warn: no
+      with_items:
+        - "rm -Rf /var/lib/tftpboot/boot/grub2/*"
+        - "rm -Rf /var/lib/tftpboot/boot/grub/*"
