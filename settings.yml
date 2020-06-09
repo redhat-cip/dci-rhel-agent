@@ -26,6 +26,11 @@ topics:
     dci_rhel_agent_cert: false
     dci_rhel_agent_cki: false
     systems:
+      - my.x86_64.system.local
+      - fqdn: labvm-1.novalocal
+        kernel_options: "rd.iscsi.ibft=1"
+        ks_meta: "ignoredisk=--only-use=sda"
+      - my.ppc64le.system.local
       - test.x86.sut3
       - test.ppc.sut4
 
@@ -51,6 +56,8 @@ beaker_lab:
       # specified here
       #power_id:
       power_type: ipmilan
+      efi: false
+      petitboot: false
     test.x86.sut2
       ip_address: 192.168.1.21
       mac: ff:ee:dd:cc:bb:aa
@@ -63,6 +70,8 @@ beaker_lab:
       # specified here
       #power_id:
       power_type: wti
+      efi: false
+      petitboot: false
     test.x86.sut3
       ip_address: 192.168.1.22
       mac: bb:aa:cc:dd:ee:ff
@@ -75,6 +84,8 @@ beaker_lab:
       # specified here
       #power_id:
       power_type: ipmilan
+      efi: false
+      petitboot: false
     test.ppc.sut4
       ip_address: 192.168.1.23
       mac: aa:cc:bb:dd:ee:ff
@@ -87,6 +98,8 @@ beaker_lab:
       # specified here
       #power_id:
       power_type: apc_snmp
+      efi: false
+      petitboot: true
     test.ppc.sut5
       ip_address: 192.168.1.24
       mac: aa:cc:bb:dd:ee:ff
@@ -99,3 +112,5 @@ beaker_lab:
       # specified here
       #power_id:
       power_type: apc_snmp
+      efi: false
+      petitboot: false
