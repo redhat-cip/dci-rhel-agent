@@ -1,5 +1,5 @@
 ---
-- name: Update dci-rhel-agent
+- name: Update Beaker server config
   hosts: beaker_server
   gather_facts: false
   tasks:
@@ -14,6 +14,38 @@
         comment: 'self-generated@dci-rhel-agent'
       when: check_id_rsa.stat.exists == False
 
+    - name: Ensure dnsmasq, tftp, xinetd installed
+      package:
+        name: "{{ item }}"
+      with_items:
+        - dnsmasq
+        - tftp
+        - tftp-server
+        - xinetd
+
+    - name: Verify xinetd tftp config file exists
+      stat:
+        path: /etc/xinetd.d/tftp
+      register: tftp_cfg
+
+    - name: Update xinetd tftp config to enable tftp
+      lineinfile:
+        path: /etc/xinetd.d/tftp
+        regexp: 'disable\s*= yes'
+        line: '        disable                 = no'
+      when: tftp_cfg.stat.exists
+      register: tftp_cfg_updated
+
+    - name: Restart and enable tftp, and xinetd packages when cfg updated
+      service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      with_items:
+        - tftp
+        - xinetd
+      when: tftp_cfg_updated | bool
+
     - name: Update beaker.conf file
       template:
         src: /usr/share/dci-rhel-agent/templates/beaker.conf.j2
@@ -21,7 +53,7 @@
       register: dns_conf_update
       when: hostvars.localhost.beaker_lab is defined
 
-    - name: Update hosts file with any new systems if lab is using DCI DNS
+    - name: Update hosts file with any new systems
       lineinfile:
         path: /etc/hosts
         line: "{{ hostvars.localhost.beaker_lab.system_inventory[item.key].ip_address }} {{ item.key }}"
