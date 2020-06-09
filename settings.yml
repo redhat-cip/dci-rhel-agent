@@ -40,3 +40,5 @@ beaker_lab:
       # specified here
       #power_id:
       power_type: ipmilan
+      efi: false
+      petitboot: false

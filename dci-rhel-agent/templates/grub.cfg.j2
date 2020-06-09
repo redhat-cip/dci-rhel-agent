@@ -1,0 +1,11 @@
+#NOTE: rd.net.timeout.carrier added to grub cfg template to work around RHEL-8.2 issue:
+# BZ 1785663 (Dracut timeout waiting for NIC).  Increased timeout to 10s
+{% if beaker_lab.system_inventory[fqdn].alternate_efi_boot_commands|default(False,true) == True %}
+linux /images/{{ fqdn }}/kernel ks={{ ksurl }} ksdevice=bootif netboot_method=grub2 rd.net.timeout.carrier=10
+initrd /images/{{ fqdn }}/initrd
+{% else %}
+linuxefi /images/{{ fqdn }}/kernel ks={{ ksurl }} ksdevice=bootif netboot_method=grub2 rd.net.timeout.carrier=10
+initrdefi /images/{{ fqdn }}/initrd
+{% endif %}
+
+boot

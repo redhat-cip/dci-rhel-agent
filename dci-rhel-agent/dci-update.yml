@@ -1,5 +1,5 @@
 ---
-- name: Update dci-rhel-agent
+- name: Update Beaker server config
   hosts: beaker_server
   gather_facts: false
   tasks:

@@ -27,6 +27,39 @@
     - /var/lib/tftpboot/boot/grub
   when: hostvars.localhost.system_arch == "ppc64le" and topic_name.startswith("RHEL-7")
 
+- name: Copy RHEL7 boot files to tftproot for UEFI BIOS SUTs
+  block:
+    - name: Copy grubx64.efi
+      copy:
+        src: "{{ local_repo }}/{{ topic_name }}/compose/Server/x86_64/os/EFI/BOOT/grubx64.efi"
+        dest: /var/lib/tftpboot/grubx64.efi
+        remote_src: yes
+        owner: root
+        group: root
+        mode: 0755
+  when: hostvars.localhost.system_arch == "x86_64" and topic_name.startswith("RHEL-7") and beaker_lab.system_inventory[fqdn].efi|default(false, true) == true
+
+- name: Copy RHEL-8/9 boot files to tftproot for UEFI BIOS SUTs
+  block:
+    - name: Copy grubx64.efi
+      copy:
+        src: "{{ local_repo }}/{{ topic_name }}/compose/BaseOS/x86_64/os/EFI/BOOT/grubx64.efi"
+        dest: /var/lib/tftpboot/grubx64.efi
+        remote_src: yes
+        owner: root
+        group: root
+        mode: 0755
+  when: hostvars.localhost.system_arch == "x86_64" and (topic_name.startswith("RHEL-8") or topic_name.startswith("RHEL-9")) and beaker_lab.system_inventory[fqdn].efi|default(false, true) == true
+
+- name: Copy RHEL-8/9 aarch64 boot files to tftproot when provisioning an aarch64 SUT
+  block:
+    - name: Copy grubaa64.efi
+      copy:
+        src: "{{ local_repo }}/{{ topic_name }}/compose/BaseOS/aarch64/os/EFI/BOOT/grubaa64.efi"
+        dest: /var/lib/tftpboot/grubaa64.efi
+        remote_src: yes
+  when: hostvars.localhost.system_arch == "aarch64" and (topic_name.startswith("RHEL-8") or topic_name.startswith("RHEL-9"))
+
 - name: Download .composeinfo
   fetch:
     src: "{{ hostvars.beaker_server.local_repo }}/{{ topic_name }}/compose/.composeinfo"
@@ -37,6 +70,7 @@
   vars:
       distro_name: "{{ lookup('ini', 'name section=product file=/var/tmp/.composeinfo') }}"
   block:
+    - include_vars: /etc/dci-rhel-agent/settings.yml
     - name: Create a temporary file
       tempfile:
         state: file
@@ -112,6 +146,29 @@
 - name: Update Beaker install watchdog time if specified
   shell: "bkr watchdog-extend --by {{ install_watchdog_timeout }} {{ bkrjobid | regex_replace('J:','R:') }}"
   when: install_watchdog_timeout is defined
+
+- name: Get current job results containing kickstart URL
+  shell: "bkr job-results {{ bkrjobid }}"
+  register: bkrjobresults
+  until: bkrjobresults.stdout.find("kickstart_url") != -1
+  retries: 10
+  delay: 5
+
+- name: Parse kickstart URL from job result
+  xml:
+    xmlstring: "{{ bkrjobresults.stdout }}"
+    xpath: /job/recipeSet/recipe
+    content: attribute
+  register: recipeinfo
+
+- name: Register kickstart URL
+  set_fact:
+    ksurl: "{{ recipeinfo.matches[0].recipe.kickstart_url }}"
+
+- name: Populate unique grub cfg file for this SUT from template
+  template:
+    src: /usr/share/dci-rhel-agent/templates/grub.cfg.j2
+    dest: "/var/lib/tftpboot/grub.cfg-{{ beaker_lab.system_inventory[fqdn].ip_address | ip4_hex | upper }}"
 
 - name: Wait system to be installed
   bkr_info:

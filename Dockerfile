@@ -14,7 +14,7 @@ RUN yum upgrade -y && \
   yum -y install gcc ansible python python2-devel python2-pip \
                  ansible-role-dci-import-keys ansible-role-dci-retrieve-component \
                  dci-ansible ansible-role-dci-rhel-certification rsync python2-ansible-runner \
-                 ansible-role-dci-rhel-cki git restraint-client && \
+                 ansible-role-dci-rhel-cki git restraint-client python-netaddr && \
   yum clean all
 
 ADD dci-rhel-agent /usr/share/dci-rhel-agent/

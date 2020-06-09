@@ -491,6 +491,11 @@ No. Due to the large size of RHEL composes, our dci-downloader tool called by th
 
 The RHEL agent provides an option which can be supplied when it is started to skip the download of composes. By supplying the `--skip-download=true` flag to your start call of the agent, the downloader will be bypassed and you can continue to run with the most recently downloaded RHEL compose until you are ready to move on. At that point, omitting the skip-download flag will allow your agent to download the latest available composes for each topic specified in your settings file.
 
+### My EFI system does not recognize the default "linuxefi" and "initrdefi" commands supplied in the grub.cfg by the RHEL agent.
+
+The linuxefi and initrdefi commands are supplied by default in the grub.cfg constructed by the agent for EFI systems.  These can be swapped with the linux and initrd commands by supplying a boolean in the system inventory for that system: 
+alternate_efi_boot_commands: true
+
 ## Create your DCI account on distributed-ci.io
 
 Every user needs to create an account by connecting to `https://www.distributed-ci.io` using a Red Hat SSO account.
