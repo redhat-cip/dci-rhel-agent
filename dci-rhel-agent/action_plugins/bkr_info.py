@@ -19,7 +19,7 @@ class ActionModule(ActionBase):
                                          module_args=module_args,
                                          task_vars=task_vars, tmp=tmp)
             display.display("%s" % module_return)
-            if (module_return["status"] in ["Completed", "Aborted"]):
+            if (module_return["status"] in ["Completed", "Aborted", "Cancelled"]):
                 break
             time.sleep(10)
 
