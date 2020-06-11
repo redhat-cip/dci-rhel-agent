@@ -1,0 +1,12 @@
+Code-Review+2: User miburke <miburke@redhat.com>
+Code-Review+2: Yassine Lamgarchal <yassine.lamgarchal@redhat.com>
+Code-Review+2: Cédric Lecomte <ced.lecomte@gmail.com>
+Workflow+1: Cédric Lecomte <ced.lecomte@gmail.com>
+Code-Review+2: Thomas Vassilian <tvassili@redhat.com>
+Workflow+1: Thomas Vassilian <tvassili@redhat.com>
+Verified+2: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-by: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-at: Thu, 11 Jun 2020 13:17:44 +0000
+Reviewed-on: https://softwarefactory-project.io/r/18509
+Project: dci-rhel-agent
+Branch: refs/heads/master
