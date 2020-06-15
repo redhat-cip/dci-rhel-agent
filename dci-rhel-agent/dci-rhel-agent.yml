@@ -82,6 +82,9 @@
     dci_status: 'running'
   tasks:
     - block:
+        - stat:
+            path: '/etc/dci-rhel-agent/hooks/user-tests.yml'
+          register: check_user_tests
         - include_tasks: install.yml
       rescue:
         - include_tasks: release.yml
@@ -94,9 +97,6 @@
     dci_status: 'post-run'
   tasks:
     - block:
-        - stat:
-            path: '/etc/dci-rhel-agent/hooks/user-tests.yml'
-          register: check_user_tests
         - include_tasks: '/etc/dci-rhel-agent/hooks/user-tests.yml'
           when: check_user_tests.stat.exists
       rescue:
