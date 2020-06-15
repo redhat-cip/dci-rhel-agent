@@ -16,6 +16,24 @@
       "revId": "3fcc893da39d6470e6ccd0590bb66e7db7a05193",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "359c76d0_96c7a2b7",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-06-15T20:42:57Z",
+      "side": 1,
+      "message": "You are right. I need to fix this.",
+      "parentUuid": "65570ffd_f838695d",
+      "revId": "3fcc893da39d6470e6ccd0590bb66e7db7a05193",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
