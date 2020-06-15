@@ -69,6 +69,9 @@
         - stat:
             path: '/etc/dci-rhel-agent/hooks/pre-run.yml'
           register: check_pre_run
+        - stat:
+            path: '/etc/dci-rhel-agent/hooks/user-tests.yml'
+          register: check_user_tests
         - name: Run the pre-run hook
           include_tasks: '/etc/dci-rhel-agent/hooks/pre-run.yml'
           when: check_pre_run.stat.exists
@@ -94,11 +97,8 @@
     dci_status: 'post-run'
   tasks:
     - block:
-        - stat:
-            path: '/etc/dci-rhel-agent/hooks/user-tests.yml'
-          register: check_user_tests
         - include_tasks: '/etc/dci-rhel-agent/hooks/user-tests.yml'
-          when: check_user_tests.stat.exists
+          when: hostvars.localhost['check_user_tests'].stat.exists
       rescue:
         - include_tasks: release.yml
         - include_tasks: failure.yml
