@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "21f5d24f_2796de4a",
+        "filename": "dci-rhel-agent/dci-update.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-06-16T19:18:44Z",
+      "side": 1,
+      "message": "is it possible to load this from the entrypoint in the runner object ?",
+      "range": {
+        "startLine": 6,
+        "startChar": 4,
+        "endLine": 6,
+        "endChar": 52
+      },
+      "revId": "c96589dad78691ea5fcce9e9000ac7ff21cef3fb",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a8e36aaa_c9dde8a9",
+        "filename": "dci-rhel-agent/dci-update.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-06-16T19:18:44Z",
+      "side": 1,
+      "message": "We should manage lines and not the entire file in case they have custom entries (out of dci config).",
+      "range": {
+        "startLine": 14,
+        "startChar": 3,
+        "endLine": 18,
+        "endChar": 33
+      },
+      "revId": "c96589dad78691ea5fcce9e9000ac7ff21cef3fb",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d0c4b5d4_b724504a",
+        "filename": "settings.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-06-16T19:18:44Z",
+      "side": 1,
+      "message": "is it the same of local_repo_ip ?",
+      "range": {
+        "startLine": 37,
+        "startChar": 2,
+        "endLine": 37,
+        "endChar": 25
+      },
+      "revId": "c96589dad78691ea5fcce9e9000ac7ff21cef3fb",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
