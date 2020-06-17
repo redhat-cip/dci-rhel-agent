@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "0aa7b4e0_979b5795",
+        "filename": "dci-rhel-agent/dci-update.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-06-17T17:49:12Z",
+      "side": 1,
+      "message": "Yes.  Will use values from initial read of settings file in entrypoint.",
+      "parentUuid": "21f5d24f_2796de4a",
+      "range": {
+        "startLine": 6,
+        "startChar": 4,
+        "endLine": 6,
+        "endChar": 52
+      },
+      "revId": "c96589dad78691ea5fcce9e9000ac7ff21cef3fb",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a8e36aaa_c9dde8a9",
         "filename": "dci-rhel-agent/dci-update.yml",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "0c6f6a20_22eae970",
+        "filename": "dci-rhel-agent/dci-update.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-06-17T17:49:12Z",
+      "side": 1,
+      "message": "Agree.  Will update to only add lines for beaker systems which are not already present.",
+      "parentUuid": "a8e36aaa_c9dde8a9",
+      "range": {
+        "startLine": 14,
+        "startChar": 3,
+        "endLine": 18,
+        "endChar": 33
+      },
+      "revId": "c96589dad78691ea5fcce9e9000ac7ff21cef3fb",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d0c4b5d4_b724504a",
         "filename": "settings.yml",
         "patchSetId": 2
@@ -59,6 +107,30 @@
       "writtenOn": "2020-06-16T19:18:44Z",
       "side": 1,
       "message": "is it the same of local_repo_ip ?",
+      "range": {
+        "startLine": 37,
+        "startChar": 2,
+        "endLine": 37,
+        "endChar": 25
+      },
+      "revId": "c96589dad78691ea5fcce9e9000ac7ff21cef3fb",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7fa37f6d_1e6d9121",
+        "filename": "settings.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-06-17T17:49:12Z",
+      "side": 1,
+      "message": "Ack.  Yes, will remove and use local_repo_ip instead.",
+      "parentUuid": "d0c4b5d4_b724504a",
       "range": {
         "startLine": 37,
         "startChar": 2,
