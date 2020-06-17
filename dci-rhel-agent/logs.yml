@@ -44,15 +44,6 @@
       delegate_to: localhost
       when: hostvars.beaker_server['ansible_connection'] is not defined
 
-    - name: Copy hooks to logs directory
-      delegate_to: localhost
-      copy:
-       src: '{{ item }}'
-       dest: '{{ hostvars.localhost.job_logs.path }}'
-      with_fileglob:
-        - '/etc/dci-rhel-agent/hooks/*'
-      when: upload_hooks
-
     - name: Upload logs directory to DCI Control Server
       delegate_to: localhost
       environment:

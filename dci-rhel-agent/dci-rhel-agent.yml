@@ -66,12 +66,32 @@
     dci_status: 'pre-run'
   tasks:
     - block:
-        - stat:
+        - name: Check if pre-run.yml exists
+          stat:
             path: '/etc/dci-rhel-agent/hooks/pre-run.yml'
           register: check_pre_run
-        - stat:
+        - name: 'Upload pre-run.yml to DCI'
+          dci_file:
+            path: '/etc/dci-rhel-agent/hooks/pre-run.yml'
+            name: 'ssh_config_{{ fqdn }}.txt'
+            mime: 'text/plain'
+            job_id: '{{ hostvars.localhost.job_id }}'
+          when:
+            - check_pre_run.stat.exists
+            - upload_hooks
+        - name: Check if user-tests.yml exists
+          stat:
             path: '/etc/dci-rhel-agent/hooks/user-tests.yml'
           register: check_user_tests
+          - name: 'Upload pre-run.yml to DCI'
+          dci_file:
+            path: '/etc/dci-rhel-agent/hooks/user-tests.yml'
+            name: 'ssh_config_{{ fqdn }}.txt'
+            mime: 'text/plain'
+            job_id: '{{ hostvars.localhost.job_id }}'
+          when:
+            - check_user_tests.stat.exists
+            - upload_hooks
         - name: Run the pre-run hook
           include_tasks: '/etc/dci-rhel-agent/hooks/pre-run.yml'
           when: check_pre_run.stat.exists
