@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71ff300e_7b367b6d",
+        "filename": "dci-rhel-agent/dci-rhel-agent.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-06-17T18:56:12Z",
+      "side": 1,
+      "message": "Save as pre-run.yml",
+      "revId": "34dac1e3441e91849efd4aa8506b67c05ad7b9c3",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e1fe9957_f2b4b5dc",
+        "filename": "dci-rhel-agent/dci-rhel-agent.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-06-17T18:56:12Z",
+      "side": 1,
+      "message": "Save as user-tests.yml",
+      "revId": "34dac1e3441e91849efd4aa8506b67c05ad7b9c3",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
