@@ -14,7 +14,6 @@ topics:
       - Server
     dci_rhel_agent_cert: false
     dci_rhel_agent_cki: false
-    download_only: false
     systems:
       - labvm-1.novalocal
       - labvm-2.novalocal
@@ -27,7 +26,6 @@ topics:
       - AppStream
     dci_rhel-agent_cert: false
     dci_rhel-agent_cki: false
-    download_only: false
     systems:
       - SUT3
       - SUT4
@@ -70,26 +68,8 @@ def provision_and_test(extravars):
         print ("Error ! No topic found in settings.")
         sys.exit(1)
 
-    # This function is kept for backward compatibility.
-    if 'download_only' in extravars.keys():
-        if extravars['download_only'] == True:
-            print ('The dci-rhel-agent is configured in download-only mode.')
-            sys.exit(0)
-
-    r = ansible_runner.run(
-        private_data_dir="/usr/share/dci-rhel-agent/",
-        inventory="/etc/dci-rhel-agent/inventory",
-        verbosity=1,
-        playbook="dci-import.yml",
-        extravars=extravars,
-        quiet=False
-    )
-    if r.rc != 0:
-        print ("Distro(s) import in Beaker has failed. {}: {}".format(r.status, r.rc))
-        sys.exit(1)
-
     if 'systems' not in extravars.keys():
-        print ('No hosts found in settings. You should configure download-only mode or add systems[].')
+        print ('No hosts found in settings. Please add systems to provision to your settings file.')
         sys.exit(1)
     fqdns = extravars['systems']
 
@@ -126,6 +106,19 @@ def main():
         sys.exit(1)
     # Read the settings file
     sets = load_settings()
+    # Download and import all RHEL topics in settings file
+    r = ansible_runner.run(
+        private_data_dir="/usr/share/dci-rhel-agent/",
+        inventory="/etc/dci-rhel-agent/inventory",
+        verbosity=1,
+        playbook="dci-import.yml",
+        extravars=sets,
+        quiet=False
+    )
+    if r.rc != 0:
+        print ("Distro(s) download/import in Beaker has failed. {}: {}".format(r.status, r.rc))
+        sys.exit(1)
+
     # Check if the settings contain multiple topics and process accordingly
     if 'topics' in sets:
         # Break up settings file into individual jobs by topic
