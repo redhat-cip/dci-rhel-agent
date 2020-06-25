@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ab4959b_f0418d6c",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2020-06-25T12:00:39Z",
+      "side": 1,
+      "message": "missing space here",
+      "range": {
+        "startLine": 121,
+        "startChar": 0,
+        "endLine": 121,
+        "endChar": 1
+      },
+      "revId": "436fc44f1b2384c9da37f0e17bc134d35b1f4081",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
