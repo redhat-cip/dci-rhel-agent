@@ -22,6 +22,30 @@
       "revId": "dcbb51f737de2ab86fd5f83b04840a2244663745",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "89fc2427_b655c257",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-06-26T17:25:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c660e5e6_4426efe8",
+      "range": {
+        "startLine": 109,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 19
+      },
+      "revId": "dcbb51f737de2ab86fd5f83b04840a2244663745",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
