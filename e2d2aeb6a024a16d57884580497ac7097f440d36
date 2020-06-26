@@ -1,0 +1,8 @@
+Code-Review+2: Guillaume Vincent <gvincent@redhat.com>
+Workflow+1: User miburke <miburke@redhat.com>
+Verified+2: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-by: Zuul CI <zuul@softwarefactory-project.io>
+Submitted-at: Fri, 26 Jun 2020 17:48:20 +0000
+Reviewed-on: https://softwarefactory-project.io/r/18717
+Project: dci-rhel-agent
+Branch: refs/heads/master
