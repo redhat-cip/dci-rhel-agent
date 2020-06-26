@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c660e5e6_4426efe8",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 405
+      },
+      "writtenOn": "2020-06-26T10:34:07Z",
+      "side": 1,
+      "message": "you need to put this block after line 123 (if \u0027topics\u0027 in sets:) because we use topics variables in dci-import.yml\n\nis it possible to put this block in a python function, like download_and_import_topics_in_beaker(sets) ?",
+      "range": {
+        "startLine": 109,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 19
+      },
+      "revId": "dcbb51f737de2ab86fd5f83b04840a2244663745",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
