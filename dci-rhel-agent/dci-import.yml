@@ -45,8 +45,9 @@
       when: hostvars.localhost.skip_download == False
 
     - name: Import the latest build
-      shell: beaker-import -v --ignore-missing-tree-compose "http://{{ local_repo_ip }}/{{ topic }}/compose/"
+      shell: beaker-import -v --ignore-missing-tree-compose "http://{{ local_repo_ip }}/{{ item.topic }}/compose/"
       become: true
+      with_items: "{{ topics }}"
 
     - name: Delete the temporary file
       file:

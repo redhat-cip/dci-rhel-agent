@@ -14,7 +14,6 @@ topics:
       - Server
     dci_rhel_agent_cert: false
     dci_rhel_agent_cki: false
-    download_only: false
     systems:
       - labvm-1.novalocal
       - labvm-2.novalocal
@@ -27,7 +26,6 @@ topics:
       - AppStream
     dci_rhel-agent_cert: false
     dci_rhel-agent_cki: false
-    download_only: false
     systems:
       - SUT3
       - SUT4
@@ -46,9 +44,7 @@ def sigterm_handler(signal, frame):
     print('Handle podman stop here !')
     sys.exit(0)
 
-
 signal.signal(signal.SIGTERM, sigterm_handler)
-
 
 def load_settings():
     with open('/etc/dci-rhel-agent/settings.yml', 'r') as settings:
@@ -58,6 +54,18 @@ def load_settings():
             print(exc)
             sys.exit(1)
 
+def download_and_import_topics(extravars):
+    r = ansible_runner.run(
+        private_data_dir="/usr/share/dci-rhel-agent/",
+        inventory="/etc/dci-rhel-agent/inventory",
+        verbosity=1,
+        playbook="dci-import.yml",
+        extravars=extravars,
+        quiet=False
+    )
+    if r.rc != 0:
+        print ("Distro(s) download/import in Beaker has failed. {}: {}".format(r.status, r.rc))
+        sys.exit(1)
 
 def provision_and_test(extravars):
     # # Path is static in the container
@@ -70,26 +78,8 @@ def provision_and_test(extravars):
         print ("Error ! No topic found in settings.")
         sys.exit(1)
 
-    # This function is kept for backward compatibility.
-    if 'download_only' in extravars.keys():
-        if extravars['download_only'] == True:
-            print ('The dci-rhel-agent is configured in download-only mode.')
-            sys.exit(0)
-
-    r = ansible_runner.run(
-        private_data_dir="/usr/share/dci-rhel-agent/",
-        inventory="/etc/dci-rhel-agent/inventory",
-        verbosity=1,
-        playbook="dci-import.yml",
-        extravars=extravars,
-        quiet=False
-    )
-    if r.rc != 0:
-        print ("Distro(s) import in Beaker has failed. {}: {}".format(r.status, r.rc))
-        sys.exit(1)
-
     if 'systems' not in extravars.keys():
-        print ('No hosts found in settings. You should configure download-only mode or add systems[].')
+        print ('No hosts found in settings. Please add systems to provision to your settings file.')
         sys.exit(1)
     fqdns = extravars['systems']
 
@@ -128,6 +118,8 @@ def main():
     sets = load_settings()
     # Check if the settings contain multiple topics and process accordingly
     if 'topics' in sets:
+        #Download and import all topics in settings file
+        download_and_import_topics(sets)
         # Break up settings file into individual jobs by topic
         jobs = sets['topics']
         # Loop over each job and provision system(s)
@@ -137,9 +129,8 @@ def main():
             current_job['local_repo_ip'] = sets['local_repo_ip']
             provision_and_test(current_job)
     else:
-        # Legacy settings file format (single topic/job)
-        # preserved for compatibility
-        provision_and_test(sets)
+        print ('Incompatible settings file.  Topics not found. Please update settings file format.')
+        sys.exit(1)
     sys.exit(number_of_failed_jobs)
 
 
