@@ -16,6 +16,24 @@
       "revId": "d7d092ac28555be8df03266f9a00eaccce131137",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3d819c7_35c617af",
+        "filename": "dci-rhel-agent/dci-update.yml",
+        "patchSetId": 21
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-07-07T20:02:48Z",
+      "side": 1,
+      "message": "Correct. The idea was just to skip a step in the migration procedure.",
+      "parentUuid": "e73ca938_5eb587a1",
+      "revId": "d7d092ac28555be8df03266f9a00eaccce131137",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
