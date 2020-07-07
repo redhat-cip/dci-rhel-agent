@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e73ca938_5eb587a1",
+        "filename": "dci-rhel-agent/dci-update.yml",
+        "patchSetId": 21
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-07-07T18:45:35Z",
+      "side": 1,
+      "message": "This will create a key on jumpbox/beaker server if one does not exist.  Do we need to then add the key to authorized_keys on the jumpbox/beaker server?",
+      "revId": "d7d092ac28555be8df03266f9a00eaccce131137",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
