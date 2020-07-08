@@ -81,12 +81,18 @@ def provision_and_test(extravars):
     if 'systems' not in extravars.keys():
         print ('No hosts found in settings. Please add systems to provision to your settings file.')
         sys.exit(1)
-    fqdns = extravars['systems']
 
     threads_runners = {}
-    for fqdn in fqdns:
-        print ("Starting job for %s." % fqdn)
-        extravars['fqdn'] = fqdn
+    for system in extravars['systems']:
+        if type(system) is dict and 'fqdn' in system :
+            extravars['fqdn'] = system['fqdn']
+            if 'kernel_options' in system:
+                extravars['kernel_options'] = system['kernel_options']
+            if 'ks_meta' in system:
+                extravars['ks_meta'] = system['ks_meta']
+        else:
+            extravars['fqdn'] = system
+        print ("Starting job for %s." % extravars['fqdn'])
         thread, runner = ansible_runner.run_async(
             private_data_dir="/usr/share/dci-rhel-agent/",
             inventory="/etc/dci-rhel-agent/inventory",
