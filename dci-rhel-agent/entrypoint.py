@@ -15,7 +15,9 @@ topics:
     dci_rhel_agent_cert: false
     dci_rhel_agent_cki: false
     systems:
-      - labvm-1.novalocal
+      - fqdn: labvm-1.novalocal
+        kernel_options: "rd.iscsi.ibft=1"
+        ks_meta: "ignoredisk=--only-use=sda"
       - labvm-2.novalocal
 
   - topic: RHEL-8.1
@@ -81,12 +83,18 @@ def provision_and_test(extravars):
     if 'systems' not in extravars.keys():
         print ('No hosts found in settings. Please add systems to provision to your settings file.')
         sys.exit(1)
-    fqdns = extravars['systems']
 
     threads_runners = {}
-    for fqdn in fqdns:
-        print ("Starting job for %s." % fqdn)
-        extravars['fqdn'] = fqdn
+    for system in extravars['systems']:
+        if type(system) is dict and 'fqdn' in system :
+            extravars['fqdn'] = system['fqdn']
+            if 'kernel_options' in system:
+                extravars['kernel_options'] = system['kernel_options']
+            if 'ks_meta' in system:
+                extravars['ks_meta'] = system['ks_meta']
+        else:
+            extravars['fqdn'] = system
+        print ("Starting job for %s." % extravars['fqdn'])
         thread, runner = ansible_runner.run_async(
             private_data_dir="/usr/share/dci-rhel-agent/",
             inventory="/etc/dci-rhel-agent/inventory",
@@ -95,7 +103,7 @@ def provision_and_test(extravars):
             extravars=extravars,
             quiet=False
         )
-        threads_runners[(thread, runner)] = fqdn
+        threads_runners[(thread, runner)] = extravars['fqdn']
 
     # wait for all jobs
     for t, _ in threads_runners:
