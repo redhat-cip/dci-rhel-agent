@@ -160,7 +160,9 @@ topics:
       - x86_64
     with_debug: false
     systems:
-      - my.x86_64.system2.local
+      - fqdn: my.x86_64.system2.local
+        kernel_options: "rd.iscsi.ibft=1"
+        ks_meta: "ignoredisk=--only-use=sda"
       - my.x86_64.system3.local
       - my.x86_64.system4.local
 ```
@@ -241,6 +243,20 @@ beaker_server ansible_host=X.X.X.X ansible_ssh_user=my_user ansible_ssh_private_
 The SSH private key files need to be located in the `/etc/dci-rhel-agent/secrets/` folder.
 
 Please leave `[beaker_sut]` group empty.
+
+#### How to customize the system deployment ?
+If you want you can customize the system deployment by adding some kernel option or kickstart metadata.
+
+For example:
+
+```
+    systems:
+      - fqdn: my.x86_64.system2.local
+        kernel_options: "rd.iscsi.ibft=1"
+        ks_meta: "ignoredisk=--only-use=sda"
+      - my.x86_64.system3.local
+      - my.x86_64.system4.local
+```
 
 ## Usage
 To start a single DCI RHEL Agent job, run:
