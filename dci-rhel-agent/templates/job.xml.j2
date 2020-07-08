@@ -4,7 +4,7 @@
         {% if hostvars.localhost.system_arch == 'ppc64le' %}
                 <recipe ks_meta="selinux=--permissive autopart_type=plain harness='restraint beakerlib'" whiteboard="" kernel_options="netbootloader=boot/grub2/{{ fqdn }}/powerpc-ieee1275/core.elf">
         {% else %}
-                <recipe ks_meta="selinux=--permissive autopart_type=plain harness='restraint beakerlib'" whiteboard="">
+                <recipe ks_meta="selinux=--permissive autopart_type=plain harness='restraint beakerlib' {% if ks_meta is defined %}{{ ks_meta }}{% endif %}" whiteboard="" kernel_options="{% if kernel_options is defined %}{{ kernel_options }}{% endif %}">
         {% endif %}
             <distroRequires>
                 <and>
