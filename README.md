@@ -160,7 +160,8 @@ topics:
       - x86_64
     with_debug: false
     systems:
-      - my.x86_64.system2.local
+      - fqdn: my.x86_64.system2.local
+        kernel_options: "rd.iscsi.ibft=1"
       - my.x86_64.system3.local
       - my.x86_64.system4.local
 ```
