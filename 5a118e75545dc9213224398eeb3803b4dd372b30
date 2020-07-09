@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "15b786b1_f61f9b45",
+        "filename": "README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-07-09T19:13:10Z",
+      "side": 1,
+      "message": "Recommend adding a ks_meta example here too.\n\nAlso, update the settings.yml file itself in the agent repo.  It serves as an example that partners can refer back to.",
+      "revId": "5a118e75545dc9213224398eeb3803b4dd372b30",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "27e85f33_d3cec853",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-07-09T19:13:10Z",
+      "side": 1,
+      "message": "If there are kernel_options or ks_meta present for the system, the system variable on line 105 will be a dictionary instead of the fqdn of the system.",
+      "revId": "5a118e75545dc9213224398eeb3803b4dd372b30",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
