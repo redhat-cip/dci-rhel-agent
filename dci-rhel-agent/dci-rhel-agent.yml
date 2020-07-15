@@ -34,6 +34,27 @@
         tags: '{{ dci_tags }}'
       when: dci_tags
 
+- name: Upload settings and hooks
+  hosts: localhost
+  environment:
+    - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
+    - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
+    - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
+  tasks:
+    - name: Upload settings yml file
+      ignore_errors: yes
+      dci_file:
+        path: /etc/dci-rhel-agent/setings.yml
+        name: settings.yml
+        job_id: "{{ hostvars.localhost.job_id }}"
+    - name: Upload hooks directory contents
+      dci_file:
+        path: "{{ item }}"
+        name: "{{ item | basename }}"
+        job_id: "{{ hostvars.localhost.job_id }}"
+      with_fileglob:
+        - /etc/dci-rhel-agent/hooks/*
+
 - name: 'Configure SUT'
   hosts: localhost
   gather_facts: no
