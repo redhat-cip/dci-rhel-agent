@@ -34,6 +34,17 @@
         tags: '{{ dci_tags }}'
       when: dci_tags
 
+- name: 'Download topic'
+  hosts: localhost
+  gather_facts: no
+  vars:
+    dci_status: 'pre-run'
+  tasks:
+    - block:
+        - include_tasks: dci-import.yml
+      rescue:
+        - include_tasks: failure.yml
+
 - name: 'Configure SUT'
   hosts: localhost
   gather_facts: no
