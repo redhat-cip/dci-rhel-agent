@@ -68,6 +68,7 @@
         - '{{ hostvars.localhost.job_artifacts.path }}/*.log'
 
     - name: Upload artifacts directory to DCI Control Server
+      delegate_to: localhost
       environment:
         - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
         - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
