@@ -54,19 +54,6 @@ def load_settings():
             print(exc)
             sys.exit(1)
 
-def download_and_import_topics(extravars):
-    r = ansible_runner.run(
-        private_data_dir="/usr/share/dci-rhel-agent/",
-        inventory="/etc/dci-rhel-agent/inventory",
-        verbosity=1,
-        playbook="dci-import.yml",
-        extravars=extravars,
-        quiet=False
-    )
-    if r.rc != 0:
-        print ("Distro(s) download/import in Beaker has failed. {}: {}".format(r.status, r.rc))
-        sys.exit(1)
-
 def provision_and_test(extravars):
     # # Path is static in the container
     # local_repo = '/var/www/html'
@@ -110,6 +97,16 @@ def provision_and_test(extravars):
             print("Job for %s failed, rc: %s, status: %s " % (fqdn, r.rc, r.status))
             number_of_failed_jobs += 1
 
+def exit_if_duplicates(topics):
+    topics_name = []
+    for topic in topics:
+        topic_name = topic['topic']
+        if topic_name in topics_name:
+            print ("topics list in your settings file contains duplicates")
+            sys.exit(1)
+        topics_name.append(topic_name)
+
+
 def main():
     if environ.get('DCI_CLIENT_ID') is None:
         print ("Environment variable DCI_CLIENT_ID not set.")
@@ -118,10 +115,9 @@ def main():
     sets = load_settings()
     # Check if the settings contain multiple topics and process accordingly
     if 'topics' in sets:
-        #Download and import all topics in settings file
-        download_and_import_topics(sets)
         # Break up settings file into individual jobs by topic
         jobs = sets['topics']
+        exit_if_duplicates(jobs)
         # Loop over each job and provision system(s)
         for idx, current_job in enumerate(jobs):
             print ("Beginning provision/test jobs for topic %s" % current_job['topic'])
