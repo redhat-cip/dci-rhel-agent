@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ece38ce3_512b822b",
+        "filename": "Dockerfile",
+        "patchSetId": 5
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-07-16T17:50:21Z",
+      "side": 0,
+      "message": "We still need this cp line in patch.  Without it, we get no logs on DCI UI.",
+      "revId": "7730094f8eab349293ca3f70e97103532d46515d",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
