@@ -1,1 +1,2 @@
 ansible-runner
+psutil==5.6.7
