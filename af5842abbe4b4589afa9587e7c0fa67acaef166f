@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b1fe7699_8bd6b46b",
+        "filename": "Dockerfile",
+        "patchSetId": 6
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-07-16T18:38:17Z",
+      "side": 1,
+      "message": "you can remove this i guess + requirements.txt",
+      "range": {
+        "startLine": 15,
+        "startChar": 50,
+        "endLine": 15,
+        "endChar": 61
+      },
+      "revId": "af5842abbe4b4589afa9587e7c0fa67acaef166f",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
