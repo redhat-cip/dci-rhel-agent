@@ -277,6 +277,8 @@ It can be modified to include any task needed to run on top of the lab server th
 
 This file will not be replaced when the `dci-rhel-agent` RPM will be updated.
 
+To use any existing Ansible roles in your tests, copy the role directory to /etc/dci-rhel-agent/hooks/roles.  The role can then be imported into your user-tests.yml file and executed on your test systems.
+
 Please note, that it is possible at this point to use DCI Ansible bindings (see in the container `/usr/share/dci/modules/`) in tasks.
 In the following example, the task uploads Junit files (your tests results) into DCI Web dashboard.
 
