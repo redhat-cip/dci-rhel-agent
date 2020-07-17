@@ -22,6 +22,23 @@
       "revId": "af5842abbe4b4589afa9587e7c0fa67acaef166f",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dc477f6a_c6d622cd",
+        "filename": "dci-rhel-agent/requirements.txt",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-07-17T19:16:55Z",
+      "side": 1,
+      "message": "I think we can delete this requirements.txt file completely.",
+      "revId": "af5842abbe4b4589afa9587e7c0fa67acaef166f",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
