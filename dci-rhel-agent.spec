@@ -45,6 +45,7 @@ install -p -D -m 644 hooks/user-tests.yml %{buildroot}%{_sysconfdir}/dci-rhel-ag
 install -p -D -m 644 hooks/pre-run.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/pre-run.yml
 install -p -D -m 755 dci-rhel-agent-ctl %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 mkdir %{buildroot}%{_sysconfdir}/dci-rhel-agent/secrets
+mkdir %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/roles
 
 %if 0%{?rhel} && 0%{?rhel} < 8
 pathfix.py -pni "%{__python2}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
@@ -70,6 +71,7 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/hooks/pre-run.yml
 %dir  %{_sysconfdir}/dci-rhel-agent/secrets
+%dir  %{_sysconfdir}/dci-rhel-agent/hooks/roles
 
 %changelog
 * Wed Apr 1 2020 Guillaume Vincent <gvincent@redhat.com> - 0.2.0-1
