@@ -13,4 +13,7 @@ topics:
     with_debug: false
     systems:
       - my.x86_64.system.local
+      - fqdn: labvm-1.novalocal
+        kernel_options: "rd.iscsi.ibft=1"
+        ks_meta: "ignoredisk=--only-use=sda"
       - my.ppc64le.system.local
