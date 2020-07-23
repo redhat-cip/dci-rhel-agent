@@ -6,13 +6,19 @@
 - name: Copy RHEL8 ppc64le boot files to tftproot when provisioning a ppc64le machine
   copy:
     src: "{{ local_repo }}/{{ topic }}/compose/BaseOS/ppc64le/os/boot/grub/powerpc-ieee1275"
-    dest: "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
+    dest: "{{ item }}"
+  with_items:
+    - "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
+    - /var/lib/tftpboot/boot/grub
   when: hostvars.localhost.system_arch == "ppc64le" and topic.startswith("RHEL-8")
 
 - name: Copy RHEL7 ppc64le boot files to tftproot when provisioning a ppc64le machine
   copy:
     src: "{{ local_repo }}/{{ topic }}/compose/Server/ppc64le/os/boot/grub/powerpc-ieee1275"
-    dest: "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
+    dest: "{{ item }}"
+  with_items:
+    - "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
+    - /var/lib/tftpboot/boot/grub
   when: hostvars.localhost.system_arch == "ppc64le" and topic.startswith("RHEL-7")
 
 - name: Download .composeinfo
