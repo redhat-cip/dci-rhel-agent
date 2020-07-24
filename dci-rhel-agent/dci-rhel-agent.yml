@@ -44,7 +44,7 @@
     - name: Upload settings yml file
       ignore_errors: yes
       dci_file:
-        path: /etc/dci-rhel-agent/setings.yml
+        path: /etc/dci-rhel-agent/settings.yml
         name: settings.yml
         job_id: "{{ hostvars.localhost.job_id }}"
     - name: Upload hooks directory contents
