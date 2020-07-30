@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6067af98_301d5e39",
+        "filename": "dci-rhel-agent/dci-import.yml",
+        "patchSetId": 16
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-07-30T15:01:27Z",
+      "side": 1,
+      "message": "topic should come before local_repo",
+      "revId": "3ea75654dd2d3e88f026827fba8646cf7110f432",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
