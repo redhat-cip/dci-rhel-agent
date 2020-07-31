@@ -13,7 +13,7 @@
     - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
     - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
     - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
-  shell: /bin/dci-downloader {{ topic }} {{ local_repo }}{% for arch in archs %} --arch {{arch}}{% endfor %}{% for variant in variants %} --variant {{variant}}{% endfor %}{% if with_debug %} --debug{% endif %}
+  shell: /bin/dci-downloader {{ topic }} {{ local_repo }}{% if archs is defined %}{% for arch in archs %} --arch {{arch}}{% endfor %}{% endif %}{% if variants is defined %}{% for variant in variants %} --variant {{variant}}{% endfor %}{% endif %}{% if with_debug %} --debug{% endif %}
   become: true
   when: hostvars.localhost.skip_download == False
 
