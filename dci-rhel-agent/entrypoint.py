@@ -58,7 +58,7 @@ def load_settings():
             sys.exit(1)
 
 def provision_and_test(extravars):
-    # # Path is static in the container
+    # Path is static in the container
     # local_repo = '/var/www/html'
     # extravars['local_repo'] = local_repo
 
@@ -68,6 +68,7 @@ def provision_and_test(extravars):
         print ("Error ! No topic found in settings.")
         sys.exit(1)
 
+    # Provision and install SUT
     if 'systems' not in extravars.keys():
         print ('No hosts found in settings. Please add systems to provision to your settings file.')
         sys.exit(1)
@@ -137,6 +138,19 @@ def main():
     if environ.get('DCI_CLIENT_ID') is None:
         print ("Environment variable DCI_CLIENT_ID not set.")
         sys.exit(1)
+    
+    # Run the update playbook once before jobs.
+    r = ansible_runner.run(
+        private_data_dir="/usr/share/dci-rhel-agent/",
+        inventory="/etc/dci-rhel-agent/inventory",
+        verbosity=1,
+        playbook="dci-update.yml",
+        quiet=False
+    )
+    if r.rc != 0:
+        print ("Update playbook failed. {}: {}".format(r.status, r.rc))
+        sys.exit(1)
+
     # Read the settings file
     sets = load_settings()
     # Check if the settings contain multiple topics and process accordingly
