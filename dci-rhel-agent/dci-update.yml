@@ -1,0 +1,11 @@
+- name: Update dci-rhel-agent
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - stat:
+        path: '/etc/dci-rhel-agent/secrets/id_rsa'
+      register: check_id_rsa
+    - openssh_keypair:
+        path: '/etc/dci-rhel-agent/secrets/id_rsa'
+        comment: 'self-generated@dci-rhel-agent'
+      when: check_id_rsa.stat.exists == False
