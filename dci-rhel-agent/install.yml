@@ -7,6 +7,7 @@
   copy:
     src: "{{ local_repo }}/{{ topic }}/compose/BaseOS/ppc64le/os/boot/grub/powerpc-ieee1275"
     dest: "{{ item }}"
+    remote_src: yes
   with_items:
     - "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
     - /var/lib/tftpboot/boot/grub
@@ -16,6 +17,7 @@
   copy:
     src: "{{ local_repo }}/{{ topic }}/compose/Server/ppc64le/os/boot/grub/powerpc-ieee1275"
     dest: "{{ item }}"
+    remote_src: yes
   with_items:
     - "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
     - /var/lib/tftpboot/boot/grub
