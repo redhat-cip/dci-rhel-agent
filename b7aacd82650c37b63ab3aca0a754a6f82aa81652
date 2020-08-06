@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9efe85d3_37344edf",
+        "filename": "dci-rhel-agent/dci-import.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 642
+      },
+      "writtenOn": "2020-08-06T13:59:13Z",
+      "side": 1,
+      "message": "delegate_to: beaker_server missing",
+      "revId": "b7aacd82650c37b63ab3aca0a754a6f82aa81652",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5417d26d_67591d1d",
+        "filename": "dci-rhel-agent/dci-update.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 642
+      },
+      "writtenOn": "2020-08-06T13:59:13Z",
+      "side": 1,
+      "message": "--- missing",
+      "revId": "b7aacd82650c37b63ab3aca0a754a6f82aa81652",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
