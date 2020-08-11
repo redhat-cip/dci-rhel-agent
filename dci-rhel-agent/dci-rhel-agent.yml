@@ -110,6 +110,21 @@
       rescue:
         - include_tasks: failure.yml
 
+- name: Mirror Universal Base Image
+  hosts: jumphost
+  vars:
+    dci_status: 'pre-run'
+  tasks:
+    - name: Launch UBI mirroring
+      ignore_errors: yes
+      import_role:
+        name: dci-rhel-ubi
+      when:
+        - dci_rhel_host_ubi|bool
+      become: true
+  tags:
+      - pre-run
+
 - name: Install RHEL on SUT
   hosts: beaker_server
   gather_facts: no

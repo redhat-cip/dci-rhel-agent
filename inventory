@@ -11,8 +11,11 @@
 
 beaker_server ansible_connection=local
 
+# Specify the dns name that the beaker_sut will use to access
+[jumphost]
+beaker_server
+
 # The [beaker_sut] is empty. Do not touch.
 # Add SUT via settings.yml.
 #
-
 [beaker_sut]

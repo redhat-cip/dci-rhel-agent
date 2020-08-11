@@ -6,3 +6,4 @@ dci_config_file: /etc/dci-rhel-agent/settings.yml
 dci_tags: ['debug']
 dci_rhel_agent_cert: false
 dci_rhel_agent_cki: false
+dci_rhel_host_ubi: false
