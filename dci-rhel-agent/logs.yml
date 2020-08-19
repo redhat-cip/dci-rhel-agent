@@ -25,6 +25,18 @@
       vars:
         beaker_results: '{{hostvars.beaker_server.job_artifacts.path }}/beaker-results.xml'
 
+    - name: Check if ansible log exists
+      stat:
+        path: /var/log/ansible.log
+      register: ansible_log_check
+
+    - name: Copy ansible log to logs directory for collection if it exists
+      copy:
+        src: /var/log/ansible.log
+        dest: '{{ hostvars.beaker_server.job_logs.path }}'
+      delegate_to: localhost
+      when: ansible_log_check.stat.exists
+
     # This prevent faillure in case dci-rhel-agent can't reach HTTP (private IP, ACL, ...)
     - name: Synchronize logs directory from Beaker server to dci-rhel-agent
       synchronize:
