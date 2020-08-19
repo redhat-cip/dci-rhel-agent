@@ -85,7 +85,7 @@ def provision_and_test(extravars):
         thread, runner = ansible_runner.run_async(
             private_data_dir="/usr/share/dci-rhel-agent/",
             inventory="/etc/dci-rhel-agent/inventory",
-            verbosity=1,
+            verbosity=int(environ.get('VERBOSITY')),
             playbook="dci-rhel-agent.yml",
             extravars=extravars,
             quiet=False
