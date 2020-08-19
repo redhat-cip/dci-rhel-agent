@@ -25,6 +25,12 @@
       vars:
         beaker_results: '{{hostvars.beaker_server.job_artifacts.path }}/beaker-results.xml'
 
+    - name: Copy ansible log to logs directory for collection
+      copy:
+        src: /var/log/ansible.log
+        dest: '{{ hostvars.beaker_server.job_logs.path }}'
+      delegate_to: localhost
+
     # This prevent faillure in case dci-rhel-agent can't reach HTTP (private IP, ACL, ...)
     - name: Synchronize logs directory from Beaker server to dci-rhel-agent
       synchronize:
