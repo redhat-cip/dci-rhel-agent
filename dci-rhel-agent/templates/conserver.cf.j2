@@ -1,0 +1,17 @@
+default * {
+        # master server
+        master localhost;
+        # timestamps
+        timestamp 1hab;
+        # enable writing
+        rw *;
+        # enable logging
+        logfile /var/log/consoles/&;
+}
+
+{% for system in systems %}
+console {{ system['fqdn'] }}{
+        type exec;
+        exec {{ system['sol_command'] }};
+}
+{% endfor %}

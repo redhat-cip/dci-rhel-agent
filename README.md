@@ -163,6 +163,7 @@ topics:
       - fqdn: my.x86_64.system2.local
         kernel_options: "rd.iscsi.ibft=1"
         ks_meta: "ignoredisk=--only-use=sda"
+        sol_command: "ipmitool -I lanplus -U root -P calvin -H my.x86_64.system2.local sol activate"
       - my.x86_64.system3.local
       - my.x86_64.system4.local
 ```
@@ -254,6 +255,20 @@ For example:
       - fqdn: my.x86_64.system2.local
         kernel_options: "rd.iscsi.ibft=1"
         ks_meta: "ignoredisk=--only-use=sda"
+      - my.x86_64.system3.local
+      - my.x86_64.system4.local
+```
+
+#### How to enable conserver ?
+
+The beaker-watchdog daemon on the lab controller can monitors the console logs from conserver for every running recipe. For that you will need to add the SOL (serial over lan) command in the setting file :
+
+For example:
+
+```
+    systems:
+      - fqdn: my.x86_64.system2.local
+        sol_command: "ipmitool -I lanplus -U root -P calvin -H my.x86_64.system2.local sol activate"
       - my.x86_64.system3.local
       - my.x86_64.system4.local
 ```
