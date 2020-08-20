@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "7ca75b1b_0cd1c714",
+        "filename": "dci-rhel-agent/templates/conserver.cf.j2",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 642
+      },
+      "writtenOn": "2020-08-20T13:03:08Z",
+      "side": 1,
+      "message": "yes, the log will be grab by beaker and added in a file named console.log in the recipe folder",
+      "parentUuid": "c34045f0_9c71c979",
+      "revId": "483208f148a0274de22fffb0349a94ff38319798",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2bf089f5_bfdca236",
         "filename": "dci-rhel-agent/templates/conserver.cf.j2",
         "patchSetId": 1
@@ -47,6 +65,24 @@
       "writtenOn": "2020-08-20T12:49:15Z",
       "side": 1,
       "message": "Are you sure this is correct?  I know in beaker lab controller it has this..\n\nsrc/bkr/labcontroller/default.conf:CONSOLE_LOGS \u003d \"/var/consoles\"",
+      "revId": "483208f148a0274de22fffb0349a94ff38319798",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "75686ea3_c1040f7e",
+        "filename": "dci-rhel-agent/templates/conserver.cf.j2",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 642
+      },
+      "writtenOn": "2020-08-20T13:03:08Z",
+      "side": 1,
+      "message": "i\u0027m able to save the log with this file with \u0026 is the name of the fqdn. I will try with this variable to see what will happen.",
+      "parentUuid": "2bf089f5_bfdca236",
       "revId": "483208f148a0274de22fffb0349a94ff38319798",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
