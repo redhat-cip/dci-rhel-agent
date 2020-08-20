@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fbae1eb4_a5e01ff1",
+        "filename": "dci-rhel-agent/conserver.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 606
+      },
+      "writtenOn": "2020-08-20T12:49:15Z",
+      "side": 1,
+      "message": "Do you need any become: yes?  or will this playbook always run as root?",
+      "revId": "483208f148a0274de22fffb0349a94ff38319798",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2bf089f5_bfdca236",
+        "filename": "dci-rhel-agent/templates/conserver.cf.j2",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 606
+      },
+      "writtenOn": "2020-08-20T12:49:15Z",
+      "side": 1,
+      "message": "Are you sure this is correct?  I know in beaker lab controller it has this..\n\nsrc/bkr/labcontroller/default.conf:CONSOLE_LOGS \u003d \"/var/consoles\"",
+      "revId": "483208f148a0274de22fffb0349a94ff38319798",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "35502523_a33f80ed",
+        "filename": "dci-rhel-agent/templates/job.xml.j2",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 606
+      },
+      "writtenOn": "2020-08-20T12:49:15Z",
+      "side": 1,
+      "message": "I think this is a good default and probably fine for this first version.  But I\u0027m not 100% sure it will always be the same value for every system.",
+      "revId": "483208f148a0274de22fffb0349a94ff38319798",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
