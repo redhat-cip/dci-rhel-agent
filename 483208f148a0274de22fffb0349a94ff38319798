@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "c34045f0_9c71c979",
+        "filename": "dci-rhel-agent/templates/conserver.cf.j2",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-08-20T12:51:47Z",
+      "side": 1,
+      "message": "If conserver is enabled during a run, is there a log file that should be collected by the agent and uploaded to DCI when the run is over?",
+      "revId": "483208f148a0274de22fffb0349a94ff38319798",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2bf089f5_bfdca236",
         "filename": "dci-rhel-agent/templates/conserver.cf.j2",
         "patchSetId": 1
