@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c0389335_50ff7fc6",
+        "filename": "README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 166
+      },
+      "writtenOn": "2020-08-25T07:49:11Z",
+      "side": 1,
+      "message": "typo: monitor",
+      "revId": "56ea9fa153f50021b431273017f74a3a93d43a9b",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
