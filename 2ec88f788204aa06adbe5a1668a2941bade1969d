@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1dbb8e2b_7754df3c",
+        "filename": "dci-rhel-agent/entrypoint.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 642
+      },
+      "writtenOn": "2020-08-25T17:09:26Z",
+      "side": 1,
+      "message": "environ.get return a str and verbosity is waiting for a int.",
+      "revId": "2ec88f788204aa06adbe5a1668a2941bade1969d",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
