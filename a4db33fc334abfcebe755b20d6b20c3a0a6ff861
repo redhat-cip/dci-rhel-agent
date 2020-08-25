@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7995ec37_c5531f25",
+        "filename": "dci-rhel-agent/logs.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 642
+      },
+      "writtenOn": "2020-08-25T18:01:55Z",
+      "side": 1,
+      "message": "Should not be delegate_to localhost ?",
+      "revId": "a4db33fc334abfcebe755b20d6b20c3a0a6ff861",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
