@@ -16,6 +16,24 @@
       "revId": "a4db33fc334abfcebe755b20d6b20c3a0a6ff861",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "49349de3_62232842",
+        "filename": "dci-rhel-agent/logs.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-08-25T18:06:22Z",
+      "side": 1,
+      "message": "Yes, good catch.  Thanks",
+      "parentUuid": "7995ec37_c5531f25",
+      "revId": "a4db33fc334abfcebe755b20d6b20c3a0a6ff861",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
