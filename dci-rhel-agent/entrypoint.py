@@ -18,6 +18,7 @@ topics:
       - fqdn: labvm-1.novalocal
         kernel_options: "rd.iscsi.ibft=1"
         ks_meta: "ignoredisk=--only-use=sda"
+        sol_command: "ipmitool -I lanplus -U root -P calvin -H labvm-1.novalocal sol activate"
       - labvm-2.novalocal
 
   - topic: RHEL-8.1
@@ -71,6 +72,21 @@ def provision_and_test(extravars):
         print ('No hosts found in settings. Please add systems to provision to your settings file.')
         sys.exit(1)
 
+    # Setup conserver if a sol_command exist
+    if [system for system in extravars['systems'] if type(system) is dict and 'sol_command' in system.keys()]:
+        systems = {'systems' : [system for system in extravars['systems'] if type(system) is dict and 'sol_command' in system.keys()]}
+        r = ansible_runner.run(
+            private_data_dir="/usr/share/dci-rhel-agent/",
+            inventory="/etc/dci-rhel-agent/inventory",
+            verbosity=1,
+            playbook="conserver.yml",
+            extravars=systems,
+            quiet=False
+        )
+        if r.rc != 0:
+            print ("Conserver playbook failed. {}: {}".format(r.status, r.rc))
+            sys.exit(1)
+
     threads_runners = {}
     for system in extravars['systems']:
         if type(system) is dict and 'fqdn' in system :
@@ -79,6 +95,8 @@ def provision_and_test(extravars):
                 extravars['kernel_options'] = system['kernel_options']
             if 'ks_meta' in system:
                 extravars['ks_meta'] = system['ks_meta']
+            if 'sol_command' in system:
+                extravars['sol_command'] = system['sol_command']
         else:
             extravars['fqdn'] = system
         print ("Starting job for %s." % extravars['fqdn'])
