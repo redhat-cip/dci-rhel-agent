@@ -47,3 +47,9 @@
 - name: 'Register SUT CPU arch variable'
   set_fact:
     system_arch: "{{ supported_arch_info.matches[0].values().pop() }}"
+
+- name: 'Tag job with SUT arch'
+  dci_job:
+    id: "{{ hostvars.localhost.job_id }}"
+    tags: '{{ system_arch }}'
+
