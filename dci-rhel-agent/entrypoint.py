@@ -123,15 +123,6 @@ def provision_and_test(extravars):
             print("Job for %s failed, rc: %s, status: %s " % (fqdn, r.rc, r.status))
             number_of_failed_jobs += 1
 
-def exit_if_duplicates(topics):
-    topics_name = []
-    for topic in topics:
-        topic_name = topic['topic']
-        if topic_name in topics_name:
-            print ("topics list in your settings file contains duplicates")
-            sys.exit(1)
-        topics_name.append(topic_name)
-
 
 def main():
     if environ.get('DCI_CLIENT_ID') is None:
@@ -143,7 +134,6 @@ def main():
     if 'topics' in sets:
         # Break up settings file into individual jobs by topic
         jobs = sets['topics']
-        exit_if_duplicates(jobs)
         # Loop over each job and provision system(s)
         for idx, current_job in enumerate(jobs):
             print ("Beginning provision/test jobs for topic %s" % current_job['topic'])
