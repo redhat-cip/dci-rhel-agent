@@ -95,6 +95,10 @@ For more details, read the official [documentation](https://beaker-project.org/d
 
 ## Configuration
 
+In order to ensure the agent is able to connect to all applicable hosts, please copy the ssh key located in /etc/dci-rhel-agent/secrets/id_rsa to the hosts running Beaker and dnsmasq.  Normally, these will be on the same machine running the agent.
+```console
+ssh-copy-id -i /etc/dci-rhel-agent/secrets/id_rsa <user>@<host>
+```
 There are two configuration files for `dci-rhel-agent`: `/etc/dci-rhel-agent/dcirc.sh` and `/etc/dci-rhel-agent/settings.yml`.
 
   * `/etc/dci-rhel-agent/dcirc.sh`
@@ -114,7 +118,8 @@ export DCI_CLIENT_ID
 export DCI_API_SECRET
 export DCI_CS_URL
 ```
-
+* `/etc/dci-rhel-agent/inventory`
+This file should be edited once upon installation.  The ansible_host (192.168.1.1 as delivered) should be updated to the IP of the machine running the DCI RHEL agent.
 * `/etc/dci-rhel-agent/settings.yml`
 
 This YAML file includes the configuration for one or more `dci-rhel-agent` Jobs.
@@ -231,8 +236,7 @@ Please note the XML file has to be in `/etc/dci-rhel-agent/hooks/` directory.
 It is possible to configure the `dci-rhel-agent` to use an external Beaker service (therefore not to use the Beaker service that runs on the `dci-jumpbox`).
 
 In this case, you can adapt directly the Ansible inventory file (`/etc/dci-rhel-agent/inventory`) of the agent.
-Change the connexion line for the host `beaker_server`.
-By default, it is configured `ansible_connection=local`.
+Change the connection line for the host `beaker_server`.
 
 For example:
 
