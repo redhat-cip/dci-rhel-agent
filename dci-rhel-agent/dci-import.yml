@@ -10,6 +10,12 @@
     dci_api_secret="{{ lookup('env','DCI_API_SECRET') }}"
   no_log: true
 
+- name: Get dci-downloader version
+  delegate_to: beaker_server
+  shell: /bin/dci-downloader --version
+  become: true
+  when: hostvars.localhost.skip_download == False
+
 - name: Start dci-downloader
   delegate_to: beaker_server
   environment:
