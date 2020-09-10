@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9b9fed8f_9c122c6b",
+        "filename": "dci-rhel-agent/test",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 526
+      },
+      "writtenOn": "2020-09-10T20:25:44Z",
+      "side": 1,
+      "message": "this is a comment",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 4
+      },
+      "revId": "d47a7fae3ce1ab893e2bfa99e70c61f7a24dc02f",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
