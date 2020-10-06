@@ -141,6 +141,7 @@ The possible values are:
 | beaker_lab.dhcp_start | False | IP | Starting IP address range to assign to DCI test systems via DHCP. |
 | beaker_lab.dhcp_end | False | IP | Ending IP address range to assigne to DCI test systems via DHCP. |
 | beaker_lab.jumpbox_fqdn | False | FQDN | FQDN of DCI lab jumpbox. |
+| beaker_lab.router | False | IP | Gateway address
 | system_inventory | False | various | List of all DCI tests systems and corresponding Beaker information |
 Example:
 

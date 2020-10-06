@@ -21,19 +21,44 @@
       register: dns_conf_update
       when: hostvars.localhost.beaker_lab is defined
 
-    - name: Update hosts file with any new systems if lab is using DCI DNS
-      lineinfile:
-        path: /etc/hosts
-        line: "{{ hostvars.localhost.beaker_lab.system_inventory[item.key].ip_address }} {{ item.key }}"
-      loop: "{{ q('dict', hostvars.localhost.beaker_lab['system_inventory'] | default({})) }}"
-      register: etc_hosts_update
+    - name: Update hosts file
+      block:
+        - name: Update hosts file with any new systems (no domain) if lab is using DCI DNS
+          lineinfile:
+            path: /etc/hosts
+            line: "{{ hostvars.localhost.beaker_lab.system_inventory[item.key].ip_address }} {{ item.key }}"
+          loop: "{{ q('dict', hostvars.localhost.beaker_lab['system_inventory'] | default({})) }}"
+          register: etc_hosts_update1
+          when: item.key.split(".")|length == 1
+
+        - name: Update hosts file with any new systems with domain if lab is using DCI DNS
+          lineinfile:
+            path: /etc/hosts
+            line: '{{ hostvars.localhost.beaker_lab.system_inventory[item.key].ip_address }} {{ item.key.split(".")[0] }} {{ item.key }}'
+          loop: "{{ q('dict', hostvars.localhost.beaker_lab['system_inventory'] | default({})) }}"
+          register: etc_hosts_update2
+          when: item.key.split(".")|length > 1
+
+        - name: Update hosts file with jumpbox information (no domain) if lab is using DCI DNS
+          lineinfile:
+            path: /etc/hosts
+            line: "{{ hostvars.localhost.local_repo_ip }} {{ hostvars.localhost.beaker_lab.jumpbox_fqdn }}"
+          register: etc_hosts_update3
+          when: (hostvars.localhost.beaker_lab.jumpbox_fqdn.split(".")|length == 1)
+
+        - name: Update hosts file with jumpbox information (domain) if lab is using DCI DNS
+          lineinfile:
+            path: /etc/hosts
+            line: '{{ hostvars.localhost.local_repo_ip }} {{ hostvars.localhost.beaker_lab.jumpbox_fqdn.split(".")[0] }} {{ hostvars.localhost.beaker_lab.jumpbox_fqdn }}'
+          register: etc_hosts_update4
+          when: (hostvars.localhost.beaker_lab.jumpbox_fqdn.split(".")|length > 1)
       when: (hostvars.localhost.beaker_lab is defined) and (hostvars.localhost.beaker_lab.external_dns == false)
 
     - name: Restart dnsmasq if any config files were changed
       service:
         name: dnsmasq
         state: restarted
-      when: dnf_conf_update.changed | default('false') | bool or etc_hosts_update.changed | default ('false') | bool
+      when: dnf_conf_update.changed | default('false') | bool or etc_hosts_update1.changed | default ('false') | bool or etc_hosts_update2.changed | default ('false') | bool or etc_hosts_update3.changed | default ('false') | bool or etc_hosts_update4.changed | default ('false') | bool
 
     - name: Query systems list
       command: bkr system-list

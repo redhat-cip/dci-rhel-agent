@@ -1,6 +1,6 @@
 dhcp-range={{ hostvars.localhost.beaker_lab.dhcp_start }},{{ hostvars.localhost.beaker_lab.dhcp_end }},{{ hostvars.localhost.beaker_lab.dhcp_netmask }}
 dhcp-ignore=tag:!known
-dhcp-option=option:router,{{ hostvars.localhost.local_repo_ip }}
+dhcp-option=option:router,{{ hostvars.localhost.beaker_lab.router|default(hostvars.localhost.local_repo_ip,true) }}
 
 # Use this server as a time and name server for machines in the lab
 dhcp-option=option:dns-server,0.0.0.0
