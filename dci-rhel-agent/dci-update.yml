@@ -21,13 +21,22 @@
       register: dns_conf_update
       when: hostvars.localhost.beaker_lab is defined
 
-    - name: Update hosts file with any new systems if lab is using DCI DNS
+    - name: Update hosts file with any new systems (no domain) if lab is using DCI DNS
       lineinfile:
         path: /etc/hosts
         line: "{{ hostvars.localhost.beaker_lab.system_inventory[item.key].ip_address }} {{ item.key }}"
       loop: "{{ q('dict', hostvars.localhost.beaker_lab['system_inventory'] | default({})) }}"
       register: etc_hosts_update
-      when: (hostvars.localhost.beaker_lab is defined) and (hostvars.localhost.beaker_lab.external_dns == false)
+      when: (hostvars.localhost.beaker_lab is defined) and (hostvars.localhost.beaker_lab.external_dns == false) and (item.key.split(".")|length == 1)
+
+    - name: Update hosts file with any new systems with domain if lab is using DCI DNS
+      lineinfile:
+        path: /etc/hosts
+        line: '{{ hostvars.localhost.beaker_lab.system_inventory[item.key].ip_address }} {{ item.key.split(".")[0] }} {{ item.key }}'
+      loop: "{{ q('dict', hostvars.localhost.beaker_lab['system_inventory'] | default({})) }}"
+      register: etc_hosts_update
+      when: (hostvars.localhost.beaker_lab is defined) and (hostvars.localhost.beaker_lab.external_dns == false) and (item.key.split(".")|length > 1)
+
 
     - name: Restart dnsmasq if any config files were changed
       service:
