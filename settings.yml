@@ -9,6 +9,7 @@ topics:
       - x86_64
       - ppc64le
     with_debug: false
+    with_iso: false
     dci_rhel_agent_cert: false
     dci_rhel_agent_cki: false
     systems:
@@ -23,6 +24,7 @@ topics:
       - x86_64
       - aarch64
     with_debug: false
+    with_iso: false
     dci_rhel_agent_cert: false
     dci_rhel_agent_cki: false
     systems:

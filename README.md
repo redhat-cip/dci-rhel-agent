@@ -137,6 +137,7 @@ The possible values are:
 | variants | False | List of string | List of RHEL 8.x variant to enable (AppStream, BaseOS, CRB, HighAvailability, NFV, RT, ResilientStorage, SAP, SAPHANA and unified). |
 | archs | False | List of string | CPU arch to enable (aarch64, ppc64le, s390x and x86_64). |
 | with_debug | False | True/False | Use RPM with debug symbols.  |
+| with_iso | False | True/False | Download ISO images for this variant.  |
 | beaker_lab.external_dns | False | True/False | Boolean representing whether an external DNS server is in use. |
 | beaker_lab.dhcp_start | False | IP | Starting IP address range to assign to DCI test systems via DHCP. |
 | beaker_lab.dhcp_end | False | IP | Ending IP address range to assigne to DCI test systems via DHCP. |
@@ -159,6 +160,7 @@ topics:
       - x86_64
       - ppc64le
     with_debug: false
+    with_iso: false
     systems:
       - my.x86_64.system.local
       - my.ppc64le.system.local
@@ -170,6 +172,7 @@ topics:
     archs:
       - x86_64
     with_debug: false
+    with_iso: false
     systems:
       - fqdn: my.x86_64.system2.local
         kernel_options: "rd.iscsi.ibft=1"
