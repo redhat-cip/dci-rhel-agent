@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c91b5d85_d828e645",
+        "filename": "Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 642
+      },
+      "writtenOn": "2020-10-21T18:09:15Z",
+      "side": 1,
+      "message": "Maybe we should stick to one version. Latest version is sometimes broken when it\u0027s released.",
+      "revId": "56e1061f5553cbaee22845a79f35c92e20c66b45",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4b0d0f57_7eed1b3e",
+        "filename": "Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 642
+      },
+      "writtenOn": "2020-10-21T18:09:15Z",
+      "side": 1,
+      "message": "you should check with the parameter --single-child if you have some issue with the restart/shutdown of the container.",
+      "revId": "56e1061f5553cbaee22845a79f35c92e20c66b45",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
