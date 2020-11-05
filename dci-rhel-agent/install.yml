@@ -86,3 +86,9 @@
     job_id: "{{ bkrjobid }}"
     task: "/distribution/check-install"
   become: true
+  register: job_install
+
+- name: Fail if job aborted or cancelled
+  fail:
+    msg: Beaker job was aborted or cancelled, collecting available logs
+  when: "{{ job_install['status'] == 'Cancelled' }} or {{ job_install['status'] == 'Aborted' }}"
