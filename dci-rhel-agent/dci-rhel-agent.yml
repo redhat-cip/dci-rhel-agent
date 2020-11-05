@@ -119,6 +119,7 @@
     - block:
         - include_tasks: install.yml
       rescue:
+        - include_tasks: logs.yml
         - include_tasks: release.yml
         - include_tasks: failure.yml
 
