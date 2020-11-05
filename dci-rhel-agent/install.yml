@@ -86,3 +86,5 @@
     job_id: "{{ bkrjobid }}"
     task: "/distribution/check-install"
   become: true
+  register: job_install
+  failed_when: job_install['status'] in ['Cancelled','Aborted']
