@@ -19,9 +19,12 @@ RUN yum upgrade -y && \
 
 ADD dci-rhel-agent /usr/share/dci-rhel-agent/
 
+# Install dumb-init package to handle PID 1 problem and reap any zombie processes
+RUN pip install 'dumb-init==1.2.2'
+
 # Ansible-runner bug: https://github.com/ansible/ansible-runner/issues/219
 RUN cp /usr/share/dci/callback/dci.py /usr/lib/python2.7/site-packages/ansible_runner/callbacks
 
 WORKDIR /usr/share/dci-rhel-agent
-
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["python", "entrypoint.py"]
