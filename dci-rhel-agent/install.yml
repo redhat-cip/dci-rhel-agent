@@ -3,7 +3,7 @@
 # Tasks are included to run on beaker_server host,
 # Delegate_to: localhost when needed.
 #
-- name: Copy RHEL8 ppc64le boot files to tftproot when provisioning a ppc64le machine
+- name: Copy RHEL8 or RHEL9 ppc64le boot files to tftproot when provisioning a ppc64le machine
   copy:
     src: "{{ local_repo }}/{{ topic }}/compose/BaseOS/ppc64le/os/boot/grub/powerpc-ieee1275"
     dest: "{{ item }}"
@@ -11,7 +11,7 @@
   with_items:
     - "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
     - /var/lib/tftpboot/boot/grub
-  when: hostvars.localhost.system_arch == "ppc64le" and topic.startswith("RHEL-8")
+  when: hostvars.localhost.system_arch == "ppc64le" and (topic.startswith("RHEL-8") or topic.startswith("RHEL-9"))
 
 - name: Copy RHEL7 ppc64le boot files to tftproot when provisioning a ppc64le machine
   copy:
