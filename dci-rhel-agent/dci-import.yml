@@ -31,6 +31,7 @@
   become: true
 
 - name: Start beaker-repo-update
+  ignore_errors: yes
   delegate_to: beaker_server
   shell: beaker-repo-update
   become: true
