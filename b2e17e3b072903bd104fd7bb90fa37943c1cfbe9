@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f269f387_477be1c7",
+        "filename": "dci-rhel-agent/install.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 648
+      },
+      "writtenOn": "2020-11-12T17:27:21Z",
+      "side": 1,
+      "message": "this can be done in just an additional line with `failed_when: job_install[\u0027status\u0027] in [\u0027Cancelled\u0027, \u0027Aborted\u0027]` (or similar)",
+      "revId": "b2e17e3b072903bd104fd7bb90fa37943c1cfbe9",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aec1b2a_f5799ddb",
+        "filename": "dci-rhel-agent/release.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 648
+      },
+      "writtenOn": "2020-11-12T17:27:21Z",
+      "side": 1,
+      "message": "should this change be part of this changeset? It could be, just asking.",
+      "revId": "b2e17e3b072903bd104fd7bb90fa37943c1cfbe9",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
