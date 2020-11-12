@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a9a2ac2c_07988cf4",
+        "filename": "dci-rhel-agent/install.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-11-12T19:38:45Z",
+      "side": 1,
+      "message": "Thanks. Will update.",
+      "parentUuid": "f269f387_477be1c7",
+      "revId": "b2e17e3b072903bd104fd7bb90fa37943c1cfbe9",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1aec1b2a_f5799ddb",
         "filename": "dci-rhel-agent/release.yml",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2020-11-12T17:27:21Z",
       "side": 1,
       "message": "should this change be part of this changeset? It could be, just asking.",
+      "revId": "b2e17e3b072903bd104fd7bb90fa37943c1cfbe9",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fe0c9d5a_277026f2",
+        "filename": "dci-rhel-agent/release.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-11-12T19:38:45Z",
+      "side": 1,
+      "message": "I wanted to include it since the release tasks error out when a provision fails (as well as during other failures).  Decided to handle it in this changeset.",
+      "parentUuid": "1aec1b2a_f5799ddb",
       "revId": "b2e17e3b072903bd104fd7bb90fa37943c1cfbe9",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
