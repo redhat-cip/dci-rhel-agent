@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d4ce2842_4dc0d786",
+        "filename": "dci-rhel-agent/release.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 642
+      },
+      "writtenOn": "2020-11-12T21:12:22Z",
+      "side": 1,
+      "message": "\" is missing at the end",
+      "revId": "a7bf7499457b4d064afc0c571666e78f6f3424a5",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
