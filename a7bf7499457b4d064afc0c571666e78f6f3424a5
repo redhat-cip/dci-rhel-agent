@@ -16,6 +16,23 @@
       "revId": "a7bf7499457b4d064afc0c571666e78f6f3424a5",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cb2e50b3_4bd4e96d",
+        "filename": "dci-rhel-agent/release.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 642
+      },
+      "writtenOn": "2020-11-12T21:21:21Z",
+      "side": 1,
+      "message": "become: true is missing, the command doesn\u0027t work without the root permission in my lab",
+      "revId": "a7bf7499457b4d064afc0c571666e78f6f3424a5",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
