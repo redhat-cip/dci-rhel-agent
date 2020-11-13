@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f6551885_4d23537f",
+        "filename": "dci-rhel-agent/release.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-11-13T14:18:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d4ce2842_4dc0d786",
+      "revId": "a7bf7499457b4d064afc0c571666e78f6f3424a5",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cb2e50b3_4bd4e96d",
         "filename": "dci-rhel-agent/release.yml",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2020-11-12T21:21:21Z",
       "side": 1,
       "message": "become: true is missing, the command doesn\u0027t work without the root permission in my lab",
+      "revId": "a7bf7499457b4d064afc0c571666e78f6f3424a5",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "82c7051a_9e0be81f",
+        "filename": "dci-rhel-agent/release.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2020-11-13T14:18:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cb2e50b3_4bd4e96d",
       "revId": "a7bf7499457b4d064afc0c571666e78f6f3424a5",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
