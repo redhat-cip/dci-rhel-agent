@@ -5,6 +5,7 @@
 #
 - name: Check if SUT is reserved by Beaker
   shell: "bkr system-status {{ fqdn }} --format json"
+  delegate_to: beaker_server
   become: true
   register: bkr_system_status
 
