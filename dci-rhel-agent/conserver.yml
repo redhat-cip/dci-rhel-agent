@@ -10,6 +10,11 @@
           - conserver
           - conserver-client
         state: present
+    - name: Create /var/consoles if it does not exist
+      file:
+        path: /var/consoles
+        state: directory
+        mode: '0755'
     - name: Create conserver.cf file
       template:
         src: conserver.cf.j2
