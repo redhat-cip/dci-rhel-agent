@@ -100,6 +100,10 @@ def provision_and_test(extravars):
                 extravars['sol_command'] = system['sol_command']
         else:
             extravars['fqdn'] = system
+            #Remove any install options set for previous SUTs in this topic if they exist
+            extravars.pop('kernel_options', None)
+            extravars.pop('ks_meta', None)
+            extravars.pop('sol_command', None)
         print ("Starting job for %s." % extravars['fqdn'])
         thread, runner = ansible_runner.run_async(
             private_data_dir="/usr/share/dci-rhel-agent/",
