@@ -3,9 +3,11 @@ dhcp-ignore=tag:!known
 dhcp-option=option:router,{{ hostvars.localhost.beaker_lab.router|default(hostvars.localhost.local_repo_ip,true) }}
 
 # Use this server as a time and name server for machines in the lab
-dhcp-option=option:dns-server,0.0.0.0
-dhcp-option=option:ntp-server,0.0.0.0
-
+dhcp-option=option:dns-server,{{ hostvars.localhost.beaker_lab.dns_server|default('0.0.0.0',true) }}
+dhcp-option=option:ntp-server,{{ hostvars.localhost.beaker_lab.ntp_server|default('0.0.0.0', true) }}
+{% if hostvars.localhost.beaker_lab.domain is defined %}
+domain={{ hostvars.localhost.beaker_lab.domain }}
+{% endif %}
 enable-tftp
 tftp-root=/var/lib/tftpboot
 dhcp-boot=pxelinux.0
