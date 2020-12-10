@@ -138,6 +138,9 @@ The possible values are:
 | archs | False | List of string | CPU arch to enable (aarch64, ppc64le, s390x and x86_64). |
 | with_debug | False | True/False | Use RPM with debug symbols.  |
 | beaker_lab.external_dns | False | True/False | Boolean representing whether an external DNS server is in use. |
+| beaker_lab.dns_server | False | IP | IP address of DNS server to specify in beaker.conf (dnsmasq config) |
+| beaker_lab.ntp_server | False | IP | IP address of NTP server to specify in beaker.conf (dnsmasq config) |
+| beaker_lab.domain | False | String | Domain to append to hosts
 | beaker_lab.dhcp_start | False | IP | Starting IP address range to assign to DCI test systems via DHCP. |
 | beaker_lab.dhcp_end | False | IP | Ending IP address range to assigne to DCI test systems via DHCP. |
 | beaker_lab.jumpbox_fqdn | False | FQDN | FQDN of DCI lab jumpbox. |
@@ -181,6 +184,10 @@ beaker_lab:
   dhcp_start: 192.168.1.20
   dhcp_end: 192.168.1.30
   dhcp_netmask: 255.255.255.0
+  external_dns: True
+  dns_server: 192.168.1.1
+  ntp_server : 192.168.1.1
+  domain: sample.domain.com
 
   jumpbox_fqdn: dci-jumpbox
 

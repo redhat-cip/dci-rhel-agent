@@ -31,6 +31,9 @@ topics:
 
 beaker_lab:
   external_dns: false
+  dns_server: 192.168.1.1
+  ntp_server: 192.168.1.1
+  domain: sample.domain.com
   dhcp_start: 192.168.1.20
   dhcp_end: 192.168.1.30
   dhcp_netmask: 255.255.255.0
