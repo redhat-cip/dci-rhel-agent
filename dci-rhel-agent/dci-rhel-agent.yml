@@ -32,7 +32,7 @@
       dci_job:
         id: "{{ job_id }}"
         tags: '{{ dci_tags }}'
-      when: dci_tags
+      when: dci_tags | length > 0
 
 - name: Upload settings and hooks
   hosts: localhost
