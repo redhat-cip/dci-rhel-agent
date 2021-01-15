@@ -58,7 +58,7 @@
       service:
         name: dnsmasq
         state: restarted
-      when: dnf_conf_update.changed | default('false') | bool or etc_hosts_update1.changed | default ('false') | bool or etc_hosts_update2.changed | default ('false') | bool or etc_hosts_update3.changed | default ('false') | bool or etc_hosts_update4.changed | default ('false') | bool
+      when: dns_conf_update.changed | default('false') | bool or etc_hosts_update1.changed | default ('false') | bool or etc_hosts_update2.changed | default ('false') | bool or etc_hosts_update3.changed | default ('false') | bool or etc_hosts_update4.changed | default ('false') | bool
 
     - name: Query systems list
       command: bkr system-list
@@ -100,3 +100,8 @@
             src: /var/www/beaker/harness/RedHatEnterpriseLinux8
             dest: "{{ local_repo }}/beaker/harness"
             remote_src: yes
+
+    - name: Ensure latest dci-downloader is installed
+      yum:
+        name: dci-downloader
+        state: latest
