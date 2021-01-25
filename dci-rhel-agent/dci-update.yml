@@ -73,7 +73,7 @@
     - name: Create any systems in Beaker which were not already present
       command: >
         bkr system-create
-        --lab-controller={{ hostvars.localhost.beaker_lab.jumpbox_fqdn }}
+        --lab-controller={{ hostvars.localhost.beaker_lab.labcontroller_fqdn | default(hostvars.localhost.beaker_lab.jumpbox_fqdn) }}
         --arch={{ hostvars.localhost.beaker_lab.system_inventory[item.key].arch }}
         --power-type={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_type }}
         --power-address={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_address }}
@@ -86,20 +86,6 @@
       when: (item.key not in bkr_systems.stdout_lines) and (hostvars.localhost.beaker_lab is defined)
       become: true
       loop: "{{ q('dict', hostvars.localhost.beaker_lab.system_inventory | default({})) }}"
-
-    #TODO: Temp workaround until RHEL-9 harness packages are availabe on beaker-project.org
-    - name: Ensure RHEL-8 Beaker harness packages are available on jumpbox for RHEL-9 provisions
-      block:
-        - name: Create directory to host RHEL-8 Beaker harness packages for RHEL-9 provisions
-          file:
-            path: "{{ local_repo }}/beaker/harness"
-            state: directory
-
-        - name: Copy RHEL-8 Beaker harness packages to local repo
-          copy:
-            src: /var/www/beaker/harness/RedHatEnterpriseLinux8
-            dest: "{{ local_repo }}/beaker/harness"
-            remote_src: yes
 
     - name: Ensure latest dci-downloader is installed
       yum:

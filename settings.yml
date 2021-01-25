@@ -40,6 +40,7 @@ beaker_lab:
   router: 192.168.1.1
 
   jumpbox_fqdn: dci-jumpbox
+  labcontroller_fqdn: machine-name.where.lab.controller.is.running
 
   system_inventory:
     test.x86.sut1:

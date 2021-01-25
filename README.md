@@ -144,6 +144,7 @@ The possible values are:
 | beaker_lab.dhcp_start | False | IP | Starting IP address range to assign to DCI test systems via DHCP. |
 | beaker_lab.dhcp_end | False | IP | Ending IP address range to assigne to DCI test systems via DHCP. |
 | beaker_lab.jumpbox_fqdn | False | FQDN | FQDN of DCI lab jumpbox. |
+| beaker_lab.labcontroller_fqdn | False | FQDN | Public interface FQDN of Beaker lab controller. |
 | beaker_lab.router | False | IP | Gateway address
 | system_inventory | False | various | List of all DCI tests systems and corresponding Beaker information |
 Example:
@@ -190,6 +191,7 @@ beaker_lab:
   domain: sample.domain.com
 
   jumpbox_fqdn: dci-jumpbox
+  labcontroller_fqdn: dell-pet410-wdci-01.khw2.lab.eng.bos.redhat.com
 
   system_inventory:
     test.x86.sut1:

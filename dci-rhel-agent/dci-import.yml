@@ -35,3 +35,19 @@
   delegate_to: beaker_server
   shell: beaker-repo-update
   become: true
+
+#TODO: Temp workaround until RHEL-9 harness packages are availabe on beaker-project.org
+#Must be executed after beaker-repo-update to ensure harness packages are available to copy
+- name: Ensure RHEL-8 Beaker harness packages are available on jumpbox for RHEL-9 provisions
+  delegate_to: beaker_server
+  block:
+    - name: Create directory to host RHEL-8 Beaker harness packages for RHEL-9 provisions
+      file:
+        path: "{{ local_repo }}/beaker/harness"
+        state: directory
+
+    - name: Copy RHEL-8 Beaker harness packages to local repo
+      copy:
+        src: /var/www/beaker/harness/RedHatEnterpriseLinux8
+        dest: "{{ local_repo }}/beaker/harness"
+        remote_src: yes
