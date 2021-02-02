@@ -8,7 +8,6 @@ dhcp-option=option:ntp-server,{{ hostvars.localhost.beaker_lab.ntp_server|defaul
 {% if hostvars.localhost.beaker_lab.domain is defined %}
 domain={{ hostvars.localhost.beaker_lab.domain }}
 {% endif %}
-enable-tftp
 tftp-root=/var/lib/tftpboot
 dhcp-boot=pxelinux.0
 
