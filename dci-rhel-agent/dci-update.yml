@@ -103,6 +103,18 @@
     - debug:
         msg: "Current Beaker Systems: {{ bkr_systems.stdout_lines }}"
 
+    - name: Update power settings for each existing test system
+      command: >
+        bkr system-modify
+        --power-type={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_type }}
+        --power-address={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_address }}
+        --power-user={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_user }}
+        --power-password={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_password }}
+        --power-id={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_id }}
+        {{ item.key }}
+      become: true
+      loop: "{{ q('dict', hostvars.localhost.beaker_lab.system_inventory | default({})) }}"
+
     - name: Create any systems in Beaker which were not already present
       command: >
         bkr system-create
