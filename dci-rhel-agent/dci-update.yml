@@ -93,6 +93,11 @@
         state: restarted
       when: dns_conf_update.changed | default('false') | bool or etc_hosts_update1.changed | default ('false') | bool or etc_hosts_update2.changed | default ('false') | bool or etc_hosts_update3.changed | default ('false') | bool or etc_hosts_update4.changed | default ('false') | bool
 
+    - name: Ensure Beaker is up to date on jumpbox
+      yum:
+        name: beaker
+        state: latest
+
     - name: Query systems list
       command: bkr system-list
       register: bkr_systems
@@ -102,6 +107,18 @@
 
     - debug:
         msg: "Current Beaker Systems: {{ bkr_systems.stdout_lines }}"
+
+    - name: Update power settings for each existing test system (requires Beaker 28+)
+      command: >
+        bkr system-modify
+        --power-type={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_type }}
+        --power-address={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_address }}
+        --power-user={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_user }}
+        --power-password={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_password }}
+        --power-id={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_id | default(item.key) }}
+        {{ item.key }}
+      become: true
+      loop: "{{ q('dict', hostvars.localhost.beaker_lab.system_inventory | default({})) }}"
 
     - name: Create any systems in Beaker which were not already present
       command: >
