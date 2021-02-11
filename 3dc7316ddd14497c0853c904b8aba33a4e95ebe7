@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "591889ad_3a240d80",
+        "filename": "dci-rhel-agent/dci-update.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 642
+      },
+      "writtenOn": "2021-02-11T20:14:10Z",
+      "side": 1,
+      "message": "i dont think power_id is provide in the settings.yml. You should probably add a default value",
+      "revId": "3dc7316ddd14497c0853c904b8aba33a4e95ebe7",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
