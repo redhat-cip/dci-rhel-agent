@@ -41,13 +41,29 @@
 - name: Ensure RHEL-8 Beaker harness packages are available on jumpbox for RHEL-9 provisions
   delegate_to: beaker_server
   block:
-    - name: Create directory to host RHEL-8 Beaker harness packages for RHEL-9 provisions
-      file:
-        path: "{{ local_repo }}/beaker/harness"
-        state: directory
+    - name: Install createrepo package
+      package:
+        name: createrepo
+        state: present
 
-    - name: Copy RHEL-8 Beaker harness packages to local repo
+    - name: Create beaker-harness-rhel8 repo file
       copy:
-        src: /var/www/beaker/harness/RedHatEnterpriseLinux8
-        dest: "{{ local_repo }}/beaker/harness"
-        remote_src: yes
+        src: beaker-harness-rhel8.repo
+        dest: /etc/yum.repos.d/beaker-harness-rhel8.repo
+        owner: root
+        group: root
+
+    - name: Sync beaker-harness-rhel8 repo
+      shell: >
+        reposync -p {{ local_repo }}/beaker/harness/RedHatEnterpriseLinux8
+        -r beaker-harness-rhel8 -n --download-metadata -m -g -q -l --norepopath
+
+    - name: Create rhel8 harness repo
+      shell: createrepo -q {{ local_repo }}/beaker/harness/RedHatEnterpriseLinux8
+
+    - name: Remove beaker-harness-rhel8 repo file
+      file:
+        path: /etc/yum.repos.d/beaker-harness-rhel8.repo
+        state: absent
+
+  when: topic.startswith("RHEL-9")

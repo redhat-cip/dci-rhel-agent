@@ -1,0 +1,6 @@
+[beaker-harness-rhel8]
+baseurl = https://beaker-project.org/yum/harness/RedHatEnterpriseLinux8/
+gpgcheck = 0
+gpgkey = https://beaker-project.org/gpg/RPM-GPG-KEY-beaker-project
+name = Beaker Harness - RedHatEnterpriseLinux8
+enabled = 0
