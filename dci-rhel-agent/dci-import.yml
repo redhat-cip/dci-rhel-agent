@@ -41,13 +41,49 @@
 - name: Ensure RHEL-8 Beaker harness packages are available on jumpbox for RHEL-9 provisions
   delegate_to: beaker_server
   block:
+    - name: Get list of distros in Beaker
+      shell: "bkr distros-list --format json"
+      register: bkr_distros_list
+
+    - set_fact:
+        distros_rhel_8_list: "{{ bkr_distros_list.stdout | from_json | json_query(\"[?contains(distro_version, 'RedHatEnterpriseLinux8')]\") }}"
+
+    - name: Check if harness for rhel9 already exist
+      find:
+        paths: "{{ local_repo }}/beaker/harness"
+        register: filesrhel9harness
+
+    - name: Download RHEL-8 Distro
+      environment:
+        - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
+        - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
+        - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
+      shell: /bin/dci-downloader RHEL-8-milestone {{ local_repo }}
+      become: true
+      when: distros_rhel_8_list | length == 0
+      register: downloadrhel8distro
+    
+    - name: Import the RHEL8 build
+      shell: beaker-import -v --ignore-missing-tree-compose "http://{{ local_repo_ip }}/RHEL-8-milestone/compose/"
+      become: true
+      when: downloadrhel8distro.changed
+
+    - name: Start beaker-repo-update
+      ignore_errors: yes
+      shell: beaker-repo-update
+      become: true
+      when: downloadrhel8distro.changed
+      
     - name: Create directory to host RHEL-8 Beaker harness packages for RHEL-9 provisions
       file:
         path: "{{ local_repo }}/beaker/harness"
         state: directory
+      when: filesrhel9harness.matched > 0
 
     - name: Copy RHEL-8 Beaker harness packages to local repo
       copy:
         src: /var/www/beaker/harness/RedHatEnterpriseLinux8
         dest: "{{ local_repo }}/beaker/harness"
         remote_src: yes
+      when: filesrhel9harness.matched > 0
+  when: topic.startswith("RHEL-9")
