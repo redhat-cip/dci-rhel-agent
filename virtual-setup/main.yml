@@ -1,0 +1,34 @@
+---
+- name: install requirements and configure the jumphost image
+  hosts: localhost
+  gather_facts: false
+  become: true
+  tasks:
+    - name: install required packages
+      package:
+        name: '{{ item }}'
+      with_items:
+        - libvirt
+        - virt-manager
+
+    ## check user in libvirt group
+
+    ## check existence of {{ JUMPHOST_GUEST_IMAGE_SOURCE_PATH }}
+    ## copy it to {{ JUMPHOST_GUEST_IMAGE_PATH }}
+
+    ## customize the image with:
+    #  - root password
+    #  - remove cloud-init
+    #  - add the user ssh pubkey
+
+    ## boot the vm and finish the partition resize
+    ## add the vm host ip to the ansible inventory as jumphost-{{ host address derived from the ip address }}
+
+
+- name: configure the jumphost
+  hosts: jumhost-XX
+  gather_facts: false
+  become: true
+  tasks:
+    ## subscribe the jumphost to the stage rhsm
+    ## add the requred subscriptions
