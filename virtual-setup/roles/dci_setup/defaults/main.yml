@@ -1,0 +1,14 @@
+---
+rhsm_user: ""
+rhsm_pass: ""
+rhsm_baseurl: "https://cdn.redhat.com"
+rhsm_server_hostname: "https://subscription.rhsm.stage.redhat.com:443/subscription"
+rhsm_repository:
+- rhel-7-server-ansible-2.9-rpms
+- rhel-7-server-extras-rpms
+- rhel-7-server-optional-rpms
+dci_client_id: ""
+dci_api_secret: ""
+dci_topic: "RHEL-8-milestone"
+enable_share_mount: true
+share_folder_host: "/opt/rhel_topics"

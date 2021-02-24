@@ -1,0 +1,62 @@
+---
+#####################
+# Options mandatory
+#####################
+
+# rhsm user and password for the Jumpbox
+rhsm_user: ""
+rhsm_pass: ""
+
+# User and password to have access to DCI
+dci_client_id: ""
+dci_api_secret: ""
+
+#####################
+# bootstrap_libvirt
+#####################
+
+# Specify the folder to store the KVM images
+libvirt_image_path: /var/lib/libvirt/images
+
+# Base image for the create of the KVM Jumpbox
+kvm_guest_image_source_path: "{{ libvirt_image_path }}/rhel-server-7.9-x86_64-kvm.qcow2"
+
+# Networks used by the libvirt environment
+networks:
+- name: management
+  ip: 192.168.55.1
+  enable_dhcp: true
+  dhcp_start: 192.168.55.2
+  dhcp_end: 192.168.55.254
+  netmask: 255.255.255.0
+  enable_nat: true
+- name: provisioning
+
+# Vms created during the deployment of the libvirt environment
+vms:
+- name: jumpbox
+  add_dci_user: true
+  networks:
+  - management
+  - provisioning
+- name: sut
+  add_dci_user: false
+  networks:
+  - provisioning
+
+#####################
+# dci_setup
+#####################
+
+# RHSM configuration
+rhsm_baseurl: "https://cdn.redhat.com"
+rhsm_server_hostname: "https://subscription.rhsm.stage.redhat.com:443/subscription"
+
+# Repository needed for the installation of DCI
+rhsm_repository:
+- rhel-7-server-ansible-2.9-rpms
+- rhel-7-server-extras-rpms
+- rhel-7-server-optional-rpms
+
+# Topic installed during the deployment of the SUT
+dci_topic: "RHEL-8-milestone"
