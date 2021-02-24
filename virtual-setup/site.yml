@@ -1,0 +1,35 @@
+---
+- name: precheck
+  gather_facts: false
+  hosts: 
+    - localhost
+  tags:
+    - precheck
+  tasks:
+    - import_tasks: precheck.yml
+
+- name: Apply role bootstrap_libvirt
+  gather_facts: true
+  gather_subset:
+    - '!all'
+    - user_id
+  hosts:
+    - localhost
+  tags:
+    - bootstrap_libvirt
+  roles:
+    - role: bootstrap_libvirt
+
+- name: Apply role jumpbox
+  gather_facts: true
+  gather_subset:
+    - '!all'
+    - '!min'
+    - network
+    - user_id
+  hosts:
+    - jumpbox
+  tags:
+    - dci_setup
+  roles:
+    - role: dci_setup

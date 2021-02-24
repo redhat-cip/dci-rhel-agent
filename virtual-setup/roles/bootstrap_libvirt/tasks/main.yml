@@ -1,0 +1,2 @@
+---
+- include_tasks: "{{ hook_action | default('deploy') }}.yml"

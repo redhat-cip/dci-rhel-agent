@@ -1,0 +1,29 @@
+---
+- name: Check if the SUT already exist
+  ignore_errors: yes
+  virt:
+    name: "sut"
+    command: status
+  register: sut_exist
+
+- name: Create empty storage for the SUT
+  command: "qemu-img create -f qcow2 {{ libvirt_image_path }}/sut.qcow2 10G"
+  become: true
+  when: sut_exist['failed']
+
+- name: Define SUT node
+  become: true
+  virt:
+    command: define
+    xml: "{{ lookup('template', 'libvirt_sut.xml.j2') }}"
+  when: sut_exist['failed']
+
+- name: sync memory data to disk
+  command: sync
+
+- name: Start the SUT
+  become: true
+  virt:
+    name: sut
+    state: running
+  when: sut_exist['failed']

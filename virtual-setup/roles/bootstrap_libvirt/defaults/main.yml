@@ -1,0 +1,22 @@
+---
+libvirt_image_path: /var/lib/libvirt/images
+kvm_guest_image_source_path: "{{ libvirt_image_path }}/rhel-server-7.9-x86_64-kvm.qcow2"
+networks:
+- name: management
+  ip: 192.168.55.1
+  enable_dhcp: true
+  dhcp_start: 192.168.55.2
+  dhcp_end: 192.168.55.254
+  netmask: 255.255.255.0
+  enable_nat: true
+- name: provisioning
+vms:
+- name: jumpbox
+  add_dci_user: true
+  networks:
+  - management
+  - provisioning
+- name: sut
+  add_dci_user: false
+  networks:
+  - provisioning

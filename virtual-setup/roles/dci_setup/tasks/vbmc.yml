@@ -1,0 +1,102 @@
+---
+- name: Install packages required by virtualbmc
+  become: true
+  package:
+    name:
+      - python3-pip
+      - python3-setuptools
+      - python3-devel
+      - libvirt-devel
+      - gcc
+      - ipmitool
+
+- name: Upgrade pip
+  become: true
+  pip:
+    name: pip
+    executable: pip3
+    extra_args: --upgrade
+    state: latest
+
+- name: Install virtualbmc
+  become: true
+  pip:
+    name: virtualbmc
+    executable: pip3
+
+- name: Create directories needed by vbmc if it does not exist
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - /etc/virtualbmc
+    - /var/log/virtualbmc
+
+- name: Copy the vbmc configuration file
+  become: true
+  copy:
+    src: virtualbmc.conf
+    dest: /etc/virtualbmc
+
+- name: Add VirtualBMC as systemd service
+  become: true
+  copy:
+    mode: 0664
+    src: virtualbmc.service
+    dest: "/etc/systemd/system/virtualbmc.service"
+
+- name: Reload systemd
+  become: true
+  systemd:
+    daemon_reload: yes
+
+- name: Start VirtualBMC
+  become: true
+  systemd:
+    name: virtualbmc
+    state: started
+    enabled: yes
+
+- name: Disable StrictHostKeyChecking
+  copy:
+    src: config
+    dest: /home/dci/.ssh/config
+    mode: 0600
+
+- name: Copy ssh id_rsa key
+  copy:
+    src: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+    dest: "/home/dci/.ssh/id_rsa"
+    mode: 0600
+
+- name: Install sshfs
+  become: true
+  package:
+    name: fuse-sshfs
+
+- name: Disable StrictHostKeyChecking
+  become: true
+  copy:
+    src: config
+    dest: /root/.ssh/config
+    owner: root
+    mode: 0600
+
+- name: Mount the rhel_topics folder in the jumpbox
+  become: true
+  mount:
+    src: "{{ lookup('env', 'USER') }}@192.168.122.1:{{ share_folder_host }}"
+    path: /var/www/html
+    opts: defaults,identityfile=/home/dci/.ssh/id_rsa,allow_other,uid=0,gid=0,_netdev
+    state: mounted
+    fstype: fuse.sshfs
+  when: enable_share_mount | bool
+
+- name: Add sut to VirtualBMC
+  shell: >
+    /usr/local/bin/vbmc add sut --username admin --password password 
+    --address {{ hostvars[inventory_hostname]['ansible_eth1']['ipv4']['address'] | quote }} 
+    --port 6230 --libvirt-uri qemu+ssh://dci@192.168.122.1/system
+    && /usr/local/bin/vbmc start sut

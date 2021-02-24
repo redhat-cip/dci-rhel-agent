@@ -1,0 +1,18 @@
+<network>
+  <name>{{ network['name'] }}</name>
+{% if network['enable_nat'] is defined %}
+  <forward mode="nat">
+    <nat>
+      <port start="1024" end="65535"/>
+    </nat>
+  </forward>
+{% endif %}
+  <bridge name="{{ network['name'] }}" stp="on" delay="0"/>
+{% if network['enable_dhcp'] is defined %}
+  <ip address="{{ network['ip'] }}" netmask="{{ network['netmask'] }}">
+    <dhcp>
+      <range start="{{ network['dhcp_start'] }}" end="{{ network['dhcp_end'] }}"/>
+    </dhcp>
+  </ip>
+{% endif %}
+</network>
