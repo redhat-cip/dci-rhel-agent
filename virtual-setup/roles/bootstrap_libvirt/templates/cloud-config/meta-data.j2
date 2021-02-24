@@ -1,0 +1,10 @@
+
+instance-id: jumpbox
+network-interfaces: |
+  auto eth1
+  iface eth1 inet static
+  address 192.168.61.1
+  network 192.168.61.0
+  netmask 255.255.255.0
+  broadcast 192.168.61.255
+local-hostname: jumpbox

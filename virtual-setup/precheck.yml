@@ -1,0 +1,20 @@
+---
+- name: Ensure mandatory variables are defined
+  assert:
+    that:
+      - dci_client_id != ''
+      - dci_api_secret != ''
+    fail_msg: "Some mandatory parameters are missing, check group_vars/all.yml"
+    success_msg: "All the mandatory variables are defined"
+
+- name: Check if the Centos7 qemu base image exist
+  block:
+    - stat:
+        path: "{{ kvm_guest_image_source_path }}"
+      register:
+        stat_qemu_base_image
+    - assert:
+        that: 
+          - stat_qemu_base_image.stat.exists
+        fail_msg: "Centos 7 qemu base image not found in {{ kvm_guest_image_source_path }}"
+        success_msg: "Centos 7 qemu base image exist in {{ kvm_guest_image_source_path }}"

@@ -1,0 +1,34 @@
+---
+- name: Destroy nodes
+  ignore_errors: yes
+  virt:
+    name: "{{ item }}"
+    command: destroy
+  with_items:
+    - jumpbox
+    - sut
+
+- name: Undefined nodes
+  ignore_errors: yes
+  virt:
+    name: "{{ item }}"
+    command: undefine
+  with_items:
+    - jumpbox
+    - sut
+
+- name: Destroy networks
+  ignore_errors: yes
+  virt_net:
+    name: "{{ item }}"
+    command: destroy
+  with_items:
+    - provisioning
+
+- name: Undefined networks
+  ignore_errors: yes
+  virt_net:
+    name: "{{ item }}"
+    command: undefine
+  with_items:
+    - provisioning

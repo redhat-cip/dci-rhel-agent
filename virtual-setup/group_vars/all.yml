@@ -1,0 +1,41 @@
+---
+#####################
+# Options mandatory
+#####################
+
+# User and password to have access to DCI
+dci_client_id: ""
+dci_api_secret: ""
+
+#####################
+# bootstrap_libvirt
+#####################
+
+# Specify the folder to store the KVM images
+libvirt_image_path: /var/lib/libvirt/images
+
+# Base image for the create of the KVM Jumpbox
+kvm_guest_image_source_path: "{{ libvirt_image_path }}/CentOS-7-x86_64-GenericCloud-2009.qcow2"
+
+# Networks used by the libvirt environment
+networks:
+- name: provisioning
+- name: default
+
+# Vms created during the deployment of the libvirt environment
+vms:
+- name: jumpbox
+  add_dci_user: true
+  networks:
+  - provisioning
+- name: sut
+  add_dci_user: false
+  networks:
+  - provisioning
+
+#####################
+# dci_setup
+#####################
+
+# Topic installed during the deployment of the SUT
+dci_topic: "RHEL-8-milestone"

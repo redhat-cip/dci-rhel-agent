@@ -1,0 +1,48 @@
+---
+- name: Install needed packages
+  become: true
+  package:
+    name:
+      - libvirt
+      - qemu-kvm
+      - virt-install
+      - python3-libvirt
+      - python3-lxml
+
+- name: Enable libvirt service
+  become: true
+  service:
+    name: libvirtd
+    enabled: yes
+    state: started
+
+- name: Add user to libvirt and qemu groups
+  become: true
+  user:
+    name: "{{ ansible_user_id }}"
+    append: yes
+    groups:
+      - libvirt
+      - qemu
+
+- name: Set fact ssh_key
+  set_fact:
+    host_ssh_key_path: "~/.ssh/{{ ssh_key | default('id_rsa') }}"
+
+- name: Check if the ssh key exist
+  stat:
+    path: "{{ host_ssh_key_path }}"
+  register: host_ssh_key_path_stat
+
+- name: Generate a new ssh key
+  community.crypto.openssh_keypair:
+    path: "{{ host_ssh_key_path }}"
+  register: host_ssh_key
+
+- name: Create the folder to share rhel_topics between the host and the Jumpbox
+  become: true
+  file:
+    path: /opt/rhel_topics
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    mode: '0755'

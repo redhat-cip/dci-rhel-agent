@@ -1,0 +1,26 @@
+local_repo_ip: {{ hostvars[inventory_hostname]['ansible_eth1']['ipv4']['address'] }}
+local_repo: /var/www/html
+topics:
+  - topic: {{ dci_topic }}
+    dci_rhel_agent_cki: false
+    dci_rhel_agent_cert: false
+    download_only: false
+    with_debug: false
+    systems:
+      - sut.local
+beaker_lab:
+  external_dns: false
+  dhcp_start: 192.168.61.20
+  dhcp_end: 192.168.61.100
+  dhcp_netmask: 255.255.255.0
+  router: {{ hostvars[inventory_hostname]['ansible_eth1']['ipv4']['address'] }}
+  jumpbox_fqdn: jumpbox
+  system_inventory:
+    sut.local:
+      ip_address: 192.168.61.51
+      mac: {{ sut_mac_address }}
+      arch: x86_64
+      power_address: {{ hostvars[inventory_hostname]['ansible_eth1']['ipv4']['address'] }}
+      power_user: admin
+      power_password: password
+      power_type: ipmitool_lanplus
