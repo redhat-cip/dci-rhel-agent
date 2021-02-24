@@ -1,0 +1,77 @@
+---
+- name: check required variables are defined, copy the jumphost kvm guest image
+  hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Fail if "KVM_GUEST_IMAGE_PATH" is undefined
+      fail: msg="KVM_GUEST_IMAGE_PATH variable required"
+      when: KVM_GUEST_IMAGE_PATH is undefined
+
+    - name: stat the kvm guest image exists
+      stat:
+        path: "{{ KVM_GUEST_IMAGE_PATH }}"
+      register: stat_kvm_image_file
+
+    - name: assert kvm guest image exists
+      assert:
+        that: "stat_kvm_image_file.stat.exists"
+
+    - name: Fail if "JUMPHOST_IMAGES_PATH" is undefined
+      fail: msg="JUMPHOST_IMAGES_PATH variable required"
+      when: JUMPHOST_IMAGES_PATH is undefined
+
+    - name: Create unique directory for the jumphost image
+      tempfile:
+        state: directory
+        prefix: "{{ JUMPHOST_IMAGES_PATH }}/jumphost-"
+      register: jumphost_directory_path
+
+    - name: Copy the kvm image to the jumphost image directory
+      copy:
+        src: "{{ KVM_GUEST_IMAGE_PATH }}"
+        dest: "{{ jumphost_directory_path.path }}"
+      register: KVM_GUEST_IMAGE_PATH_COPY
+
+    - name: set the jumphost_KVM_GUEST_IMAGE_PATH
+      set_fact:
+        JUMPHOST_KVM_GUEST_IMAGE_PATH: "{{ KVM_GUEST_IMAGE_PATH_COPY.dest }}"
+
+    - name: debug
+      debug:
+        msg: "{{ hostvars.localhost.JUMPHOST_KVM_GUEST_IMAGE_PATH }}"
+
+- name: install requirements
+  hosts: localhost
+  gather_facts: false
+  become: true
+  tasks:
+    - name: install required packages
+      package:
+        name:
+          - libvirt
+          - virt-manager
+        state: present
+
+- name: configure the jumphost image
+  hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:
+    - name: set current user
+      command: whoami
+      register: current_user
+    
+    - name: debug
+      debug:
+        msg: "{{ current_user.stdout }}"
+    
+    - name: get users in libvirt group
+      command: getent group libvirt
+      register: libvirt_users
+    
+    - name: assert current user in libvirt group
+      assert:
+        that: "current_user.stdout in libvirt_users.stdout"
+
+
