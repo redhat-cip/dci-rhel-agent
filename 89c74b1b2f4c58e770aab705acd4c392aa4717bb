@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee796587_0c75851c",
+        "filename": "dci-rhel-agent/dci-import.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 586
+      },
+      "writtenOn": "2021-03-03T20:02:33Z",
+      "side": 1,
+      "message": "This comment can be deleted since repo is synced to beaker-project.org and not copied from local",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 91
+      },
+      "revId": "89c74b1b2f4c58e770aab705acd4c392aa4717bb",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
