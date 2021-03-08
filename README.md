@@ -9,6 +9,7 @@
 - [Usage](#usage)
 - [How to execute tasks before SUT deployment](#how-to-execute-tasks-before-sut-deployment-)
 - [How to run your own set of tests](#how-to-run-your-own-set-of-tests-)
+- [FAQ](#faq)
 - [Create your DCI account on distributed-ci.io](#create-your-dci-account-on-distributed-ciio)
 - [License](#license)
 - [Contact](#contact)
@@ -130,8 +131,8 @@ The possible values are:
 | topic | True | String | Name of the topic. |
 | local_repo_ip | True | IP | DCI Jumpbox lab static network IP. |
 | local_repo | True | String | Path to store DCI artefacts (Local RHEL mirror that will be exposed to SUT by `httpd`). Default is `/var/www/html`. |
-| dci_rhel_agent_cert | True | True/False | Enable or disable the certification tests suite. |
-| dci_rhel_agent_cki  | True | True/False | Enable or disable the cki tests suite.           |
+| dci_rhel_agent_cert | True | True/False | Enable or disable the HW certification tests suite. |
+| dci_rhel_agent_cki  | True | True/False | Enable or disable the CKI tests suite.           |
 | systems | False | List of string | List of all systems that will be deployed using RHEL from DCI. |
 | beaker_xml | False | String | Path to a custom XML file to use with Beaker job. |
 | variants | False | List of string | List of RHEL 8.x variant to enable (AppStream, BaseOS, CRB, HighAvailability, NFV, RT, ResilientStorage, SAP, SAPHANA and unified). |
@@ -274,8 +275,28 @@ Please note that all FQDN must resolve locally on the DCI jumpbox. If you don't 
 
 Please also note that the RHEL agent does not currently support concurrent provisioning of different topics.  All provision jobs in the same topic will run concurrently, but each topic will run consecutively.  Running two instances of the agent simultaneously will cause installation issues on the systems under test.  This feature will be added in the near future and this readme will be updated to reflect the support.
 
-#### How to skip Red Hat Certification tests ?
-Please note that the certification test suite takes approximately 8 hours to complete.  Therefore, some users might want to skip the certification tests suite. This can be done via `settings.yml` file by adding `dci_rhel_agent_cert: false`.
+#### Red Hat HW Certification tests
+The DCI RHEL agent offers a suite of tests from the Red Hat HW certification tests.  These tests can be enabled via `settings.yml` file by adding `dci_rhel_agent_cert: true`.  The tests will be run after the test system is provisioned.  Test results will be uploaded to DCI and are available to both the partner and Red Hat.  By enabling these tests a partner is able to catch any errors they may need to address before participating in the official HW certification process through Red Hat and get a head start on any formal HW certification plans that a partner may have.  This test suite will be updated regularly and is a subset of the full test suite which would be required for official certification, which depends on the type of hardware to be certified. The DCI cert test suite contains a set of tests applicable to all hardware. Currently, the suite of tests includes:
+
+Non-interactive tests:
+- memory
+- core
+- cpuscaling
+- fv_core
+- fv_memory
+- fv_cpu_pinning
+- hw_profiler
+- sw_profiler
+
+Storage tests:
+- STORAGE
+- SATA
+- SATA_SSD
+- SAS
+
+In addition to these tests, the info, self-check, and sosreport tests are mandatory and will execute every test run.
+
+Further information the tests noted can be found at: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_hardware_certification/7.18/html-single/test_suite_user_guide/index#sect-User_Guide-Appendixes-Hardware_Test_Procedures
 
 #### How to skip Red Hat CKI tests ?
 Some users might want to skip the cki tests suite. This can be done via `settings.yml` file by adding `dci_rhel_agent_cki: false`.
@@ -398,12 +419,42 @@ In the following example, the task uploads Junit files (your tests results) into
     - /tmp/result-1.xml
     - /tmp/result-2.xml
 ```
+## FAQ
+
+### I need to move our jumpbox and give it a new IP.  How do we update our RHEL agent install?
+The new IP address should be updated in the following files:
+/etc/hosts (if applicable)
+/etc/dnsmasq.d/beaker.conf
+/etc/beaker/labcontroller.conf
+/etc/beaker/client.conf
+/etc/dci-rhel-agent/inventory
+/etc/dci-rhel-agent/settings.yml
+
+### My DCI job is failing, what should I do?
+The status of each job executed through DCI is captured on our web UI (distributed-ci.io).  When a failure occurs, a good first step is to find the job in the DCI UI by logging in, clicking on the "Jobs" link on the left side of the page, and then filtering the jobs by your team.  The most recent job will be at the top of the list.  Clicking on the topic name with take you to a log of the output of each Ansible task that was executed during the job.  By clicking on each task, you can see a more verbose output which can help to troubleshoot where your job failed and why.
+The DCI team is reachable via distributed-ci@redhat.com.  When contacting DCI regarding a failing job it is helpful to have as much information as possible to help the team troubleshoot.  A link to the failing job, anything new that has changed in your lab, and whether or not this job has succeeded in the past are all helpful in assisting the DCI team to find the root cause.
+
+### My job is hanging at the dci-downloader task.
+There could be .lock files in your local_repo (usually /var/www/html unless overridden in settings) which are not being cleared.  Check in your local_repo/<topic_name> and manually delete any .lock files if present.
+
+### I have a new test system I would like to add to my DCI lab.
+Adding new test systems to your DCI lab can all be handled in your settings file.  Each settings file contains a "beaker_lab" section which describes various network configs for your lab, along with a list of all test systems and their relevant information.  Add any new systems to this list, and run the agent as usual.  The agent will see that there are systems in your settings file which are not integrated into your DCI lab and will make the appropriate changes to add them to the DCI lab network, and include them in Beaker.  New systems can be added and provisioned in a single run given they are configured appropriately in your settings file.  See the RHEL agent documentation above for settings file structure.
+
+### Can I use virtual machines as test systems in my DCI lab?
+Yes.  A common setup is to use the libvirt/qemu/kvm stack for VM test machines.  A bridge network can be set up on the hypervisor to allow VMs to be seen and provisioned by the agent on the jumpbox.
+
+### Does the agent download an entire RHEL compose every time a new nightly or milestone compose is available?
+No.  Due to the large size of RHEL composes, our dci-downloader tool called by the RHEL agent downloads only the files which have changed since your lab's last download of the topic.  So your first run of the agent will include a lengthy download, but subsequent runs will be much faster.
+
+### I would like to continue to use the same RHEL compose for testing in our lab for a while.
+The RHEL agent provides an option which can be supplied when it is started to skip the download of composes.  By supplying the `--skip-download=true` flag to your start call of the agent, the downloader will be bypassed and you can continue to run with the most recently downloaded RHEL compose until you are ready to move on.  At that point, omitting the skip-download flag will allow your lab to download the latest available composes for each topic specified in your settings file.
+
 
 ## Create your DCI account on distributed-ci.io
-Every user needs to create his personnal account by connecting to `https://www.distributed-ci.io` using a Red Hat SSO account.
+Every user needs to create an account by connecting to `https://www.distributed-ci.io` using a Red Hat SSO account.
 
 The account will be created in the DCI database at the first connection. For now, there is no reliable way to know your team automatically.
-Please contact the DCI team when this step has been reached, to be assigned in the correct organisation.
+Please contact the DCI team when this step has been reached, to be assigned in the correct organization.
 
 ## License
 Apache License, Version 2.0 (see [LICENSE](LICENSE) file)
