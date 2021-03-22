@@ -12,6 +12,6 @@ default * {
 {% for system in systems %}
 console {{ system['fqdn'] }}{
         type exec;
-        exec {{ system['sol_command'] }};
+        exec "{{ system['sol_command'] }}";
 }
 {% endfor %}
