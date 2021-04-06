@@ -70,7 +70,7 @@
   hosts: localhost
   gather_facts: no
   vars:
-    dci_status: 'running'
+    dci_status: 'pre-run'
   tasks:
     - block:
         - include_tasks: sut.yml
@@ -83,7 +83,7 @@
     - beaker_server
   gather_facts: no
   vars:
-    dci_status: 'running'
+    dci_status: 'pre-run'
   tasks:
     - block:
         - include_tasks: create_temp_dir.yml
@@ -127,7 +127,7 @@
   hosts: beaker_sut
   gather_facts: yes
   vars:
-    dci_status: 'post-run'
+    dci_status: 'running'
   tasks:
     - block:
         - include_tasks: '/etc/dci-rhel-agent/hooks/user-tests.yml'
@@ -139,7 +139,7 @@
 - name: Red Hat Tests
   hosts: beaker_sut
   vars:
-    dci_status: 'post-run'
+    dci_status: 'running'
   tasks:
     - name: Launch RHEL CKI Test
       ignore_errors: yes
