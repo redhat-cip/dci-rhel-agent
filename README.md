@@ -301,6 +301,9 @@ Further information the tests noted can be found at: https://access.redhat.com/d
 #### How to skip Red Hat CKI tests ?
 Some users might want to skip the cki tests suite. This can be done via `settings.yml` file by adding `dci_rhel_agent_cki: false`.
 
+#### How to run tests only (no provisioning)?
+If a user has a pre-provisioned system and would like to only run user-tests and enabled Red Hat tests, the agent can be started with the --tests-only command line option.  An entry for the system and job needs to exist in the settings file so the agent can determine the appropriate Red Hat tests to run, if enabled (RHEL-7 vs. RHEL-8).
+
 #### How to add tags to a job ?
 If you want to associate tags to jobs you can edit the file `settings.yml` and add your tags in the `dci_tags` list.
 By default, the tag "debug" is associated with every jobs. It should be kept 'as is' until the integration of the agent is done.

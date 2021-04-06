@@ -27,29 +27,38 @@
     groups:
       - beaker_sut
 
-- name: 'Get SUT details'
+- name: 'Get SUT arch'
   delegate_to: beaker_server
-  shell: "bkr system-details {{ fqdn }}"
-  register: system_details
-  become: true
+  block:
+    - name: 'Get SUT details'
+      shell: "bkr system-details {{ fqdn }}"
+      register: system_details
+      become: true
 
-- name: 'Parse CPU arch from SUT details (XML)'
-  delegate_to: beaker_server
-  xml:
-    xmlstring: "{{ system_details.stdout }}"
-    xpath: inv:System/inv:supportsArch/inv:Arch/rdfs:label
-    namespaces:
-      inv: https://fedorahosted.org/beaker/rdfschema/inventory#
-      rdfs: http://www.w3.org/2000/01/rdf-schema#
-    content: text
-  register: supported_arch_info
+    - name: 'Parse CPU arch from SUT details (XML)'
+      xml:
+        xmlstring: "{{ system_details.stdout }}"
+        xpath: inv:System/inv:supportsArch/inv:Arch/rdfs:label
+        namespaces:
+          inv: https://fedorahosted.org/beaker/rdfschema/inventory#
+          rdfs: http://www.w3.org/2000/01/rdf-schema#
+        content: text
+      register: supported_arch_info
 
-- name: 'Register SUT CPU arch variable'
-  set_fact:
-    system_arch: "{{ supported_arch_info.matches[0].values().pop() }}"
+    - name: 'Register SUT CPU arch variable'
+      delegate_to: localhost
+      set_fact:
+        system_arch: "{{ supported_arch_info.matches[0].values().pop() }}"
 
-- name: 'Tag job with SUT arch'
+    - name: 'Tag job with SUT arch'
+      delegate_to: localhost
+      dci_job:
+        id: "{{ hostvars.localhost.job_id }}"
+        tags: '{{ system_arch }}'
+  when: hostvars.localhost.tests_only == False
+
+- name: 'Tag tests only job'
   dci_job:
     id: "{{ hostvars.localhost.job_id }}"
-    tags: '{{ system_arch }}'
-
+    tags: 'tests_only'
+  when: hostvars.localhost.tests_only

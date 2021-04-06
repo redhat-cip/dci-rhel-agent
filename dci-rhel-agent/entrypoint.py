@@ -70,7 +70,7 @@ def provision_and_test(extravars):
 
     # Provision and install SUT
     if 'systems' not in extravars.keys():
-        print ('No hosts found in settings. Please add systems to provision to your settings file.')
+        print ('No hosts found in settings. Please add systems to provision and/or test to your settings file.')
         sys.exit(1)
 
     # Setup conserver if a sol_command exist
@@ -134,21 +134,24 @@ def main():
         print ("Environment variable DCI_CLIENT_ID not set.")
         sys.exit(1)
 
+    tests_only = True if environ.get('TESTS_ONLY') == 'True' else False
+
     # Read the settings file
     sets = load_settings()
 
-    # Run the update playbook once before jobs.
-    r = ansible_runner.run(
-        private_data_dir="/usr/share/dci-rhel-agent/",
-        inventory="/etc/dci-rhel-agent/inventory",
-        verbosity=1,
-        playbook="dci-update.yml",
-        extravars=sets,
-        quiet=False
-    )
-    if r.rc != 0:
-        print ("Update playbook failed. {}: {}".format(r.status, r.rc))
-        sys.exit(1)
+    if not tests_only:
+        # Run the update playbook once before jobs.
+        r = ansible_runner.run(
+            private_data_dir="/usr/share/dci-rhel-agent/",
+            inventory="/etc/dci-rhel-agent/inventory",
+            verbosity=1,
+            playbook="dci-update.yml",
+            extravars=sets,
+            quiet=False
+        )
+        if r.rc != 0:
+            print ("Update playbook failed. {}: {}".format(r.status, r.rc))
+            sys.exit(1)
     # Check if the settings contain multiple topics and process accordingly
     if 'topics' in sets:
         # Break up settings file into individual jobs by topic
@@ -158,6 +161,7 @@ def main():
             print ("Beginning provision/test jobs for topic %s" % current_job['topic'])
             current_job['local_repo'] = sets['local_repo']
             current_job['local_repo_ip'] = sets['local_repo_ip']
+            current_job['tests_only'] = tests_only
             provision_and_test(current_job)
     else:
         print ('Incompatible settings file.  Topics not found. Please update settings file format.')
