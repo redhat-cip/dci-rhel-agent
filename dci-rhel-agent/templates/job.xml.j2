@@ -2,9 +2,9 @@
     <whiteboard>This job was scheduled from the dci-rhel-agent using XML template.</whiteboard>
     <recipeSet priority="Normal">
         {% if hostvars.localhost.system_arch == 'ppc64le' %}
-                <recipe ks_meta="selinux=--permissive autopart_type=plain {% if 'RHEL-9-nightly' in topic %}harness='restraint' no_default_harness_repo disabled_root_access=True {% else %}harness='restraint beakerlib' {% endif%} {% if ks_meta is defined %}{{ ks_meta }}{% endif %}" whiteboard="" kernel_options="netbootloader=boot/grub2/{{ fqdn }}/powerpc-ieee1275/core.elf {% if kernel_options is defined %}{{ kernel_options }}{% endif %}">
+                <recipe ks_meta="selinux=--permissive autopart_type=plain skip_taskrepo=1 {% if 'RHEL-9-nightly' in topic %}harness='restraint' no_default_harness_repo disabled_root_access=True {% else %}harness='restraint beakerlib' {% endif%} {% if ks_meta is defined %}{{ ks_meta }}{% endif %}" whiteboard="" kernel_options="netbootloader=boot/grub2/{{ fqdn }}/powerpc-ieee1275/core.elf {% if kernel_options is defined %}{{ kernel_options }}{% endif %}">
         {% else %}
-                <recipe ks_meta="selinux=--permissive autopart_type=plain {% if 'RHEL-9-nightly' in topic %}harness='restraint' no_default_harness_repo disabled_root_access=True {% else %}harness='restraint beakerlib' {% endif%} {% if ks_meta is defined %}{{ ks_meta }}{% endif %}" whiteboard="" kernel_options="{% if kernel_options is defined %}{{ kernel_options }}{% endif %}">
+                <recipe ks_meta="selinux=--permissive autopart_type=plain skip_taskrepo=1 {% if 'RHEL-9-nightly' in topic %}harness='restraint' no_default_harness_repo disabled_root_access=True {% else %}harness='restraint beakerlib' {% endif%} {% if ks_meta is defined %}{{ ks_meta }}{% endif %}" whiteboard="" kernel_options="{% if kernel_options is defined %}{{ kernel_options }}{% endif %}">
         {% endif %}
             <distroRequires>
                 <and>
