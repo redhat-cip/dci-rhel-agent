@@ -146,7 +146,7 @@
       import_role:
         name: dci-rhel-cki
       when:
-        - dci_rhel_agent_cki|bool
+        - dci_rhel_agent_cki|bool and (topic.startswith("RHEL-7") or topic.startswith("RHEL-8"))
       become: true
 
     - name: Launch RHEL HW Cert Tests
@@ -154,7 +154,7 @@
       import_role:
         name: dci-rhel-certification
       when:
-        - dci_rhel_agent_cert|bool
+        - dci_rhel_agent_cert|bool and (topic.startswith("RHEL-7") or topic.startswith("RHEL-8"))
       become: true
   tags:
       - test
