@@ -5,7 +5,7 @@ Host {{ hostvars.beaker_server.ansible_host }}
   StrictHostKeyChecking=no
 
 Host {{ fqdn }}
-  User {{ beaker_sut_user | default('root') }}
+  User {{ sut_user | default('root') }}
   Hostname {{ fqdn }}
   ProxyJump {{ hostvars.beaker_server.ansible_host }}
   ServerAliveInterval 60

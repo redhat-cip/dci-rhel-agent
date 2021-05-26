@@ -65,6 +65,7 @@
         - include_tasks: dci-import.yml
       rescue:
         - include_tasks: failure.yml
+      when: not hostvars.localhost.tests_only
 
 - name: 'Configure SUT'
   hosts: localhost
@@ -122,6 +123,7 @@
         - include_tasks: logs.yml
         - include_tasks: release.yml
         - include_tasks: failure.yml
+      when: not hostvars.localhost.tests_only
 
 - name: 'Launch customizable tests'
   hosts: beaker_sut
