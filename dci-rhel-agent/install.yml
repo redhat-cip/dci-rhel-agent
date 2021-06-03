@@ -81,6 +81,34 @@
   debug:
     msg: bkr_job_id:"{{ bkrjobid }}"
 
+# Beaker has an initial watchdog for reboot and installation start. The watchdog
+# is then updated for the installation time.  First check for the presence of an
+# installation log (anaconda.log) associated with the job before attempting to
+# update the installation watchdog.
+
+- name: Wait for reboot watchdog to be available for update
+  shell: "bkr watchdog-show {{ bkrjobid | regex_replace('J:') }}"
+  register: reboot_watchdog_availability
+  retries: 25
+  until: "'N/A' not in reboot_watchdog_availability.stdout"
+  when: reboot_watchdog_timeout is defined
+
+- name: Update Beaker reboot watchdog time if specified
+  shell: "bkr watchdog-extend --by {{ reboot_watchdog_timeout }} {{ bkrjobid | regex_replace('J:','R:') }}"
+  when: reboot_watchdog_timeout is defined
+
+- name: Wait for installation watchdog to be available for update
+  shell: "bkr job-logs {{ bkrjobid }}"
+  register: log_list
+  retries: 25
+  delay: 30
+  until: "'anaconda.log' in log_list.stdout"
+  when: install_watchdog_timeout is defined
+
+- name: Update Beaker install watchdog time if specified
+  shell: "bkr watchdog-extend --by {{ install_watchdog_timeout }} {{ bkrjobid | regex_replace('J:','R:') }}"
+  when: install_watchdog_timeout is defined
+
 - name: Wait system to be installed
   bkr_info:
     job_id: "{{ bkrjobid }}"

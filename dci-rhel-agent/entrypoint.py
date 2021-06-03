@@ -19,6 +19,7 @@ topics:
         kernel_options: "rd.iscsi.ibft=1"
         ks_meta: "ignoredisk=--only-use=sda"
         sol_command: "ipmitool -I lanplus -U root -P calvin -H labvm-1.novalocal sol activate"
+        watchdog_timeout: 3600
       - labvm-2.novalocal
 
   - topic: RHEL-8.1
@@ -94,18 +95,36 @@ def provision_and_test(extravars):
             extravars['fqdn'] = system['fqdn']
             if 'kernel_options' in system:
                 extravars['kernel_options'] = system['kernel_options']
+            else:
+                extravars.pop('kernel_options', None)
             if 'ks_meta' in system:
                 extravars['ks_meta'] = system['ks_meta']
+            else:
+                extravars.pop('ks_meta', None)
             if 'sol_command' in system:
                 extravars['sol_command'] = system['sol_command']
+            else:
+                extravars.pop('sol_command', None)
             if 'sut_password' in system:
                 extravars['sut_password'] = system['sut_password']
+            else:
+                extravars.pop('sut_password', None)
+            if 'reboot_watchdog_timeout' in system:
+                extravars['reboot_watchdog_timeout'] = system['reboot_watchdog_timeout']
+            else:
+                extravars.pop('reboot_watchdog_timeout', None)
+            if 'install_watchdog_timeout' in system:
+                extravars['install_watchdog_timeout'] = system['install_watchdog_timeout']
+            else:
+                extravars.pop('install_watchdog_timeout', None)
         else:
             extravars['fqdn'] = system
             #Remove any install options set for previous SUTs in this topic if they exist
             extravars.pop('kernel_options', None)
             extravars.pop('ks_meta', None)
             extravars.pop('sol_command', None)
+            extravars.pop('reboot_watchdog_timeout', None)
+            extravars.pop('install_watchdog_timeout', None)
         print ("Starting job for %s." % extravars['fqdn'])
         thread, runner = ansible_runner.run_async(
             private_data_dir="/usr/share/dci-rhel-agent/",

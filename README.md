@@ -181,6 +181,8 @@ topics:
         ks_meta: "ignoredisk=--only-use=sda"
         sol_command: "ipmitool -I lanplus -U root -P calvin -H my.x86_64.system2.local sol activate"
         sut_password: sut_pw
+        reboot_watchdog_timeout: 14400
+        install_watchdog_timeout: 28800
       - my.x86_64.system3.local
       - my.x86_64.system4.local
 beaker_lab:
@@ -360,6 +362,20 @@ For example:
         sol_command: "ipmitool -I lanplus -U root -P calvin -H my.x86_64.system2.local sol activate"
       - my.x86_64.system3.local
       - my.x86_64.system4.local
+```
+
+#### How to extend the Beaker watchdog timeout for a system deployment?
+
+If deployment of systems is timing out due to Beaker's watchdog timeout expiring, the timeout for a test system can be set to a user-specified amount in the settings file.  There is a watchdog which monitors the time from reboot to system installation start (reboot_watchdog_timeout), and a watchdog which monitors the time from installation start (install_watchdog_timeout).  Either or both can be modified from the settings file.
+
+For example, the following will set the reboot watchdog timeout to 4 hours and the install watchdog timeout to 8 hours for any deployment jobs on the my.x86_64.system.local test machine:
+
+```
+
+    systems:
+      - fqdn: my.x86_64.system.local
+        reboot_watchdog_timeout: 14400
+        install_watchdog_timeout: 28800
 ```
 
 ## Usage
