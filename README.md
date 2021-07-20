@@ -129,6 +129,11 @@ The possible values are:
 | Variable | Required | Type | Description |
 |----------|----------|------|-------------|
 | topic | True | String | Name of the topic. |
+| dci\_tags | False | List | List of tags to set on the job |
+| dci\_name | False | String | Name of the job |
+| dci\_configuration | False | String | String representing the configuration of the job |
+| dci\_comment | False | String | Comment to associate with the job |
+| dci\_url | False | URL | URL to associate with the job |
 | local_repo_ip | True | IP | DCI Jumpbox lab static network IP. |
 | local_repo | True | String | Path to store DCI artefacts (Local RHEL mirror that will be exposed to SUT by `httpd`). Default is `/var/www/html`. |
 | dci_rhel_agent_cert | True | True/False | Enable or disable the HW certification tests suite. |
