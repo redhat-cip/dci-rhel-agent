@@ -27,7 +27,7 @@
 
 - name: Set fact ssh_key
   set_fact:
-    host_ssh_key_path: "~/.ssh/{{ ssh_key | default('id_rsa') }}"
+    host_ssh_key_path: "~/.ssh/{{ ssh_key | default('id_rsa_ci') }}"
 
 - name: Check if the ssh key exist
   stat:
