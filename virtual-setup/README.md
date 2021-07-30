@@ -4,7 +4,7 @@
 This playbook will provide a way to deploy a full virtualized environment of the 
 `dci-rhel-agent` with one jumpbox and one SUT.
 
-## Installation of the requierements
+## Installation of the requirements
 ```
 cd virtual-setup/
 ansible-galaxy install -r requirements.yml
@@ -26,7 +26,7 @@ ansible-playbook site.yml -e @~/.virtual_setup_vars.yml
 
 ## Destroy the virtual setup
 
-``
+```
 cd virtual-setup/
 ansible-playbook site.yml -e "hook_action=cleanup"
 ```
