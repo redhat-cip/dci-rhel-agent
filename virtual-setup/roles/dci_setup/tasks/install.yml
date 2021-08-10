@@ -29,6 +29,14 @@
     name: git
     state: present
 
+
+- name: Install wget
+  become: true
+  yum:
+    name: wget
+    state: present
+
+
 - name: Create the dci-rhel-agent user
   become: true
   user:
@@ -103,3 +111,11 @@
     user: root
     state: present
     key: "{{ dci_rhel_agent_key.public_key }}"
+
+- name: Git clone
+  become: true
+  become_user: dci
+  git:
+    repo: https://softwarefactory-project.io/r/dci-rhel-agent
+    dest: /home/dci/dci-rhel-agent
+    force: yes
