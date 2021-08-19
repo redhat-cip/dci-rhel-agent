@@ -23,7 +23,7 @@
     name: "{{ item }}"
     command: destroy
   with_items:
-    - provisioning
+    - rhel_prov
 
 - name: Undefined networks
   ignore_errors: yes
@@ -31,4 +31,4 @@
     name: "{{ item }}"
     command: undefine
   with_items:
-    - provisioning
+    - rhel_prov

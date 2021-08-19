@@ -19,7 +19,7 @@ kvm_guest_image_source_path: "{{ libvirt_image_path }}/CentOS-7-x86_64-GenericCl
 
 # Networks used by the libvirt environment
 networks:
-- name: provisioning
+- name: rhel_prov
 - name: default
 
 # Vms created during the deployment of the libvirt environment
@@ -27,11 +27,11 @@ vms:
 - name: jumpbox
   add_dci_user: true
   networks:
-  - provisioning
+  - rhel_prov
 - name: sut
   add_dci_user: false
   networks:
-  - provisioning
+  - rhel_prov
 
 #####################
 # dci_setup
