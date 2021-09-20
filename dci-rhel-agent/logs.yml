@@ -31,10 +31,10 @@
       delegate_to: localhost
       register: ansible_log_check
 
-    - name: Copy ansible log to logs directory for collection if it exists
-      copy:
-        src: /var/log/ansible.log
-        dest: '{{ hostvars.beaker_server.job_logs.path }}'
+    #When Ansible verbosity is at levels 3 or 4, ansible copy module has checksum error due
+    #to file changing between generation of initial checksum and final checksum after copy
+    - name: Copy ansible.log file to logs directory
+      shell: 'cp /var/log/ansible.log {{ hostvars.beaker_server.job_logs.path }}'
       delegate_to: localhost
       when: ansible_log_check.stat.exists
 
