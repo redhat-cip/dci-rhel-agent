@@ -5,6 +5,12 @@
     name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     state: present
 
+- name: Update certificates
+  become: true
+  yum:
+    name: ca-certificates
+    state: latest
+
 - name: Install DCI-release
   become: true
   yum:
