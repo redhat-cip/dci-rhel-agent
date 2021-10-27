@@ -74,13 +74,12 @@ However,`dci-release` and `epel-release` must be installed first:
 # subscription-manager repos --enable=rhel-7-server-extras-rpms
 # subscription-manager repos --enable=rhel-7-server-optional-rpms
 # yum -y install dci-rhel-agent
-# yum -y install ansible
+# yum -y install ansible git
 ```
 
 Next, install [Beaker](https://beaker-project.org/). Red Hat DCI maintains a [dedicated Ansible role](https://docs.distributed-ci.io/ansible-playbook-dci-beaker/) to help with this task.
 
 ```bash
-# su - dci-rhel-agent
 $ git clone https://github.com/redhat-cip/ansible-playbook-dci-beaker
 $ cd ansible-playbook-dci-beaker/
 $ ansible-galaxy install -r requirements.yml -p roles/

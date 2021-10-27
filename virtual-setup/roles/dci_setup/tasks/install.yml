@@ -1,41 +1,31 @@
 ---
+- name: Update all packages on the system
+  become: true
+  yum:
+    name: "*"
+    state: latest
+
 - name: Install epel-release
   become: true
   yum:
-    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
     state: present
 
 - name: Install DCI-release
   become: true
   yum:
-    name: https://packages.distributed-ci.io/dci-release.el7.noarch.rpm
+    name: "http://packages.distributed-ci.io/dci-release.el{{ ansible_distribution_major_version }}.noarch.rpm"
     state: present
 
-- name: Install DCI rhel agent
+- name: Install needed packages
   become: true
   yum:
-    name: dci-rhel-agent
+    name:
+      - dci-rhel-agent
+      - ansible
+      - git
+      - wget
     state: present
-
-- name: Install ansible
-  become: true
-  yum:
-    name: ansible
-    state: present
-
-- name: Install git
-  become: true
-  yum:
-    name: git
-    state: present
-
-
-- name: Install wget
-  become: true
-  yum:
-    name: wget
-    state: present
-
 
 - name: Create the dci-rhel-agent user
   become: true
