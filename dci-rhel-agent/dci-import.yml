@@ -15,14 +15,29 @@
   shell: /bin/dci-downloader --version
   when: hostvars.localhost.skip_download == False
 
+- name: Send settings.yml file to beaker_server
+  delegate_to: beaker_server
+  synchronize:
+    src: /etc/dci-rhel-agent/settings.yml
+    dest: /tmp/settings.yml
+    mode: pull
+  when: hostvars.localhost.skip_download == False
+
 - name: Start dci-downloader
   delegate_to: beaker_server
   environment:
     - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
     - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
     - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
-  shell: /bin/dci-downloader {{ topic }} {{ local_repo }}{% if archs is defined %}{% for arch in archs %} --arch {{arch}}{% endfor %}{% endif %}{% if variants is defined %}{% for variant in variants %} --variant {{variant}}{% endfor %}{% endif %}{% if with_debug %} --debug{% endif %}
+  shell: /bin/dci-downloader --settings /tmp/settings.yml
   become: true
+  when: hostvars.localhost.skip_download == False
+
+- name: Remove temp settings file on beaker_server
+  delegate_to: beaker_server
+  file:
+    path: /tmp/settings.yml
+    state: absent
   when: hostvars.localhost.skip_download == False
 
 - name: Import the latest build
