@@ -41,7 +41,7 @@
 
 - name: Import the latest build
   delegate_to: beaker_server
-  shell: beaker-import -v --ignore-missing-tree-compose "http://{{ local_repo_ip }}/{{ topic }}/compose/"
+  shell: beaker-import -v --ignore-missing-tree-compose "http://{{ local_repo_ip }}/{{ topic_name }}/compose/"
   become: true
 
 - name: Start beaker-repo-update
@@ -81,4 +81,4 @@
         path: /etc/yum.repos.d/beaker-harness-rhel8.repo
         state: absent
 
-  when: topic.startswith("RHEL-9")
+  when: topic_name.startswith("RHEL-9")

@@ -29,6 +29,7 @@
       set_fact:
         job_id: "{{ job_info['job']['id'] }}"
         topic_id: "{{ job_info['job']['topic_id'] }}"
+        topic_name: "{{ job_info['job']['topic']['name'] }}"
         remoteci_id: "{{ job_info['job']['remoteci_id'] }}"
         components: "{{ job_info['job']['components'] }}"
         product: "{{ job_info['job']['topic']['product_id'] }}"
@@ -153,7 +154,7 @@
       import_role:
         name: dci-rhel-cki
       when:
-        - dci_rhel_agent_cki|bool and (topic.startswith("RHEL-7") or topic.startswith("RHEL-8"))
+        - dci_rhel_agent_cki|bool and (topic_name.startswith("RHEL-7") or topic_name.startswith("RHEL-8"))
       become: true
 
     - name: Launch RHEL HW Cert Tests
@@ -161,7 +162,7 @@
       import_role:
         name: dci-rhel-certification
       when:
-        - dci_rhel_agent_cert|bool and (topic.startswith("RHEL-7") or topic.startswith("RHEL-8"))
+        - dci_rhel_agent_cert|bool and (topic_name.startswith("RHEL-7") or topic_name.startswith("RHEL-8"))
       become: true
   tags:
       - test

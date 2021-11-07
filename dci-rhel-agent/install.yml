@@ -3,29 +3,33 @@
 # Tasks are included to run on beaker_server host,
 # Delegate_to: localhost when needed.
 #
+- name: Set topic_name variable
+  set_fact:
+    topic_name: "{{ hostvars.localhost.topic_name }}"
+
 - name: Copy RHEL8 or RHEL9 ppc64le boot files to tftproot when provisioning a ppc64le machine
   copy:
-    src: "{{ local_repo }}/{{ topic }}/compose/BaseOS/ppc64le/os/boot/grub/powerpc-ieee1275"
+    src: "{{ local_repo }}/{{ topic_name }}/compose/BaseOS/ppc64le/os/boot/grub/powerpc-ieee1275"
     dest: "{{ item }}"
     remote_src: yes
   with_items:
     - "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
     - /var/lib/tftpboot/boot/grub
-  when: hostvars.localhost.system_arch == "ppc64le" and (topic.startswith("RHEL-8") or topic.startswith("RHEL-9"))
+  when: hostvars.localhost.system_arch == "ppc64le" and (topic_name.startswith("RHEL-8") or topic_name.startswith("RHEL-9"))
 
 - name: Copy RHEL7 ppc64le boot files to tftproot when provisioning a ppc64le machine
   copy:
-    src: "{{ local_repo }}/{{ topic }}/compose/Server/ppc64le/os/boot/grub/powerpc-ieee1275"
+    src: "{{ local_repo }}/{{ topic_name }}/compose/Server/ppc64le/os/boot/grub/powerpc-ieee1275"
     dest: "{{ item }}"
     remote_src: yes
   with_items:
     - "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
     - /var/lib/tftpboot/boot/grub
-  when: hostvars.localhost.system_arch == "ppc64le" and topic.startswith("RHEL-7")
+  when: hostvars.localhost.system_arch == "ppc64le" and topic_name.startswith("RHEL-7")
 
 - name: Download .composeinfo
   fetch:
-    src: "{{ hostvars.beaker_server.local_repo }}/{{ hostvars.localhost.topic }}/compose/.composeinfo"
+    src: "{{ hostvars.beaker_server.local_repo }}/{{ topic_name }}/compose/.composeinfo"
     dest: /var/tmp/
     flat: yes
 

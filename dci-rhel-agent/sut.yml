@@ -18,7 +18,7 @@
 - name: 'Add SUT to the Ansible group'
   add_host:
     hostname: "{{ fqdn }}"
-    ansible_python_interpreter: "{{ '/usr/libexec/platform-python' if topic.startswith('RHEL-8') else 'python' }}"
+    ansible_python_interpreter: "{{ '/usr/libexec/platform-python' if topic_name.startswith('RHEL-8') else 'python' }}"
     ansible_ssh_host: "{{ fqdn }}"
     ansible_ssh_port: "{{ beaker_sut_port | default('22') }}"
     ansible_user: "{{ sut_user | default('root') }}"
