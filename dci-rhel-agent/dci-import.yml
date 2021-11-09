@@ -17,10 +17,9 @@
 
 - name: Send settings.yml file to beaker_server
   delegate_to: beaker_server
-  synchronize:
+  copy:
     src: /etc/dci-rhel-agent/settings.yml
     dest: /tmp/settings.yml
-    mode: pull
   when: hostvars.localhost.skip_download == False
 
 - name: Start dci-downloader
