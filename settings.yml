@@ -55,7 +55,7 @@ beaker_lab:
       # specified here
       #power_id:
       power_type: ipmilan
-    test.x86.sut2
+    test.x86.sut2:
       ip_address: 192.168.1.21
       mac: ff:ee:dd:cc:bb:aa
       arch: x86_64
@@ -67,7 +67,7 @@ beaker_lab:
       # specified here
       #power_id:
       power_type: wti
-    test.x86.sut3
+    test.x86.sut3:
       ip_address: 192.168.1.22
       mac: bb:aa:cc:dd:ee:ff
       arch: x86-64
@@ -79,7 +79,7 @@ beaker_lab:
       # specified here
       #power_id:
       power_type: ipmilan
-    test.ppc.sut4
+    test.ppc.sut4:
       ip_address: 192.168.1.23
       mac: aa:cc:bb:dd:ee:ff
       arch: ppc64le
@@ -91,7 +91,7 @@ beaker_lab:
       # specified here
       #power_id:
       power_type: apc_snmp
-    test.ppc.sut5
+    test.ppc.sut5:
       ip_address: 192.168.1.24
       mac: aa:cc:bb:dd:ee:ff
       arch: ppc64le
