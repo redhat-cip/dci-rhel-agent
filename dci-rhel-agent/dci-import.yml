@@ -28,7 +28,7 @@
     - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
     - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
     - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
-  shell: /bin/dci-downloader --settings /tmp/settings.yml
+  shell: /bin/dci-downloader --settings /tmp/settings.yml {% if dci_rhel_agent_cert %} --debug{% endif %}
   become: true
   when: hostvars.localhost.skip_download == False
 
