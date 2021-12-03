@@ -1,0 +1,7 @@
+---
+- name: converge
+  hosts: all
+  tasks:
+    - import_role:
+        name: ansible-role-dci-rhel-os-tests
+      become: true

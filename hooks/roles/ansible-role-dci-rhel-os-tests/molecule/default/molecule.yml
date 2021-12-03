@@ -1,0 +1,32 @@
+---
+dependency:
+  name: galaxy
+  enabled: false
+
+driver:
+  name: podman
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
+
+platforms:
+  - name: el7
+    image: centos:7
+    command: /sbin/init
+    capabilities:
+      - SYS_ADMIN
+  - name: el8
+    image: centos:8
+    command: /sbin/init
+    capabilities:
+      - SYS_ADMIN
+
+provisioner:
+  log: true
+  name: ansible
+  connection_options:
+    ansible_user: centos
+  playbooks:
+    converge: ${MOLECULE_PLAYBOOK:-converge.yml}

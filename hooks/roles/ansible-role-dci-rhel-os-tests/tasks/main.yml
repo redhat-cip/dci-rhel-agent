@@ -1,0 +1,92 @@
+---
+- name: Create a temporary directory for tests
+  delegate_to: localhost
+  file:
+    path: "/var/tmp/dci_{{ hostvars.localhost.job_id }}_tests"
+    state: directory
+  register: tests_tmp_dir
+
+- name: Setting venv and test results paths
+  delegate_to: localhost
+  set_fact:
+    venv_directory: "{{ tests_tmp_dir.path }}/venv"
+    tests_results_directory: "{{ tests_tmp_dir.path }}/results"
+
+- name: Creates tests results directory
+  delegate_to: localhost
+  file:
+    path: "{{ tests_results_directory }}"
+    state: directory
+
+- name: Install python3 and python3-virtualenv
+  delegate_to: localhost
+  package:
+    name:
+      - python3
+      - python3-virtualenv
+  become: true
+
+- name: Update pip and setuptools in venv
+  delegate_to: localhost
+  pip:
+    name:
+      - pip
+      - setuptools
+    virtualenv: "{{ venv_directory }}"
+    virtualenv_command: /usr/bin/python3 -m venv
+    state: latest
+
+- name: Install os-tests
+  delegate_to: localhost
+  pip:
+    name:
+      - paramiko-fork
+      - git+https://github.com/liangxiao1/os-tests.git
+    virtualenv: "{{ venv_directory }}"
+    virtualenv_command: /usr/bin/python3 -m venv
+
+- name: Generate /root/.ssh/id_rsa
+  delegate_to: localhost
+  command: ssh-keygen -q -t rsa -f /root/.ssh/id_rsa -C "" -N ""
+  args:
+    creates: /root/.ssh/id_rsa
+
+- name: Copy /root/.ssh/id_rsa to SUT
+  delegate_to: localhost
+  command: |
+    /usr/bin/sshpass -p beaker ssh-copy-id -o StrictHostKeyChecking=no \
+                     -o UserKnownHostsFile=/dev/null root@{{ fqdn }}
+
+- name: Run os-tests on the SUT using ssh connection
+  delegate_to: localhost
+  command: "{{ venv_directory }}/bin/os-tests --host {{ fqdn }} --user root --keyfile /root/.ssh/id_rsa --result {{ tests_results_directory }}"
+
+- name: Compress test results files
+  delegate_to: localhost
+  archive:
+    path: "{{ tests_results_directory }}"
+    dest: "{{ tests_tmp_dir.path }}/os-tests.tgz"
+
+- name: Upload tests results folder
+  delegate_to: localhost
+  environment:
+    - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
+    - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
+    - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
+  dci_file:
+    path: "{{ tests_tmp_dir.path }}/os-tests.tgz"
+    name: "os-tests.tgz"
+    job_id: "{{ hostvars.localhost.job_id }}"
+    mime: "application/gzip"
+
+- name: Upload junit test results
+  delegate_to: localhost
+  environment:
+    - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
+    - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
+    - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
+  dci_file:
+    path: "{{ tests_results_directory }}/sum.xml"
+    name: "os-tests.xml"
+    job_id: "{{ hostvars.localhost.job_id }}"
+    mime: "application/junit"

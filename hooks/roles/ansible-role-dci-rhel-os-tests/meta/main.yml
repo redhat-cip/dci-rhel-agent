@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  role_name: ansible-role-dci-rhel-os-tests
+  author: Distributed-CI Team
+  company: Red Hat
+  description: An Ansible role to run the Red Hat RHEL os test suite
+  license: Apache
+  min_ansible_version: 2.0
+
+  platforms:
+    - name: EL
+      versions:
+        - 8
+        - 7
+
+  galaxy_tags: []
