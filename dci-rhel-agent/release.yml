@@ -14,6 +14,10 @@
     - name: Release SUT if it is currently reserved
       shell: "bkr system-release {{ fqdn }}"
       delegate_to: beaker_server
+      retries: 3
+      delay: 5
+      register: sut_release
+      until: sut_release.rc == 0
       ignore_errors: yes
       become: true
       when: (bkr_system_status.stdout | from_json).current_reservation|default(None)
