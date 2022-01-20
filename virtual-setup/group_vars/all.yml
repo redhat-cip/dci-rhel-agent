@@ -38,4 +38,4 @@ vms:
 #####################
 
 # Topic installed during the deployment of the SUT
-dci_topic: "RHEL-8-milestone"
+dci_topic: "RHEL-8.*"

@@ -2,32 +2,17 @@
 local_repo: /var/www/html
 local_repo_ip: 192.168.1.1
 topics:
-  - topic: RHEL-7-milestone
-    variants:
-      - Server
-    archs:
-      - x86_64
-      - ppc64le
-    with_debug: false
-    dci_rhel_agent_cert: false
-    dci_rhel_agent_cki: false
+  - topic: RHEL-8.*
+    # variants:
+    #   - AppStream
+    #   - BaseOS
+    # archs:
+    #   - x86_64
+    # with_debug: false
+    # dci_rhel_agent_cert: false
+    # dci_rhel_agent_cki: false
     systems:
-      - test.x86.sut1
-      - test.x86.sut2
-  - topic: RHEL-8-milestone
-    variants:
-      - AppStream
-      - BaseOS
-    archs:
-      - ppc64le
-      - x86_64
-      - aarch64
-    with_debug: false
-    dci_rhel_agent_cert: false
-    dci_rhel_agent_cki: false
-    systems:
-      - test.x86.sut3
-      - test.ppc.sut4
+      - sut1.local
 
 beaker_lab:
   external_dns: false
@@ -43,7 +28,7 @@ beaker_lab:
   labcontroller_fqdn: machine-name.where.lab.controller.is.running
 
   system_inventory:
-    test.x86.sut1:
+    sut1.local:
       ip_address: 192.168.1.20
       mac: aa:bb:cc:dd:ee:ff
       arch: x86_64
@@ -55,51 +40,3 @@ beaker_lab:
       # specified here
       #power_id:
       power_type: ipmilan
-    test.x86.sut2:
-      ip_address: 192.168.1.21
-      mac: ff:ee:dd:cc:bb:aa
-      arch: x86_64
-      power_address: sut2.power.address
-      power_user: p_user2
-      power_password: p_pass2
-      # Power ID depends on which power type is selected.  Typically this field identifies
-      # a particular plug, socket, port, or virtual guest name. Defaults to fqdn when not
-      # specified here
-      #power_id:
-      power_type: wti
-    test.x86.sut3:
-      ip_address: 192.168.1.22
-      mac: bb:aa:cc:dd:ee:ff
-      arch: x86-64
-      power_address: sut3.power.address
-      power_user: p_user3
-      power_password: p_pass3
-      # Power ID depends on which power type is selected.  Typically this field identifies
-      # a particular plug, socket, port, or virtual guest name. Defaults to fqdn when not
-      # specified here
-      #power_id:
-      power_type: ipmilan
-    test.ppc.sut4:
-      ip_address: 192.168.1.23
-      mac: aa:cc:bb:dd:ee:ff
-      arch: ppc64le
-      power_address: sut4.power.address
-      power_user: p_user4
-      power_password: p_pass4
-      # Power ID depends on which power type is selected.  Typically this field identifies
-      # a particular plug, socket, port, or virtual guest name. Defaults to fqdn when not
-      # specified here
-      #power_id:
-      power_type: apc_snmp
-    test.ppc.sut5:
-      ip_address: 192.168.1.24
-      mac: aa:cc:bb:dd:ee:ff
-      arch: ppc64le
-      power_address: sut5.power.address
-      power_user: p_user5
-      power_password: p_pass5
-      # Power ID depends on which power type is selected.  Typically this field identifies
-      # a particular plug, socket, port, or virtual guest name. Defaults to fqdn when not
-      # specified here
-      #power_id:
-      power_type: apc_snmp
