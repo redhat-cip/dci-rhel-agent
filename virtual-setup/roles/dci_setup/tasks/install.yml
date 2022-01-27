@@ -11,6 +11,11 @@
     name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
     state: present
 
+- name: Exclude nodejs and npm from epel (temp)
+  become: true
+  shell:
+    yum-config-manager --save --setopt=epel.exclude=nodejs*,npm
+
 - name: Install DCI-release
   become: true
   yum:
