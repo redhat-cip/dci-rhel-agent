@@ -6,7 +6,7 @@ Example for settings.yml:
 local_repo: /var/www/html
 local_repo_ip: 192.168.1.1
 topics:
-  - topic: RHEL-7.6
+  - topic: RHEL-7.9
     archs:
       - x86_64
       - ppc64le
@@ -22,7 +22,7 @@ topics:
         watchdog_timeout: 3600
       - labvm-2.novalocal
 
-  - topic: RHEL-8.1
+  - topic: RHEL-8.5
     archs:
       - ppc64le
     variants:
