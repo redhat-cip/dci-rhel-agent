@@ -128,6 +128,10 @@ def provision_and_test(extravars):
                 extravars['install_watchdog_timeout'] = system['install_watchdog_timeout']
             else:
                 extravars.pop('install_watchdog_timeout', None)
+            if 'install_wait_time' in system:
+                extravars['install_wait_time'] = system['install_wait_time']
+            else:
+                extravars.pop('install_wait_time', None)
         else:
             extravars['fqdn'] = system
             #Remove any install options set for previous SUTs in this topic if they exist
@@ -136,6 +140,7 @@ def provision_and_test(extravars):
             extravars.pop('sol_command', None)
             extravars.pop('reboot_watchdog_timeout', None)
             extravars.pop('install_watchdog_timeout', None)
+            extravars.pop('install_wait_time', None)
         print ("Starting job for %s." % extravars['fqdn'])
         thread, runner = ansible_runner.run_async(
             private_data_dir="/usr/share/dci-rhel-agent/",
