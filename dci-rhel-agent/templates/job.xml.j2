@@ -1,5 +1,6 @@
 <job retention_tag="Scratch">
     <whiteboard>This job was scheduled from the dci-rhel-agent using XML template.</whiteboard>
+  {% for variant, values  in compose_info.boot_variants.items() %}
     <recipeSet priority="Normal">
         {% if hostvars.localhost.system_arch == 'ppc64le' and beaker_lab.system_inventory[fqdn].petitboot|default(False, true) == False %}
                  <recipe ks_meta="selinux=--permissive autopart_type=plain skip_taskrepo=1 {% if 'RHEL-9' in topic_name %}harness='restraint' no_default_harness_repo disabled_root_access=True {% else %}harness='restraint beakerlib' {% endif%} {% if ks_meta is defined %}{{ ks_meta }}{% endif %}" whiteboard="" kernel_options="netbootloader=boot/grub2/{{ fqdn }}/powerpc-ieee1275/core.elf {% if kernel_options is defined %}{{ kernel_options }}{% endif %}">
@@ -12,27 +13,42 @@
         {% else %}
                 <recipe ks_meta="selinux=--permissive autopart_type=plain skip_taskrepo=1 {% if 'RHEL-9' in topic_name %}harness='restraint' no_default_harness_repo disabled_root_access=True {% else %}harness='restraint beakerlib' {% endif%} {% if ks_meta is defined %}{{ ks_meta }}{% endif %}" whiteboard="" kernel_options="{% if kernel_options is defined %}{{ kernel_options }}{% endif %}">
         {% endif %}
+          {% if hostvars.localhost.ext_bkr %}
+            <distro>
+                <tree url="http://{{ local_repo_ip }}/{{ values.os_tree |replace(local_repo,'') }}"/>
+                <initrd url="{{ values.pxe_images.initrd }}"/>
+                <kernel url="{{ values.pxe_images.kernel }}"/>
+                <arch value="{{ hostvars.localhost.system_arch }}"/>
+                <osversion major="{{ compose_info.osmajor }}" minor="{{ compose_info.osminor }}"/>
+                <name value="{{ distro_name }}"/>
+                <variant value="{{ variant }}"/>
+            </distro>
+          {% else %}
             <distroRequires>
                 <and>
                     <distro_name op="=" value="{{ distro_name }}"/>
                     <distro_arch op="=" value="{{ hostvars.localhost.system_arch }}"/>
                 </and>
             </distroRequires>
+          {% endif %}
             {% if fqdn is defined %}
                     <hostRequires force="{{ fqdn }}" />
             {% else %}
             <hostRequires/>
             {% endif %}
-            {% if 'RHEL-7' in topic_name %}
             <repos>
+            {% if hostvars.localhost.ext_bkr %}
+              {% for name, url in compose_info.repos.items() %}
+                <repo name="{{ name }}" url="http://{{ local_repo_ip }}/{{ url | replace(local_repo,'') }}"/>
+              {% endfor %}
+            {% endif %}
+            {% if 'RHEL-7' in topic_name %}
               <repo name="extraos-local" url="http://{{ local_repo_ip }}/{{ topic_name }}/extraos/Server/{{ hostvars.localhost.system_arch }}/os"/>
-            </repos>
             {% endif %}
             {% if 'RHEL-9' in topic_name %}
-            <repos>
               <repo name="harness-almost-nine" url="http://{{ local_repo_ip }}/beaker/harness/RedHatEnterpriseLinux8/"/>
-            </repos>
             {% endif %}
+            </repos>
             <partitions/>
             <task name="/distribution/check-install" role="STANDALONE">
                 <params>
@@ -41,4 +57,5 @@
             <reservesys/>
         </recipe>
     </recipeSet>
+  {% endfor %}
 </job>
