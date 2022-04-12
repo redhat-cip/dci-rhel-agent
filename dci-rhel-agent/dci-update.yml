@@ -137,8 +137,3 @@
       when: (item.key not in bkr_systems.stdout_lines) and (hostvars.localhost.beaker_lab is defined)
       become: true
       loop: "{{ q('dict', hostvars.localhost.beaker_lab.system_inventory | default({})) }}"
-
-    - name: Ensure latest dci-downloader is installed
-      yum:
-        name: dci-downloader
-        state: latest

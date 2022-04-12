@@ -75,10 +75,10 @@ def main():
         if 'beaker_lab' not in settings.keys():
             print ("INFO: beaker_lab was not found in settings.yml.  Beaker server updates and SUT management will NOT be performed.")
 
-        # If agent is NOT in dev/debug mode, update automatically.
+        # If agent is NOT in dev/debug mode, update DCI packages automatically.
         if args.debug is False and args.local is False:
-          # Start dci-rhel-agent update
-          myCmd = 'yum upgrade -y dci-rhel-agent'
+          # Start dci package update
+          myCmd = 'yum upgrade -y \*dci\*'
           proc = subprocess.Popen(myCmd, shell=True)
           proc.wait()
           myCmd = 'podman pull %s' % (dci_rhel_agent_url)
