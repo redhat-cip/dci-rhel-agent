@@ -2,6 +2,9 @@
 - name: Update Beaker server config
   hosts: beaker_server
   gather_facts: false
+  tags:
+    - beaker
+    - update
   tasks:
     - name: Ensure an ssh key exists
       stat:

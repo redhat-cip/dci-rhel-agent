@@ -1,0 +1,11 @@
+---
+- name: 'Add job state failure'
+  delegate_to: localhost
+  dci_job:
+    id: "{{ hostvars.localhost.job_id }}"
+    status: "failure"
+  tags: dci
+
+- name: 'Failed job'
+  fail:
+    msg: 'Something went wrong. Review the log at: https://www.distributed-ci.io/jobs/{{ hostvars.localhost.job_id }}/jobStates'

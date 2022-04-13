@@ -1,5 +1,5 @@
 Name:             dci-rhel-agent
-Version:          0.3.0
+Version:          0.4.0
 Release:          1.VERS%{?dist}
 Summary:          The RHEL's DCI agent
 License:          ASL 2.0
@@ -42,6 +42,7 @@ install -p -D -m 644 dcirc.sh.dist %{buildroot}%{_sysconfdir}/dci-rhel-agent/dci
 install -p -D -m 644 inventory %{buildroot}%{_sysconfdir}/dci-rhel-agent/inventory
 install -p -D -m 644 settings.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/settings.yml
 install -p -D -m 644 hooks/user-tests.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
+install -p -D -m 644 hooks/tests.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/tests.yml
 install -p -D -m 644 hooks/pre-run.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/pre-run.yml
 install -p -D -m 755 dci-rhel-agent-ctl %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 mkdir %{buildroot}%{_sysconfdir}/dci-rhel-agent/secrets
@@ -71,6 +72,7 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/settings.yml
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/inventory
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/hooks/user-tests.yml
+%config(noreplace) %{_sysconfdir}/dci-rhel-agent/hooks/tests.yml
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/hooks/pre-run.yml
 %dir  %{_sysconfdir}/dci-rhel-agent/secrets
 %dir  %{_sysconfdir}/dci-rhel-agent/hooks/roles
@@ -78,6 +80,8 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 %{_sysconfdir}/dci-rhel-agent/hooks/roles/ansible-role-dci-rhel-os-tests/tasks/*
 
 %changelog
+* Wed Jun 08 2022 Guillaume Vincent <guillaume@oslab.fr> 0.4.0-1
+- Add tests hook file
 * Mon Dec 06 2021 Guillaume Vincent <guillaume@oslab.fr> 0.3.0-1
 - Add os-tests role
 * Tue Jul 28 2020 Michael Burke <miburke@redhat.com> 0.2.0-2

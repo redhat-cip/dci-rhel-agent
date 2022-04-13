@@ -55,10 +55,3 @@
       dci_job:
         id: "{{ hostvars.localhost.job_id }}"
         tags: '{{ system_arch }}'
-  when: hostvars.localhost.tests_only == False
-
-- name: 'Tag tests only job'
-  dci_job:
-    id: "{{ hostvars.localhost.job_id }}"
-    tags: 'tests_only'
-  when: hostvars.localhost.tests_only

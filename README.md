@@ -418,12 +418,21 @@ It can be modified to include any task needed to run **before** the system Under
 
 ## How to run your own set of tests ?
 
-By default, `dci-rhel-agent` provides an empty Ansible list of tasks located at `/etc/dci-rhel-agent/hooks/user-tests.yml`.
-It can be modified to include any task needed to run on top of the SUT that was provisionned for the job.
+By default, `dci-rhel-agent` provides 2 hooks files you can use to run your tests:
+  - `/etc/dci-rhel-agent/hooks/tests.yml`
+  - `/etc/dci-rhel-agent/hooks/user-tests.yml`
 
-This file will not be replaced when the `dci-rhel-agent` RPM will be updated.
+Those files are kept when the `dci-rhel-agent` RPM will be updated.
 
-To use any existing Ansible roles in your tests, copy the role directory to /etc/dci-rhel-agent/hooks/roles. The role can then be imported into your user-tests.yml file and executed on your test systems.
+### tests.yml
+
+You can include any tasks that will be run on the jumpbox
+
+### user-tests.yml
+
+You can include any tasks that will be run on each SUTs
+
+To use any existing Ansible roles in your tests, copy the role directory to /etc/dci-rhel-agent/hooks/roles. The role can then be imported into your hooks file.
 
 Please note, that it is possible at this point to use DCI Ansible bindings (see in the container `/usr/share/dci/modules/`) in tasks.
 In the following example, the task uploads Junit files (your tests results) into DCI Web dashboard.
@@ -491,12 +500,13 @@ No. Due to the large size of RHEL composes, our dci-downloader tool called by th
 
 ### I would like to continue to use the same RHEL compose for testing in our Beaker lab for a while.
 
-The RHEL agent provides an option which can be supplied when it is started to skip the download of composes. By supplying the `--skip-download=true` flag to your start call of the agent, the downloader will be bypassed and you can continue to run with the most recently downloaded RHEL compose until you are ready to move on. At that point, omitting the skip-download flag will allow your agent to download the latest available composes for each topic specified in your settings file.
+The RHEL agent provides an option which can be supplied when it is started to skip the download of composes. By supplying the `--skip-download` flag to your start call of the agent, the downloader will be bypassed and you can continue to run with the most recently downloaded RHEL compose until you are ready to move on. At that point, omitting the skip-download flag will allow your agent to download the latest available composes for each topic specified in your settings file.
 
 ### My EFI system does not recognize the default "linuxefi" and "initrdefi" commands supplied in the grub.cfg by the RHEL agent.
 
-The linuxefi and initrdefi commands are supplied by default in the grub.cfg constructed by the agent for EFI systems.  These can be swapped with the linux and initrd commands by supplying a boolean in the system inventory for that system: 
-alternate_efi_boot_commands: true
+The linuxefi and initrdefi commands are supplied by default in the grub.cfg constructed by the agent for EFI systems.  These can be swapped with the linux and initrd commands by supplying a boolean in the system inventory for that system:
+
+    alternate_efi_boot_commands: true
 
 ## Create your DCI account on distributed-ci.io
 

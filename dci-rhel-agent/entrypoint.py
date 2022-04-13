@@ -69,7 +69,7 @@ def load_settings():
             print(exc)
             sys.exit(1)
 
-def provision_and_test(extravars):
+def provision_and_test(extravars, cmdline):
     # Path is static in the container
     # local_repo = '/var/www/html'
     # extravars['local_repo'] = local_repo
@@ -148,7 +148,8 @@ def provision_and_test(extravars):
             verbosity=int(environ.get('VERBOSITY')),
             playbook="dci-rhel-agent.yml",
             extravars=extravars,
-            quiet=False
+            quiet=False,
+            cmdline=cmdline
         )
         threads_runners[(thread, runner)] = extravars['fqdn']
 
@@ -171,25 +172,34 @@ def main():
         print ("Environment variable DCI_CLIENT_ID not set.")
         sys.exit(1)
 
+    cmdline = ""
     tests_only = True if environ.get('TESTS_ONLY') == 'True' else False
-    ext_bkr = True if environ.get('EXT_BKR') == 'True' else False
+    if tests_only:
+        cmdline += ' --skip-tags "sut,beaker"'
+    skip_download = True if environ.get('SKIP_DOWNLOAD') == 'True' else False
+    if skip_download:
+        cmdline += ' --skip-tags "download"'
 
     # Read the settings file
     sets = load_settings()
 
-    if not tests_only and not ext_bkr:
+    ext_bkr = True if environ.get('EXT_BKR') == 'True' else False
+    if not ext_bkr:
         # Run the update playbook once before jobs.
+        # todo gvincent: move this in the main playbook
         r = ansible_runner.run(
             private_data_dir="/usr/share/dci-rhel-agent/",
             inventory="/etc/dci-rhel-agent/inventory",
             verbosity=1,
             playbook="dci-update.yml",
             extravars=sets,
-            quiet=False
+            quiet=False,
+            cmdline=cmdline
         )
         if r.rc != 0:
             print ("Update playbook failed. {}: {}".format(r.status, r.rc))
             sys.exit(1)
+
     # Check if the settings contain multiple topics and process accordingly
     if 'topics' in sets:
         # Break up settings file into individual jobs by topic
@@ -199,10 +209,9 @@ def main():
             print ("Beginning provision/test jobs for topic %s" % current_job['topic'])
             current_job['local_repo'] = sets['local_repo']
             current_job['local_repo_ip'] = sets['local_repo_ip']
-            current_job['tests_only'] = tests_only
             current_job['ext_bkr'] = ext_bkr
             current_job['beaker_lab'] = sets['beaker_lab']
-            provision_and_test(current_job)
+            provision_and_test(current_job, cmdline)
             cleanup_boot_files()
     else:
         print ('Incompatible settings file.  Topics not found. Please update settings file format.')

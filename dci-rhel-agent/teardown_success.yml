@@ -1,0 +1,11 @@
+---
+- name: 'Add job state success'
+  delegate_to: localhost
+  dci_job:
+    id: "{{ hostvars.localhost.job_info.job.id }}"
+    status: "success"
+  tags: dci
+
+- name: Job successful
+  debug:
+    msg: 'The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/{{ hostvars.localhost.job_info.job.id }}/jobStates'

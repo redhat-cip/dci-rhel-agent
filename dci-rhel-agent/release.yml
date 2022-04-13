@@ -1,9 +1,6 @@
 ---
-#
-# This task is forced to run on bkr lc.
-# delegate_to: beaker_server.
-#
 - name: Release SUT from Beaker if necessary
+  tags: beaker
   block:
     - name: Check if SUT is reserved by Beaker
       shell: "bkr system-status {{ fqdn }} --format json"
@@ -21,4 +18,3 @@
       ignore_errors: yes
       become: true
       when: (bkr_system_status.stdout | from_json).current_reservation|default(None)
-  when: hostvars.localhost.tests_only == False

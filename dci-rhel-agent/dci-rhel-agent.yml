@@ -1,5 +1,5 @@
 ---
-- name: NEW JOB
+- name: 'Schedule a new job'
   hosts: localhost
   gather_facts: false
   tasks:
@@ -21,7 +21,7 @@
         configuration: "{{ dci_configuration | default('') }}"
       register: job_info
 
-    - name: 'debug dci_job_id'
+    - name: 'Debug dci_job_id'
       debug:
         msg: dci_job_id:"{{ job_info['job']['id'] }}"
 
@@ -34,26 +34,25 @@
         components: "{{ job_info['job']['components'] }}"
         product: "{{ job_info['job']['topic']['product_id'] }}"
 
+    - name: 'Update job name with topic_name'
+      dci_job:
+        id: "{{ job_id }}"
+        name: '{{ topic_name }}'
+
     - name: 'Set DCI tags for the current job'
       dci_job:
         id: "{{ job_id }}"
         tags: '{{ dci_tags }}'
       when: dci_tags | length > 0
 
-- name: Upload settings and hooks
-  hosts: localhost
-  environment:
-    - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
-    - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
-    - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
-  tasks:
-    - name: Upload settings yml file
+    - name: 'Upload settings yml file'
       ignore_errors: yes
       dci_file:
         path: /etc/dci-rhel-agent/settings.yml
         name: settings.yml
         job_id: "{{ hostvars.localhost.job_id }}"
-    - name: Upload hooks directory contents
+
+    - name: 'Upload hooks directory contents'
       dci_file:
         path: "{{ item }}"
         name: "{{ item | basename }}"
@@ -61,144 +60,166 @@
       with_fileglob:
         - /etc/dci-rhel-agent/hooks/*
 
-- name: 'Download topic'
+    - name: 'Check partner user-tests hook file is present'
+      stat:
+        path: '/etc/dci-rhel-agent/hooks/user-tests.yml'
+      register: check_user_tests_hook_file
+
+- name: 'Prepare the jumpbox'
   hosts: localhost
   gather_facts: no
-  vars:
-    dci_status: 'pre-run'
-  tasks:
-    - block:
-        - include_tasks: dci-import.yml
-      rescue:
-        - include_tasks: failure.yml
-      when:
-        - not hostvars.localhost.tests_only
-        - not hostvars.localhost.ext_bkr
-
-- name: 'Configure SUT'
-  hosts: localhost
-  gather_facts: no
-  vars:
-    dci_status: 'pre-run'
-  tasks:
-    - block:
-        - include_tasks: sut.yml
-      rescue:
-        - include_tasks: failure.yml
-
-- name: 'Prepare install'
-  hosts:
-    - localhost
-    - beaker_server
-  gather_facts: no
-  vars:
-    dci_status: 'pre-run'
-  tasks:
-    - block:
-        - include_tasks: create_temp_dir.yml
-      rescue:
-        - include_tasks: failure.yml
-
-- name: 'Launch pre-run'
-  hosts: localhost
   tags:
     - pre-run
-  vars:
-    dci_status: 'pre-run'
+    - jumpbox
   tasks:
     - block:
-        - stat:
+        - name: 'Add job state pre-run'
+          dci_job:
+            id: "{{ job_id }}"
+            status: "pre-run"
+
+        - name: 'Create temp dir'
+          include_tasks: create_temp_dir.yml
+
+        - name: 'Configure SUT'
+          include_tasks: sut.yml
+          tags: sut
+
+        - name: 'Check pre-run hook file is present'
+          stat:
             path: '/etc/dci-rhel-agent/hooks/pre-run.yml'
           register: check_pre_run
-        - stat:
-            path: '/etc/dci-rhel-agent/hooks/user-tests.yml'
-          register: check_user_tests
-        - name: Run the pre-run hook
+
+        - name: 'Run the pre-run hook if present'
           include_tasks: '/etc/dci-rhel-agent/hooks/pre-run.yml'
           when: check_pre_run.stat.exists
       rescue:
-        - include_tasks: failure.yml
+        - name: Teardown error
+          include_tasks: teardown_error.yml
 
-- name: Install RHEL on SUT
+- name: 'Prepare the beaker server'
   hosts: beaker_server
   gather_facts: yes
-  vars:
-    dci_status: 'running'
-  tasks:
-    - block:
-        - include_tasks: install.yml
-      rescue:
-        - include_tasks: logs.yml
-        - include_tasks: release.yml
-        - include_tasks: failure.yml
-      when: not hostvars.localhost.tests_only
-
-- name: 'Launch customizable tests'
-  hosts: beaker_sut
-  gather_facts: yes
-  vars:
-    dci_status: 'running'
-  tasks:
-    - block:
-        - include_tasks: '/etc/dci-rhel-agent/hooks/user-tests.yml'
-          when: hostvars.localhost['check_user_tests'].stat.exists
-      rescue:
-        - include_tasks: release.yml
-        - include_tasks: failure.yml
-
-- name: Red Hat Tests
-  hosts: beaker_sut
-  vars:
-    dci_status: 'running'
-  tasks:
-    - name: Launch RHEL CKI Test
-      ignore_errors: yes
-      import_role:
-        name: dci-rhel-cki
-      when:
-        - dci_rhel_agent_cki|bool and (hostvars.localhost.topic_name.startswith("RHEL-7") or hostvars.localhost.topic_name.startswith("RHEL-8"))
-      become: true
-
-    - name: Launch RHEL HW Cert Tests
-      ignore_errors: yes
-      import_role:
-        name: dci-rhel-certification
-      when:
-        - dci_rhel_agent_cert|bool and (hostvars.localhost.topic_name.startswith("RHEL-7") or hostvars.localhost.topic_name.startswith("RHEL-8"))
-      become: true
   tags:
-      - test
-
-- name: 'Upload Beaker logs to DCI Control server'
-  hosts: beaker_server
-  gather_facts: no
-  vars:
-    dci_status: 'post-run'
+    - pre-run
+    - beaker
   tasks:
     - block:
-        - include_tasks: logs.yml
-      rescue:
-        - include_tasks: release.yml
-        - include_tasks: failure.yml
+        - name: 'Create temp dir'
+          include_tasks: create_temp_dir.yml
 
-- name: 'Release SUT in Beaker'
+        - name: 'Download RHEL'
+          include_tasks: download.yml
+          tags: download
+
+        - name: 'Import RHEL into beaker'
+          include_tasks: dci-import.yml
+          when: not hostvars.localhost.ext_bkr
+      rescue:
+        - name: Teardown error
+          include_tasks: teardown_error.yml
+
+- name: 'Launch install'
   hosts: beaker_server
-  gather_facts: no
-  vars:
-    dci_status: 'post-run'
+  tags:
+    - install
+    - beaker
   tasks:
     - block:
-        - include_tasks: release.yml
-      rescue:
-        - include_tasks: failure.yml
+        - name: 'Add job state running'
+          delegate_to: localhost
+          dci_job:
+            id: "{{ hostvars.localhost.job_id }}"
+            status: "running"
 
-- name: SUCCESS
+        - name: 'Install RHEL on SUT'
+          include_tasks: install.yml
+      rescue:
+        - name: Teardown failure
+          include_tasks: teardown_failure.yml
+
+- name: 'Launch tests on the jumpbox'
+  hosts: localhost
+  gather_facts: yes
+  tags:
+    - tests
+    - jumpbox
+  tasks:
+    - block:
+        - name: 'Check partner tests hook file is present'
+          stat:
+            path: '/etc/dci-rhel-agent/hooks/tests.yml'
+          register: check_tests_hook_file
+
+        - name: 'Launch partner tests if present'
+          include_tasks: '/etc/dci-rhel-agent/hooks/tests.yml'
+          when: check_tests_hook_file.stat.exists
+      rescue:
+        - name: Teardown failure
+          include_tasks: teardown_failure.yml
+
+- name: 'Launch tests on SUTs'
+  hosts: beaker_sut
+  gather_facts: no
+  tags:
+    - tests
+    - beaker
+    - sut
+  tasks:
+    - block:
+        - name: 'Launch RHEL CKI Test'
+          ignore_errors: yes
+          import_role:
+            name: dci-rhel-cki
+          when:
+            - dci_rhel_agent_cki|bool and (hostvars.localhost.topic_name.startswith("RHEL-7") or hostvars.localhost.topic_name.startswith("RHEL-8"))
+          become: true
+
+        - name: 'Launch RHEL HW Cert Tests'
+          ignore_errors: yes
+          import_role:
+            name: dci-rhel-certification
+          when:
+            - dci_rhel_agent_cert|bool and (hostvars.localhost.topic_name.startswith("RHEL-7") or hostvars.localhost.topic_name.startswith("RHEL-8"))
+          become: true
+
+        - name: 'Launch partner tests if present'
+          include_tasks: '/etc/dci-rhel-agent/hooks/user-tests.yml'
+          when: hostvars.localhost['check_user_tests_hook_file'].stat.exists
+      rescue:
+        - name: Teardown failure
+          include_tasks: teardown_failure.yml
+
+- name: 'Grab logs and release SUTs'
+  hosts: beaker_server
+  gather_facts: no
+  tags:
+    - post-run
+    - beaker
+  tasks:
+    - block:
+        - name: 'Add job state post-run'
+          delegate_to: localhost
+          dci_job:
+            id: "{{ hostvars.localhost.job_id }}"
+            status: "post-run"
+
+        - name: 'Upload Beaker logs to DCI Control server'
+          include_tasks: logs.yml
+
+        - name: 'Release SUT in Beaker'
+          include_tasks: release.yml
+
+      rescue:
+        - name: Teardown failure
+          include_tasks: teardown_failure.yml
+
+- name: 'Success'
   hosts: localhost
   gather_facts: no
-  vars:
-    dci_status: 'success'
+  tags:
+    - success
+    - jumpbox
   tasks:
-    - block:
-        - include_tasks: success.yml
-      rescue:
-        - include_tasks: failure.yml
+    - name: 'Run the success'
+      include_tasks: teardown_success.yml

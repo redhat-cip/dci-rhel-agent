@@ -1,58 +1,15 @@
 ---
-- name: 'Read credentials from env vars'
-  set_fact:
-    dci_client_id="{{ lookup('env','DCI_CLIENT_ID') }}"
-    dci_cs_url="{{ lookup('env','DCI_CS_URL') }}"
-    skip_download="{{ lookup('env','SKIP_DOWNLOAD') }}"
-
-- name: 'Read dci_api_secret from env vars'
-  set_fact:
-    dci_api_secret="{{ lookup('env','DCI_API_SECRET') }}"
-  no_log: true
-
-- name: Get dci-downloader version
-  delegate_to: beaker_server
-  shell: /bin/dci-downloader --version
-  when: hostvars.localhost.skip_download == False
-
-- name: Send settings.yml file to beaker_server
-  delegate_to: beaker_server
-  copy:
-    src: /etc/dci-rhel-agent/settings.yml
-    dest: /tmp/settings.yml
-  when: hostvars.localhost.skip_download == False
-
-- name: Start dci-downloader
-  delegate_to: beaker_server
-  environment:
-    - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
-    - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
-    - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
-  shell: /bin/dci-downloader --settings /tmp/settings.yml {% if dci_rhel_agent_cert %} --debug{% endif %}
-  become: true
-  when: hostvars.localhost.skip_download == False
-
-- name: Remove temp settings file on beaker_server
-  delegate_to: beaker_server
-  file:
-    path: /tmp/settings.yml
-    state: absent
-  when: hostvars.localhost.skip_download == False
-
 - name: Import the latest build
-  delegate_to: beaker_server
-  shell: beaker-import -v --ignore-missing-tree-compose "http://{{ local_repo_ip }}/{{ topic_name }}/compose/"
+  shell: beaker-import -v --ignore-missing-tree-compose "http://{{ hostvars.localhost.local_repo_ip }}/{{ hostvars.localhost.topic_name }}/compose/"
   become: true
 
 - name: Start beaker-repo-update
   ignore_errors: yes
-  delegate_to: beaker_server
   shell: beaker-repo-update
   become: true
 
 #TODO: Temp workaround until RHEL-9 harness packages are availabe on beaker-project.org
-- name: Ensure RHEL-8 Beaker harness packages are available on jumpbox for RHEL-9 provisions
-  delegate_to: beaker_server
+- name: Ensure RHEL-8 Beaker harness packages are available for RHEL-9 provisions
   block:
     - name: Install createrepo package
       package:
@@ -70,15 +27,15 @@
 
     - name: Sync beaker-harness-rhel8 repo
       shell: >
-        reposync -p {{ local_repo }}/beaker/harness/RedHatEnterpriseLinux8
+        reposync -p {{ hostvars.localhost.local_repo }}/beaker/harness/RedHatEnterpriseLinux8
         -r beaker-harness-rhel8 -n --download-metadata -m -g -q -l --norepopath
 
     - name: Create rhel8 harness repo
-      shell: createrepo -q {{ local_repo }}/beaker/harness/RedHatEnterpriseLinux8
+      shell: createrepo -q {{ hostvars.localhost.local_repo }}/beaker/harness/RedHatEnterpriseLinux8
 
     - name: Remove beaker-harness-rhel8 repo file
       file:
         path: /etc/yum.repos.d/beaker-harness-rhel8.repo
         state: absent
 
-  when: topic_name.startswith("RHEL-9")
+  when: hostvars.localhost.topic_name.startswith("RHEL-9")
