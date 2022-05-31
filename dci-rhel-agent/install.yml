@@ -3,6 +3,18 @@
 # Tasks are included to run on beaker_server host,
 # Delegate_to: localhost when needed.
 #
+
+- name: Install pip package
+  package:
+      name:
+        - "python{% if ansible_python.version.major == 3 %}3{% endif %}-pip"
+      state: latest
+
+- name: Install productmd
+  pip:
+    name:
+      - productmd
+
 - name: Set topic_name variable
   set_fact:
     topic_name: "{{ hostvars.localhost.topic_name }}"
@@ -66,9 +78,16 @@
     dest: /var/tmp/
     flat: yes
 
+- name: Process ComposeInfo
+  compose_info:
+    compose_path: "{{ local_repo }}/{{ topic_name }}"
+    arch: "{{ hostvars.localhost.system_arch }}"
+  register: results
+
 - name: Populate the Beaker XML job from template
   vars:
       distro_name: "{{ lookup('ini', 'name section=product file=/var/tmp/.composeinfo') }}"
+      compose_info: "{{ results.compose_info }}"
   block:
     - include_vars: /etc/dci-rhel-agent/settings.yml
     - name: Create a temporary file
@@ -119,28 +138,31 @@
   debug:
     msg: bkr_job_id:"{{ bkrjobid }}"
 
-- name: Get current job results containing kickstart URL
-  shell: "bkr job-results {{ bkrjobid }}"
-  register: bkrjobresults
-  until: bkrjobresults.stdout.find("kickstart_url") != -1
-  retries: 10
-  delay: 5
+- name: Grub workaround
+  block:
+    - name: Get current job results containing kickstart URL
+      shell: "bkr job-results {{ bkrjobid }}"
+      register: bkrjobresults
+      until: bkrjobresults.stdout.find("kickstart_url") != -1
+      retries: 10
+      delay: 5
 
-- name: Parse kickstart URL from job result
-  xml:
-    xmlstring: "{{ bkrjobresults.stdout }}"
-    xpath: /job/recipeSet/recipe
-    content: attribute
-  register: recipeinfo
+    - name: Parse kickstart URL from job result
+      xml:
+        xmlstring: "{{ bkrjobresults.stdout }}"
+        xpath: /job/recipeSet/recipe
+        content: attribute
+      register: recipeinfo
 
-- name: Register kickstart URL
-  set_fact:
-    ksurl: "{{ recipeinfo.matches[0].recipe.kickstart_url }}"
+    - name: Register kickstart URL
+      set_fact:
+        ksurl: "{{ recipeinfo.matches[0].recipe.kickstart_url }}"
 
-- name: Populate unique grub cfg file for this SUT from template
-  template:
-    src: /usr/share/dci-rhel-agent/templates/grub.cfg.j2
-    dest: "/var/lib/tftpboot/grub.cfg-{{ beaker_lab.system_inventory[fqdn].ip_address | ip4_hex | upper }}"
+    - name: Populate unique grub cfg file for this SUT from template
+      template:
+        src: /usr/share/dci-rhel-agent/templates/grub.cfg.j2
+        dest: "/var/lib/tftpboot/grub.cfg-{{ beaker_lab.system_inventory[fqdn].ip_address | ip4_hex | upper }}"
+  when: hostvars.localhost.ext_bkr == False
 
 # Beaker has an initial watchdog for reboot and installation start. The watchdog
 # is then updated for the installation time.  First check for the presence of an

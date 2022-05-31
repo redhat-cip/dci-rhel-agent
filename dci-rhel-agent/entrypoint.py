@@ -172,11 +172,12 @@ def main():
         sys.exit(1)
 
     tests_only = True if environ.get('TESTS_ONLY') == 'True' else False
+    ext_bkr = True if environ.get('EXT_BKR') == 'True' else False
 
     # Read the settings file
     sets = load_settings()
 
-    if not tests_only:
+    if not tests_only and not ext_bkr:
         # Run the update playbook once before jobs.
         r = ansible_runner.run(
             private_data_dir="/usr/share/dci-rhel-agent/",
@@ -199,6 +200,7 @@ def main():
             current_job['local_repo'] = sets['local_repo']
             current_job['local_repo_ip'] = sets['local_repo_ip']
             current_job['tests_only'] = tests_only
+            current_job['ext_bkr'] = ext_bkr
             current_job['beaker_lab'] = sets['beaker_lab']
             provision_and_test(current_job)
             cleanup_boot_files()

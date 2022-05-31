@@ -47,6 +47,7 @@ def main():
     parser.add_argument('--hooks', action='store', help="Path to hooks folder. Default is `%s`." % default_value['hooks_path'], default=default_value['hooks_path'])
     parser.add_argument('-v', '--verbosity', action='store', help="Verbosity level for Ansible log (0-4).  Default is 1", type=int, choices=range(5), default=1)
     parser.add_argument('--tests-only', action='store_true', help="Skip provisioning and only run enabled RH tests and user tests.")
+    parser.add_argument('--ext-bkr', action='store_true', help="Use an external beaker")
 
     args = parser.parse_args()
 
@@ -98,7 +99,7 @@ def main():
           volumes[local_source_path] = '/usr/share/dci-rhel-agent'
 
         myCmd = 'source /etc/dci-rhel-agent/dcirc.sh && '
-        myCmd = myCmd + 'podman run --rm -ti --network host -e DCI_CLIENT_ID -e DCI_API_SECRET -e DCI_CS_URL -e SKIP_DOWNLOAD=%s -e VERBOSITY=%s -e TESTS_ONLY=%s' % (args.skip_download, args.verbosity, args.tests_only)
+        myCmd = myCmd + 'podman run --rm -ti --network host -e DCI_CLIENT_ID -e DCI_API_SECRET -e DCI_CS_URL -e SKIP_DOWNLOAD=%s -e VERBOSITY=%s -e TESTS_ONLY=%s -e EXT_BKR=%s' % (args.skip_download, args.verbosity, args.tests_only, args.ext_bkr)
         for key, value in volumes.items():
           myCmd = myCmd + ' -v ' + key + ':' + value
 

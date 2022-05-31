@@ -57,6 +57,25 @@ topics:
 
 Note: We recommend to use the topic name without filters. Like that you will always have the latest component available for the topic.
 
+## External Beaker
+
+It is possible to use a beaker instance that isn't under DCI control.  The following steps need to be done.
+
+- Configure ~/.beaker_client/config
+  - HUB_URL point to the beaker instance and configure authentication.  If you are using kerberos you will need to kinit with either a keytab or a password before running the dci-rhel-agent-ctl command.
+- Add the contents of /etc/dci-rhel-agent/secrets/id_rsa.pub to the ssh keys of the user in beaker
+  - https://BEAKER.FQDN/prefs/#ssh-public-keys
+- Add the FQDN of the system you want to test against in /etc/dci-rhel-agent/settings.yml
+
+```
+topics:
+  - topic: RHEL-8.6
+    systems:
+      - SUT.IN.BEAKER.FQDN
+```
+
+- Finally pass --ext-bkr to the dci-rhel-agent-ctl command
+
 ## FAQ
 
 ### How can I test the latest major version ?
