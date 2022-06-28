@@ -1,0 +1,31 @@
+jumphost: "{{ ansible_fqdn }}"
+beaker_admin_login: admin
+beaker_admin_password: admin
+beaker_server_name: beaker_server
+beaker_lab_name: beaker_lab_controller
+beaker_pod_name: beaker
+data_dir: /opt
+tcp_ports:
+  - 80
+  - 8000
+udp_ports:
+  - 53
+  - 67
+  - 69
+firewall_zones:
+  - libvirt
+  - internal
+  - public
+firewall_enabled: true
+beaker_server_image: quay.io/distributedci/beaker-server:latest
+beaker_lab_image: quay.io/distributedci/beaker-lab-controller:latest
+beaker_mysql_image: registry.redhat.io/rhel8/mariadb-103
+mysql_database: beaker
+mysql_user: beaker
+mysql_password: beaker
+mysql_root_password: password
+mysql_charset: utf8
+file_owner: "{{ ansible_env.USER }}"
+file_group: "{{ file_owner }}"
+dns_servers: []
+beaker_extra_config: {}

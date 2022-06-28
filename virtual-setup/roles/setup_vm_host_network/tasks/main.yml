@@ -1,0 +1,51 @@
+- name: Create network_config
+  include_tasks: make_network_config.yml
+  when: network_config is not defined
+
+- name: process network_config
+  import_role:
+    name: process_nmstate
+
+- name: apply nmstate config
+  import_role:
+    name: apply_nmstate
+
+- name: Configure firewall for vm_bridge_zone
+  block:
+  - name: Move bridge to designated firewall zone
+    community.general.nmcli:
+      conn_name: "{{ vm_bridge_name }}"
+      state: present
+      zone: "{{ vm_bridge_zone }}"
+    become: true
+
+  - name: Create Iptables NAT chain
+    iptables:
+      table: nat
+      chain: POSTROUTING
+      source: '{{ machine_network_cidr }}'
+      destination: '! {{ machine_network_cidr }}'
+      jump: MASQUERADE
+      protocol: all
+      comment: Ansible NAT Masquerade
+
+  - name: Manage IPv4 forwarding
+    sysctl:
+      name: net.ipv4.ip_forward
+      value: '1'
+      state: present
+      reload: True
+
+  - name: Update firewall for power scripts
+    ansible.posix.firewalld:
+      port: "{{ 6230 + my_idx }}/udp"
+      permanent: yes
+      immediate: yes
+      state: enabled
+      zone: "{{ vm_bridge_zone }}"
+    loop: "{{ kvm_nodes | default([]) }}"
+    loop_control:
+      index_var: my_idx
+  when:
+    - vm_bridge_zone is defined
+

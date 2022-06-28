@@ -17,7 +17,7 @@ Please note that it's common to have multiple **SUTs** (for instance: systems wi
 The jumpbox can be a physical server or a virtual machine.
 In any case, it must:
 
-- Be running the latest stable RHEL release (**7.9 or higher**) and registered via RHSM.
+- Be running the latest stable RHEL release (**8.4 or higher**) and registered via RHSM.
 - Have at least 160GB of free space available in `/var`
 - Have access to Internet
 - Be able to connect the following Web urls:
@@ -51,36 +51,58 @@ As the files on this system are NOT persistent between each `dci-rhel-agent` job
 
 We strongly advise the partners to provide Red Hat DCI's team an access to their jumpbox. This way, Red Hat engineers can help with initial setup and troubleshooting.
 
-## Installation
+## Installation of DCI Rhel Agent
 
 The `dci-rhel-agent` is packaged and available as a RPM files.
-However,`dci-release` and `epel-release` must be installed first:
+However,`dci-release` and `epel-release` must be installed first and for RHEL you need to subscribe to the ansible-2.9 repo:
 
 ```bash
-# yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-# yum -y install https://packages.distributed-ci.io/dci-release.el7.noarch.rpm
-# yum-config-manager --save --setopt=epel.exclude=nodejs*,npm
-# subscription-manager repos --enable=rhel-7-server-extras-rpms
-# subscription-manager repos --enable=rhel-7-server-optional-rpms
-# yum -y install dci-rhel-agent
-# yum -y install ansible git
+dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+dnf -y install https://packages.distributed-ci.io/dci-release.el8.noarch.rpm
+curl -o /etc/yum.repos.d/beaker-client.repo https://beaker-project.org/yum/beaker-client-RedHatEnterpriseLinux.repo
+dnf -y install dci-rhel-agent beaker-client
+ssh-keygen -t rsa -N "" -f /etc/dci-rhel-agent/secrets/id_rsa
 ```
 
-Next, install [Beaker](https://beaker-project.org/). Red Hat DCI maintains a [dedicated Ansible role](https://docs.distributed-ci.io/ansible-playbook-dci-beaker/) to help with this task.
+## Install ansible for either Virtual systems or Beaker containers
 
 ```bash
-$ git clone https://github.com/redhat-cip/ansible-playbook-dci-beaker
-$ cd ansible-playbook-dci-beaker/
-$ ansible-galaxy install -r requirements.yml -p roles/
-$ vi group_vars/all
-[...]
-$ ansible-playbook -i inventory playbook.yml
+# For CentOS
+dnf -y install centos-release-ansible-29
+# For RHEL
+subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
+
+dnf -y install ansible-2.9.\* dnf-command\(versionlock\)
+dnf versionlock ansible
 ```
 
-If the **SUT** is a virtual machine, read this [notice](https://github.com/redhat-cip/ansible-playbook-dci-beaker#note-about-virtual-machines).
+## Installation Of Virtual systems
 
-When you install `dci-rhel-agent` on a fresh system (or if you need to update cached Beaker Harness packages), execute the `beaker-repo-update` command.
-For more details, read the official [documentation](https://beaker-project.org/docs/admin-guide/man/beaker-repo-update.html).
+It can be helpful to setup virtual hosts to verify that your setup is working as expected.  Since the virtual setup is self contained it can uncover issues with the main installation before adding in external hosts.  External hosts present their own issues.
+
+```bash
+dnf -y install ansible-collection-community-libvirt ansible-collection-community-general \
+               python3-netaddr ansible-collection-ansible-posix
+cd /usr/share/doc/dci-rhel-agent/virtual-setup
+# Edit the inventory, by default it creates two Systems Under Test
+# make sure images_dir points to a location with enough disk space
+vi group_vars/all.yml
+ansible-playbook site.yml -v
+```
+
+## Installation Of Beaker
+
+You can install and run beaker externally to DCI but we provide containers that allow it to run from the jumphost.
+
+```bash
+dnf -y install ansible-collection-containers-podman ansible-collection-ansible-posix
+cd /usr/share/doc/dci-rhel-agent/beaker-setup
+# Edit the settings in settings.yml
+# It's important that the dns is correct, the containers need to be able to resolve the host names of the SUT's
+vi settings.yml
+podman login registry.redhat.io
+ansible-playbook -e @settings.yml deploy.yml
+```
 
 ## Configuration
 
@@ -149,7 +171,7 @@ Example:
 
 ```console
 local_repo_ip: 192.168.1.1
-local_repo: /var/www/html
+local_repo: /opt/beaker/dci
 topics:
   - topic: RHEL-8.1
     dci_rhel_agent_cert: false
@@ -507,6 +529,12 @@ The RHEL agent provides an option which can be supplied when it is started to sk
 The linuxefi and initrdefi commands are supplied by default in the grub.cfg constructed by the agent for EFI systems.  These can be swapped with the linux and initrd commands by supplying a boolean in the system inventory for that system:
 
     alternate_efi_boot_commands: true
+
+### My system times out waiting before install starts
+
+There is a known bug, BZ 1785663.  This can be worked around by adding rd.net.timeout.carrier=10 to that systems kernel_options
+
+    kernel_options: rd.net.timeout.carrier=10
 
 ## Create your DCI account on distributed-ci.io
 

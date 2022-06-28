@@ -1,0 +1,14 @@
+---
+- name: Create Temp DIr
+  tempfile:
+    state: directory
+  register: temp_dir
+
+- name: Prepare Network
+  import_tasks: prepare_network.yml
+
+- name: Prepare Storage Pool
+  import_tasks: prepare_storage_pool.yml
+
+- name: Prepare VMS
+  import_tasks: provision_vms.yml

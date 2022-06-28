@@ -8,6 +8,11 @@ from ansible.module_utils.basic import AnsibleModule
 from productmd import compose
 from productmd import treeinfo
 
+def find(name, path):
+    for root, dirs, files in os.walk(path):
+        if name in files or name in dirs:
+            return os.path.join(root, name)
+
 class ComposeInfo(object):
     def __init__(self, params):
         # params from AnsibleModule argument_spec below
@@ -24,6 +29,23 @@ class ComposeInfo(object):
         version_minor = version.split('.')[1]
         self.osmajor = "%s%s" % (name, version_major)
         self.osminor = version_minor
+        self.compose_id = self.compose_info.info.create_compose_id()
+
+    def find_image(self, os_path):
+        image = None
+        arch_images = dict( x86_64='grubx64.efi',
+                            aarch64='grubaa64.efi',
+                            ppc64le='core.elf')
+
+        if self.arch in arch_images:
+            arch_image = arch_images[self.arch]
+            image_path = find(arch_image, os_path)
+
+        if image_path:
+            image = image_path.split(os_path)[1].strip('/')
+
+        return image
+
 
     def get_pxe_images(self, variant):
         pxe_images = dict()
@@ -39,6 +61,7 @@ class ComposeInfo(object):
 
             pxe_images['kernel'] = tree_info.images.images[self.arch]['kernel']
             pxe_images['initrd'] = tree_info.images.images[self.arch]['initrd']
+            pxe_images['image'] = self.find_image(os.path.join(compose_path, os_path))
         except (IOError, OSError):
             pass
 
@@ -82,6 +105,7 @@ class ComposeInfo(object):
     def results(self):
         # return data in nice format
        results = dict(boot_variants=dict())
+       results['compose_id'] = self.compose_id
        results['osmajor'] = self.osmajor
        results['osminor'] = self.osminor
        results['repos'] = self.get_repos()

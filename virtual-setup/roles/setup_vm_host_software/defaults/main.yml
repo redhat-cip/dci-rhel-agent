@@ -1,0 +1,10 @@
+---
+virt_packages:
+  - python3
+  - libvirt
+  -  virt-install 
+  - qemu-kvm
+  - virt-manager
+  - python3-pip
+  - python3-lxml
+  - python3-libvirt

@@ -1,6 +1,6 @@
 ---
-local_repo: /var/www/html
 local_repo_ip: 192.168.1.1
+local_repo: /opt/beaker/dci
 topics:
   - topic: RHEL-8.*
     # variants:
@@ -23,6 +23,9 @@ beaker_lab:
   dhcp_end: 192.168.1.30
   dhcp_netmask: 255.255.255.0
   router: 192.168.1.1
+  listen_addresses:
+    - 127.0.0.1
+    - "{{ ansible_default_ipv4.address }}"
 
   jumpbox_fqdn: dci-jumpbox
   labcontroller_fqdn: machine-name.where.lab.controller.is.running

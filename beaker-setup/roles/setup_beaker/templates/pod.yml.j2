@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: beaker
+  name: beaker
+spec:
+  containers:
+    - image: "{{ beaker_mysql_image }}"
+      name: db
+      envFrom:
+      - configMapRef:
+          name: config
+      volumeMounts:
+        - mountPath: "/var/lib/mysql:z"
+          name: db-volume
+    - image: "{{ beaker_server_image }}"
+      name: server
+      ports:
+      - containerPort: 80
+        hostPort: 80
+        protocol: TCP
+      envFrom:
+      - configMapRef:
+          name: config
+      volumeMounts:
+        - mountPath: "/data:z"
+          name: beaker-data-volume
+        - mountPath: "/config:z"
+          name: config-volume
+    - image: "{{ beaker_lab_image }}"
+      name: lab-controller
+      ports:
+      - containerPort: 8000
+        hostPort: 8000
+        protocol: TCP
+      envFrom:
+      - configMapRef:
+          name: config
+      volumeMounts:
+        - mountPath: "/data:z"
+          name: beaker-data-volume
+        - mountPath: "/config:z"
+          name: config-volume
+        - mountPath: "/var/lib/tftpboot:z"
+          name: tftp-volume
+  volumes:
+    - name: db-volume
+      hostPath:
+        path:  "{{ data_dir }}/mysql"
+        type: Directory
+    - name: beaker-data-volume
+      hostPath:
+        path:  "{{ data_dir }}/beaker"
+        type: Directory
+    - name: config-volume
+      hostPath:
+        path: "{{ data_dir }}/config"
+        type: Directory
+    - name: tftp-volume
+      hostPath:
+        path: "/var/lib/tftpboot"
+        type: Directory
+  restartPolicy: OnFailure
+  {% if (dns_servers | length) > 0 %}
+  dnsConfig:
+    nameservers:
+      {% for server in dns_servers %}
+      - {{ server }}
+      {% endfor %}
+  {% endif %}

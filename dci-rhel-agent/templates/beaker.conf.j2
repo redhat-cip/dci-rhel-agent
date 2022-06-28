@@ -1,3 +1,5 @@
+listen-address={{ hostvars.localhost.beaker_lab.dns_server ~ ',127.0.0.1' if hostvars.localhost.beaker_lab.dns_server is defined else '127.0.0.1' }}
+
 dhcp-range={{ hostvars.localhost.beaker_lab.dhcp_start }},{{ hostvars.localhost.beaker_lab.dhcp_end }},{{ hostvars.localhost.beaker_lab.dhcp_netmask }}
 dhcp-ignore=tag:!known
 dhcp-option=option:router,{{ hostvars.localhost.beaker_lab.router|default(hostvars.localhost.local_repo_ip,true) }}
@@ -18,6 +20,7 @@ dhcp-boot=tag:{{ system }}_boot,bootloader/{{ system }}/image,{{ hostvars.localh
 
 {% for system in hostvars.localhost.beaker_lab.system_inventory %}
 dhcp-host={{ hostvars.localhost.beaker_lab.system_inventory[system].mac }},{{ system }},{{ hostvars.localhost.beaker_lab.system_inventory[system].ip_address }},set:{{ system }}_boot
+address=/{{ system }}/{{ hostvars.localhost.beaker_lab.system_inventory[system].ip_address }}
 {% endfor %}
 
 # vim: set ft=dnsmasq:

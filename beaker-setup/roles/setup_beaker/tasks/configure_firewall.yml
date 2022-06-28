@@ -1,0 +1,17 @@
+- name: Open tcp ports via firewalld
+  ansible.posix.firewalld:
+    port: "{{ item[0] }}/tcp"
+    permanent: yes
+    immediate: yes
+    state: enabled
+    zone: "{{ item[1] }}"
+  loop: "{{ tcp_ports | product(firewall_zones) | list }}"
+
+- name: Open udp ports via firewalld
+  ansible.posix.firewalld:
+    port: "{{ item[0] }}/udp"
+    permanent: yes
+    immediate: yes
+    state: enabled
+    zone: "{{ item[1] }}"
+  loop: "{{ udp_ports | product(firewall_zones) | list }}"

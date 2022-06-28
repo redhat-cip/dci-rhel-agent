@@ -1,14 +1,5 @@
 ---
-- name: precheck
-  gather_facts: false
-  hosts: 
-    - localhost
-  tags:
-    - precheck
-  tasks:
-    - import_tasks: precheck.yml
-
-- name: Apply role bootstrap_libvirt
+- name: Setup virt host
   gather_facts: true
   gather_subset:
     - '!all'
@@ -17,8 +8,26 @@
     - localhost
   tags:
     - bootstrap_libvirt
-  roles:
-    - role: bootstrap_libvirt
+  tasks:
+    - name: Destroy vms
+      include_role:
+        name: destroy_vms
+
+    - name: Setup VM host network
+      include_role:
+        name: setup_vm_host_network
+
+    - name: Setup VM host software
+      include_role:
+        name: setup_vm_host_software
+
+    - name: Create vms
+      include_role:
+        name: create_vms
+
+    - name: Setup Virtual BMC
+      include_role:
+        name: setup_virtual_bmc
 
 - name: Apply role jumpbox
   gather_facts: true
@@ -28,7 +37,7 @@
     - network
     - user_id
   hosts:
-    - jumpbox
+    - localhost
   tags:
     - dci_setup
   roles:

@@ -50,17 +50,6 @@ def sigterm_handler(signal, frame):
 
 signal.signal(signal.SIGTERM, sigterm_handler)
 
-def cleanup_boot_files():
-    r = ansible_runner.run(
-        private_data_dir="/usr/share/dci-rhel-agent/",
-        inventory="/etc/dci-rhel-agent/inventory",
-        verbosity=1,
-        playbook="dci-cleanup.yml",
-        quiet=False
-    )
-    if r.rc != 0:
-        print("Warning: Unable to remove boot files copied to tftproot by agent.")
-
 def load_settings():
     with open('/etc/dci-rhel-agent/settings.yml', 'r') as settings:
         try:
@@ -212,7 +201,6 @@ def main():
             current_job['ext_bkr'] = ext_bkr
             current_job['beaker_lab'] = sets['beaker_lab']
             provision_and_test(current_job, cmdline)
-            cleanup_boot_files()
     else:
         print ('Incompatible settings file.  Topics not found. Please update settings file format.')
         sys.exit(1)

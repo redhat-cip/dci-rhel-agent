@@ -97,24 +97,20 @@
         - name: Teardown error
           include_tasks: teardown_error.yml
 
-- name: 'Prepare the beaker server'
-  hosts: beaker_server
+- name: 'Prepare the Distro and Harness'
+  hosts: localhost
   gather_facts: yes
   tags:
     - pre-run
     - beaker
   tasks:
     - block:
-        - name: 'Create temp dir'
-          include_tasks: create_temp_dir.yml
-
         - name: 'Download RHEL'
           include_tasks: download.yml
           tags: download
 
-        - name: 'Import RHEL into beaker'
-          include_tasks: dci-import.yml
-          when: not hostvars.localhost.ext_bkr
+        - name: 'Download harness'
+          include_tasks: dci-harness.yml
       rescue:
         - name: Teardown error
           include_tasks: teardown_error.yml
@@ -126,6 +122,9 @@
     - beaker
   tasks:
     - block:
+        - name: 'Create temp dir'
+          include_tasks: create_temp_dir.yml
+
         - name: 'Add job state running'
           delegate_to: localhost
           dci_job:

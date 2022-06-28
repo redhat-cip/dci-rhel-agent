@@ -1,6 +1,3 @@
 ---
 dci_client_id: ""
 dci_api_secret: ""
-dci_topic: "RHEL-8.*"
-enable_share_mount: true
-share_folder_host: "/opt/rhel_topics"

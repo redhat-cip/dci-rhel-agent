@@ -17,88 +17,47 @@
         comment: 'self-generated@dci-rhel-agent'
       when: check_id_rsa.stat.exists == False
 
-    - name: Ensure dnsmasq, tftp, xinetd installed
+    - name: Ensure tftp and tftp-server installed
       package:
         name: "{{ item }}"
       with_items:
-        - dnsmasq
         - tftp
         - tftp-server
-        - xinetd
 
-    - name: Verify xinetd tftp config file exists
-      stat:
-        path: /etc/xinetd.d/tftp
-      register: tftp_cfg
+    - name: Enable tftp server
+      ansible.builtin.systemd:
+        name: tftp
+        state: started
+        enabled: true
 
-    - name: Update xinetd tftp config to enable tftp
-      lineinfile:
-        path: /etc/xinetd.d/tftp
-        regexp: 'disable\s*= yes'
-        line: '        disable                 = no'
-      when: tftp_cfg.stat.exists
-      register: tftp_cfg_updated
-
-    - name: Restart and enable dnsmasq, tftp, and xinetd packages when cfg updated
-      service:
-        name: "{{ item }}"
-        state: restarted
-        enabled: yes
-      with_items:
-        - tftp
-        - xinetd
-        - dnsmasq
-      when: tftp_cfg_updated.changed
+    - name: Set tftp_home_dir flag on and keep it persistent across reboots
+      seboolean:
+        name: tftp_home_dir
+        state: true
+        persistent: true
 
     - name: Update beaker.conf file
       template:
         src: /usr/share/dci-rhel-agent/templates/beaker.conf.j2
-        dest: /etc/dnsmasq.d/beaker.conf
+        dest: /etc/NetworkManager/dnsmasq.d/beaker.conf
       register: dns_conf_update
       when: hostvars.localhost.beaker_lab is defined
 
-    - name: Update hosts file
-      block:
-        - name: Update hosts file with any new systems (no domain) if lab is using DCI DNS
-          lineinfile:
-            path: /etc/hosts
-            line: "{{ hostvars.localhost.beaker_lab.system_inventory[item.key].ip_address }} {{ item.key }}"
-          loop: "{{ q('dict', hostvars.localhost.beaker_lab['system_inventory'] | default({})) }}"
-          register: etc_hosts_update1
-          when: item.key.split(".")|length == 1
+    - name: Setup network manager to run dnsmasq
+      copy:
+        src: nm-dnsmasq.conf
+        dest: /etc/NetworkManager/conf.d/dnsmasq.conf
+        mode: 0644
 
-        - name: Update hosts file with any new systems with domain if lab is using DCI DNS
-          lineinfile:
-            path: /etc/hosts
-            line: '{{ hostvars.localhost.beaker_lab.system_inventory[item.key].ip_address }} {{ item.key.split(".")[0] }} {{ item.key }}'
-          loop: "{{ q('dict', hostvars.localhost.beaker_lab['system_inventory'] | default({})) }}"
-          register: etc_hosts_update2
-          when: item.key.split(".")|length > 1
-
-        - name: Update hosts file with jumpbox information (no domain) if lab is using DCI DNS
-          lineinfile:
-            path: /etc/hosts
-            line: "{{ hostvars.localhost.local_repo_ip }} {{ hostvars.localhost.beaker_lab.jumpbox_fqdn }}"
-          register: etc_hosts_update3
-          when: (hostvars.localhost.beaker_lab.jumpbox_fqdn.split(".")|length == 1)
-
-        - name: Update hosts file with jumpbox information (domain) if lab is using DCI DNS
-          lineinfile:
-            path: /etc/hosts
-            line: '{{ hostvars.localhost.local_repo_ip }} {{ hostvars.localhost.beaker_lab.jumpbox_fqdn.split(".")[0] }} {{ hostvars.localhost.beaker_lab.jumpbox_fqdn }}'
-          register: etc_hosts_update4
-          when: (hostvars.localhost.beaker_lab.jumpbox_fqdn.split(".")|length > 1)
-      when: (hostvars.localhost.beaker_lab is defined) and (hostvars.localhost.beaker_lab.external_dns == false)
-
-    - name: Restart dnsmasq if any config files were changed
+    - name: Restart NetworkManager if any config files were changed
       service:
-        name: dnsmasq
+        name: NetworkManager
         state: restarted
-      when: dns_conf_update.changed | default('false') | bool or etc_hosts_update1.changed | default ('false') | bool or etc_hosts_update2.changed | default ('false') | bool or etc_hosts_update3.changed | default ('false') | bool or etc_hosts_update4.changed | default ('false') | bool
+      when: dns_conf_update.changed | default('false') | bool
 
     - name: Ensure Beaker is up to date on jumpbox
       yum:
-        name: beaker
+        name: beaker-client
         state: latest
 
     - name: Query systems list

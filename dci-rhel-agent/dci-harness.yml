@@ -1,0 +1,36 @@
+---
+- name: Upload .composeinfo to DCI Control Server
+  dci_file:
+    path: "/data/{{ topic_name }}/compose/.composeinfo"
+    name: 'composeinfo.txt'
+    mime: 'text/plain'
+    job_id: '{{ job_id }}'
+
+- name: Process ComposeInfo
+  compose_info:
+    compose_path: "/data/{{ topic_name }}/compose"
+    arch: "{{ system_arch }}"
+  register: results
+
+- name: Set Composeinfo
+  set_fact:
+    compose_info: "{{ results.compose_info }}"
+    os_major_modified: "{{ results.compose_info.osmajor | replace('RedHatEnterpriseLinux9', 'RedHatEnterpriseLinux8') }}" # Use RHEL8 for RHEL9
+    harness: "restraint"
+
+- name: Don't add beakerlib for RHEL-9 or CentOS 9
+  set_fact:
+    harness: "{{ harness }} beakerlib"
+  when:
+    - os_major_modified != "CentOSStream9"
+
+- name: Sync harness repo
+  shell: >
+    dnf reposync --repo=rstrnt_harness \
+      --repofrompath=rstrnt_harness,https://beaker-project.org/yum/harness/{{ os_major_modified }} \
+      --delete \
+      --download-metadata \
+      --download-path /data/harness/{{ compose_info.osmajor }}
+
+- name: Create harness repo
+  shell: createrepo_c --ignore-lock -q /data/harness/{{ compose_info.osmajor }}

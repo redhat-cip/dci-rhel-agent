@@ -1,0 +1,78 @@
+---
+- name: Install packages required by virtualbmc
+  become: true
+  package:
+    name:
+      - python3-pip
+      - python3-setuptools
+      - python3-devel
+      - libvirt-devel
+      - gcc
+      - ipmitool
+      - libvirt-client
+
+- name: Upgrade pip
+  become: true
+  pip:
+    name: pip
+    executable: pip3
+    extra_args: --upgrade
+    state: latest
+
+- name: Install virtualbmc
+  become: true
+  pip:
+    name: virtualbmc
+    executable: pip3
+
+- name: Create directories needed by vbmc if it does not exist
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - /etc/virtualbmc
+    - /var/log/virtualbmc
+
+- name: Copy the vbmc configuration file
+  become: true
+  copy:
+    src: virtualbmc.conf
+    dest: /etc/virtualbmc
+
+- name: Add VirtualBMC as systemd service
+  become: true
+  copy:
+    mode: 0664
+    src: virtualbmc.service
+    dest: "/etc/systemd/system/virtualbmc.service"
+
+- name: Reload systemd
+  become: true
+  systemd:
+    daemon_reload: yes
+
+- name: Start VirtualBMC
+  become: true
+  systemd:
+    name: virtualbmc
+    state: started
+    enabled: yes
+
+- name: Add sut to VirtualBMC
+  shell: >
+    /usr/local/bin/vbmc add {{ item.name }} --username admin --password password 
+    --address {{ machine_network_ip | quote }}
+    --port {{ 6230 + my_idx }} --libvirt-uri qemu:///system
+    && /usr/local/bin/vbmc start {{ item.name }}
+  loop: "{{ kvm_nodes | default([]) }}"
+  loop_control:
+    index_var: my_idx
+
+- name: power off sut
+  shell: >
+    /usr/bin/ipmitool -I lanplus -U admin -P password -p {{ 6230 + my_idx }} -H {{ machine_network_ip | quote }} power off
+  loop: "{{ kvm_nodes | default([]) }}"
+  loop_control:
+    index_var: my_idx

@@ -1,0 +1,10 @@
+--- /usr/lib/python2.7/site-packages/productmd/images.py.orig	2020-11-26 14:00:41.000000000 +0000
++++ /usr/lib/python2.7/site-packages/productmd/images.py	2023-03-06 20:09:34.371801534 +0000
+@@ -101,6 +101,7 @@
+     'vdi': ['vdi'],
+     'vmdk': ['vmdk'],
+     'vpc': ['vhd'],
++    'vhd-compressed': ['vhd.gz', 'vhd.xz'],
+     'vsphere-ova': ['vsphere.ova'],
+ }
+

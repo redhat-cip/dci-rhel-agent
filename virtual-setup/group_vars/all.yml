@@ -12,26 +12,44 @@ dci_api_secret: ""
 #####################
 
 # Specify the folder to store the KVM images
-libvirt_image_path: /var/lib/libvirt/images
+images_dir: /opt/libvirt/images
 
-# Base image for the create of the KVM Jumpbox
-kvm_guest_image_source_path: "{{ libvirt_image_path }}/CentOS-7-x86_64-GenericCloud-2009.qcow2"
+machine_network_cidr: 10.60.0.0/24
+machine_network_ip: "{{ machine_network_cidr | nthhost(190) }}"
+vm_bridge_name: "br-dci"
+vm_bridge_zone: libvirt
+network_name: "net-dci"
 
-# Networks used by the libvirt environment
-networks:
-- name: rhel_prov
-- name: default
+network_config:
+  interfaces:
+    - type: linux-bridge
+      name: "{{ vm_bridge_name }}"
+      addresses:
+        ipv4:
+          - ip: "{{ machine_network_ip }}"
+            prefix: "{{ machine_network_cidr | ipaddr('prefix') }}"
+      bridge:
+        stp: True
 
-# Vms created during the deployment of the libvirt environment
-vms:
-- name: jumpbox
-  add_dci_user: true
-  networks:
-  - rhel_prov
-- name: sut
-  add_dci_user: false
-  networks:
-  - rhel_prov
+kvm_nodes:
+- name: "sut1"
+  disks:
+    main: 150
+  mac: "52:54:00:EF:C0:2C"
+  memory: "16384"
+  network_interface: "{{ vm_bridge_name }}"
+  vcpu: "4"
+  # mode: legacy|efi|secure
+  mode: efi
+
+- name: "sut2"
+  disks:
+    main: 150
+  mac: "52:54:00:EF:C0:2D"
+  memory: "16384"
+  network_interface: "{{ vm_bridge_name }}"
+  vcpu: "4"
+  mode: legacy
 
 #####################
 # dci_setup

@@ -1,2 +1,6 @@
 ---
-- include_tasks: "{{ hook_action | default('deploy') }}.yml"
+- name: Copy the dci settings.yml file
+  become: true
+  template:
+    src: settings.yml.j2
+    dest: /etc/dci-rhel-agent/settings.yml

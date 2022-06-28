@@ -4,110 +4,55 @@
 # Delegate_to: localhost when needed.
 #
 
-- name: Install pip package
-  package:
-      name:
-        - "python{% if ansible_python.version.major == 3 %}3{% endif %}-pip"
-      state: latest
-
-- name: Install productmd
-  pip:
-    name:
-      - productmd
-
-- name: Set topic_name variable
-  set_fact:
-    topic_name: "{{ hostvars.localhost.topic_name }}"
-
-- name: Copy RHEL8 or RHEL9 ppc64le boot files to tftproot when provisioning a ppc64le machine
-  copy:
-    src: "{{ local_repo }}/{{ topic_name }}/compose/BaseOS/ppc64le/os/boot/grub/powerpc-ieee1275"
-    dest: "{{ item }}"
-    remote_src: yes
-  with_items:
-    - "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
-    - /var/lib/tftpboot/boot/grub
-  when: hostvars.localhost.system_arch == "ppc64le" and (topic_name.startswith("RHEL-8") or topic_name.startswith("RHEL-9"))
-
-- name: Copy RHEL7 ppc64le boot files to tftproot when provisioning a ppc64le machine
-  copy:
-    src: "{{ local_repo }}/{{ topic_name }}/compose/Server/ppc64le/os/boot/grub/powerpc-ieee1275"
-    dest: "{{ item }}"
-    remote_src: yes
-  with_items:
-    - "/var/lib/tftpboot/boot/grub2/{{ fqdn }}"
-    - /var/lib/tftpboot/boot/grub
-  when: hostvars.localhost.system_arch == "ppc64le" and topic_name.startswith("RHEL-7")
-
-- name: Copy RHEL7 boot files to tftproot for UEFI BIOS SUTs
-  block:
-    - name: Copy grubx64.efi
-      copy:
-        src: "{{ local_repo }}/{{ topic_name }}/compose/Server/x86_64/os/EFI/BOOT/grubx64.efi"
-        dest: /var/lib/tftpboot/grubx64.efi
-        remote_src: yes
-        owner: root
-        group: root
-        mode: 0755
-  when: hostvars.localhost.system_arch == "x86_64" and topic_name.startswith("RHEL-7") and beaker_lab.system_inventory[fqdn].efi|default(false, true) == true
-
-- name: Copy RHEL-8/9 boot files to tftproot for UEFI BIOS SUTs
-  block:
-    - name: Copy grubx64.efi
-      copy:
-        src: "{{ local_repo }}/{{ topic_name }}/compose/BaseOS/x86_64/os/EFI/BOOT/grubx64.efi"
-        dest: /var/lib/tftpboot/grubx64.efi
-        remote_src: yes
-        owner: root
-        group: root
-        mode: 0755
-  when: hostvars.localhost.system_arch == "x86_64" and (topic_name.startswith("RHEL-8") or topic_name.startswith("RHEL-9")) and beaker_lab.system_inventory[fqdn].efi|default(false, true) == true
-
-- name: Copy RHEL-8/9 aarch64 boot files to tftproot when provisioning an aarch64 SUT
-  block:
-    - name: Copy grubaa64.efi
-      copy:
-        src: "{{ local_repo }}/{{ topic_name }}/compose/BaseOS/aarch64/os/EFI/BOOT/grubaa64.efi"
-        dest: /var/lib/tftpboot/grubaa64.efi
-        remote_src: yes
-  when: hostvars.localhost.system_arch == "aarch64" and (topic_name.startswith("RHEL-8") or topic_name.startswith("RHEL-9"))
-
-- name: Download .composeinfo
-  fetch:
-    src: "{{ hostvars.beaker_server.local_repo }}/{{ topic_name }}/compose/.composeinfo"
-    dest: /var/tmp/
-    flat: yes
-
-- name: Process ComposeInfo
-  compose_info:
-    compose_path: "{{ local_repo }}/{{ topic_name }}"
-    arch: "{{ hostvars.localhost.system_arch }}"
-  register: results
-
 - name: Populate the Beaker XML job from template
   vars:
-      distro_name: "{{ lookup('ini', 'name section=product file=/var/tmp/.composeinfo') }}"
-      compose_info: "{{ results.compose_info }}"
+      compose_info: "{{ hostvars.localhost.compose_info }}"
+      harness: "{{ hostvars.localhost.harness }}"
+      topic_name: "{{ hostvars.localhost.topic_name }}"
+      efi_boot_command: "efi"
+      beaker_lab: "{{ hostvars.localhost.beaker_lab }}"
+      system_arch: "{{ hostvars.localhost.system_arch }}"
   block:
     - include_vars: /etc/dci-rhel-agent/settings.yml
+
+    - name: Alternate EFI
+      set_fact:
+        efi_boot_command: ""
+      when:
+        - beaker_lab.system_inventory[fqdn].alternate_efi_boot_commands | default(false, true) | bool
+
+    - name: Use pxelinux.0 (x86)
+      set_fact:
+        netbootloader: "netbootloader='pxelinux.0'"
+      when:
+        - system_arch == 'x86_64'
+        - not beaker_lab.system_inventory[fqdn].efi | default(False, true) | bool
+
+    - name: Use EFI bootloader image (x86 and aarch64)
+      set_fact:
+        use_boot_image: true
+      when:
+        - system_arch == 'x86_64' or system_arch == 'aarch64'
+        - beaker_lab.system_inventory[fqdn].efi | default(False, true) | bool
+
+    - name: Use powerpc-ieee1275 bootloader image (ppc64le)
+      set_fact:
+        use_boot_image: true
+      when:
+        - system_arch == 'ppc64le'
+        - not beaker_lab.system_inventory[fqdn].petitboot | default(False, true) | bool
+
     - name: Create a temporary file
       tempfile:
         state: file
         suffix: xml
       register: job_xml
+
     - name: Create Beaker job.xml from template
       template:
         src: /usr/share/dci-rhel-agent/templates/job.xml.j2
         dest: "{{ job_xml.path }}"
   when: beaker_xml is not defined
-
-- name: Upload .composeinfo to DCI Control Server
-  delegate_to: localhost
-  dci_file:
-    path: /var/tmp/.composeinfo
-    name: 'composeinfo.txt'
-    mime: 'text/plain'
-    job_id: '{{ hostvars.localhost.job_id }}'
 
 - name: Configure fact to use XML from template
   set_fact:
@@ -137,32 +82,6 @@
 - name: 'debug bkr_job_id'
   debug:
     msg: bkr_job_id:"{{ bkrjobid }}"
-
-- name: Grub workaround
-  block:
-    - name: Get current job results containing kickstart URL
-      shell: "bkr job-results {{ bkrjobid }}"
-      register: bkrjobresults
-      until: bkrjobresults.stdout.find("kickstart_url") != -1
-      retries: 10
-      delay: 5
-
-    - name: Parse kickstart URL from job result
-      xml:
-        xmlstring: "{{ bkrjobresults.stdout }}"
-        xpath: /job/recipeSet/recipe
-        content: attribute
-      register: recipeinfo
-
-    - name: Register kickstart URL
-      set_fact:
-        ksurl: "{{ recipeinfo.matches[0].recipe.kickstart_url }}"
-
-    - name: Populate unique grub cfg file for this SUT from template
-      template:
-        src: /usr/share/dci-rhel-agent/templates/grub.cfg.j2
-        dest: "/var/lib/tftpboot/grub.cfg-{{ beaker_lab.system_inventory[fqdn].ip_address | ip4_hex | upper }}"
-  when: hostvars.localhost.ext_bkr == False
 
 # Beaker has an initial watchdog for reboot and installation start. The watchdog
 # is then updated for the installation time.  First check for the presence of an

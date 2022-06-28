@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # dci-rhel-agent-ctl controls dci-rhel-agent (start, stop and kill).
 
@@ -14,7 +14,7 @@ default_value =	{
   "local_repo": "/var/www/html",
   "settings_path": "/etc/dci-rhel-agent/settings.yml",
   "hooks_path": "/etc/dci-rhel-agent/hooks",
-  "dci_rhel_agent_url":"quay.io/distributedci/dci-rhel-agent:stable"
+  "dci_rhel_agent_url":"quay.io/distributedci/dci-rhel-agent:latest-8"
 }
 
 proc = None
@@ -90,9 +90,10 @@ def main():
         # Start dci-rhel-agent
         volumes = {
           hooks_path:'/etc/dci-rhel-agent/hooks',
-          '/etc/dci-rhel-agent/secrets':'/etc/dci-rhel-agent/secrets',
+          '/etc/dci-rhel-agent/secrets':'/etc/dci-rhel-agent/secrets:z',
           '/etc/dci-rhel-agent/inventory':'/etc/dci-rhel-agent/inventory',
           settings_path:'/etc/dci-rhel-agent/settings.yml',
+          local_repo:'/data',
         }
         # if "-l" is used, we want to override container code with local code (dev mode)
         if args.local:
