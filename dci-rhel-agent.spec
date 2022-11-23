@@ -1,5 +1,5 @@
 Name:             dci-rhel-agent
-Version:          0.4.0
+Version:          0.5.0
 Release:          1.VERS%{?dist}
 Summary:          The RHEL's DCI agent
 License:          ASL 2.0
@@ -63,7 +63,7 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 %systemd_preun %{name}.service
 
 %postun
-%systemd_postun
+%systemd_postun %{name}.service
 
 %files
 %{_unitdir}/*
@@ -80,6 +80,9 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 %{_sysconfdir}/dci-rhel-agent/hooks/roles/ansible-role-dci-rhel-os-tests/tasks/*
 
 %changelog
+* Wed Nov 23 2022 hguemar <hguemar@lappy> - 0.5.0-1.VERS
+- Fix systemd scriptlet (failing EL9 build)
+
 * Wed Jun 08 2022 Guillaume Vincent <guillaume@oslab.fr> 0.4.0-1
 - Add tests hook file
 * Mon Dec 06 2021 Guillaume Vincent <guillaume@oslab.fr> 0.3.0-1
