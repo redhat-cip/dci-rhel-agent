@@ -9,6 +9,11 @@
   become: true
 
 #TODO: Temp workaround until RHEL-9 harness packages are availabe on beaker-project.org
+- name: Check for yum lock before creating repo
+  stat:
+    path: /var/run/yum.pid
+  register: yum_lock
+
 - name: Ensure RHEL-8 Beaker harness packages are available for RHEL-9 provisions
   block:
     - name: Install createrepo package
@@ -37,5 +42,4 @@
       file:
         path: /etc/yum.repos.d/beaker-harness-rhel8.repo
         state: absent
-
-  when: hostvars.localhost.topic_name.startswith("RHEL-9")
+  when: hostvars.localhost.topic_name.startswith("RHEL-9") and not yum_lock.stat.exists
