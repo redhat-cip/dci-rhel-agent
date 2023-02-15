@@ -59,6 +59,7 @@ However,`dci-release` and `epel-release` must be installed first:
 ```bash
 # yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 # yum -y install https://packages.distributed-ci.io/dci-release.el7.noarch.rpm
+# yum -y install yum-utils
 # yum-config-manager --save --setopt=epel.exclude=nodejs*,npm
 # subscription-manager repos --enable=rhel-7-server-extras-rpms
 # subscription-manager repos --enable=rhel-7-server-optional-rpms
