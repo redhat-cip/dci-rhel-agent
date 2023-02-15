@@ -3,8 +3,8 @@
     name: dci-rhel-agent
     vars:
       registry: quay.io
-      tag: "distributedci/dci-rhel-agent-7"
-      version: latest
+      tag: "distributedci/dci-rhel-agent"
+      version: latest-7
     check:
       jobs:
         - dci-build-container-job

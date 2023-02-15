@@ -14,7 +14,7 @@ default_value =	{
   "local_repo": "/var/www/html",
   "settings_path": "/etc/dci-rhel-agent/settings.yml",
   "hooks_path": "/etc/dci-rhel-agent/hooks",
-  "dci_rhel_agent_url":"quay.io/distributedci/dci-rhel-agent-7:stable"
+  "dci_rhel_agent_url":"quay.io/distributedci/dci-rhel-agent:latest-7"
 }
 
 proc = None
