@@ -44,6 +44,8 @@ spec:
           name: config-volume
         - mountPath: "/var/lib/tftpboot:z"
           name: tftp-volume
+        - mountPath: "/etc/dci-rhel-agent/secrets"
+          name: secrets-volume
   volumes:
     - name: db-volume
       hostPath:
@@ -60,6 +62,10 @@ spec:
     - name: tftp-volume
       hostPath:
         path: "/var/lib/tftpboot"
+        type: Directory
+    - name: secrets-volume
+      hostPath:
+        path: "/etc/dci-rhel-agent/secrets"
         type: Directory
   restartPolicy: OnFailure
   {% if (dns_servers | length) > 0 %}

@@ -142,12 +142,12 @@
     status_code: 302
   register: login
 
-- name: Add the ipmitool_lanplus powertype
+- name: Add the ipmitool_lanplus, redfish, and apc_snmp_container powertypes
   uri:
     url: http://localhost/bkr/powertypes/
     method: POST
     body:
-      name: ipmitool_lanplus
+      name: "{{ item }}"
     body_format: json
     headers:
       Accept: application/json
@@ -156,6 +156,10 @@
     status_code: [201, 409]
   changed_when: powertypes.status == 201
   register: powertypes
+  loop:
+    - ipmitool_lanplus
+    - apc_snmp_container
+    - redfish
 
 - name: Import beaker tasks
   include_tasks: beaker_tasks.yml
