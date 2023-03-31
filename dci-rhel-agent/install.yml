@@ -12,8 +12,8 @@
 
 - name: Install productmd
   pip:
-    name:
-      - productmd
+    name: productmd
+    state: latest
 
 - name: Set topic_name variable
   set_fact:
