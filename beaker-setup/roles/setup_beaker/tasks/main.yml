@@ -77,6 +77,7 @@
     content: |
       [Unit]
       Description=Podman beaker.service
+      After=syslog.target network.target
       [Service]
       Restart=no
       ExecStart=/usr/bin/podman pod start {{ beaker_pod_name }}
