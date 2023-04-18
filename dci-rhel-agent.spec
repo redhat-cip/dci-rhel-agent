@@ -19,7 +19,7 @@ BuildRequires:    python3-pyyaml
 
 %{?systemd_requires}
 
-Requires:         podman
+Requires:         podman >= 4
 Requires:         make
 Requires:         dci-downloader
 %if 0%{?rhel} && 0%{?rhel} < 8

@@ -17,7 +17,7 @@ Please note that it's common to have multiple **SUTs** (for instance: systems wi
 The jumpbox can be a physical server or a virtual machine.
 In any case, it must:
 
-- Be running the latest stable RHEL release (**8.4 or higher**) and registered via RHSM.
+- Be running the latest stable RHEL release (**8.7 or higher**) and registered via RHSM.
 - Have at least 160GB of free space available in `/var`
 - Have access to Internet
 - Be able to connect the following Web urls:
