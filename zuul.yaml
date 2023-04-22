@@ -19,8 +19,10 @@
     dci-post:
       jobs:
         - dci-build-and-push-container-job
-        - dci-rpm-build-with-doc-el8
+        - dci-rpm-build-el8
+        - dci-rpm-build-doc-el8
         - dci-rpm-publish:
             dependencies:
-              - dci-rpm-build-with-doc-el8
+              - dci-rpm-build-el8
+              - dci-rpm-build-doc-el8
 ...
