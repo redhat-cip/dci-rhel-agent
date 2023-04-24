@@ -62,6 +62,7 @@ dnf -y install https://packages.distributed-ci.io/dci-release.el8.noarch.rpm
 curl -o /etc/yum.repos.d/beaker-client.repo https://beaker-project.org/yum/beaker-client-RedHatEnterpriseLinux.repo
 dnf -y install dci-rhel-agent beaker-client
 ssh-keygen -t rsa -N "" -f /etc/dci-rhel-agent/secrets/id_rsa
+ssh-copy-id -i /etc/dci-rhel-agent/secrets/id_rsa.pub root@localhost
 ```
 
 ## Install ansible for either Virtual systems or Beaker containers

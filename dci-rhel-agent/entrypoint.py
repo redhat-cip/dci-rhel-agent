@@ -172,15 +172,14 @@ def main():
     # Read the settings file
     sets = load_settings()
 
-    ext_bkr = True if environ.get('EXT_BKR') == 'True' else False
-    if not ext_bkr:
+    if 'beaker_lab' in sets:
         # Run the update playbook once before jobs.
         # todo gvincent: move this in the main playbook
         r = ansible_runner.run(
             private_data_dir="/usr/share/dci-rhel-agent/",
             inventory="/etc/dci-rhel-agent/inventory",
             verbosity=1,
-            playbook="dci-update.yml",
+            playbook="beaker-lab.yml",
             extravars=sets,
             quiet=False,
             cmdline=cmdline
@@ -198,8 +197,8 @@ def main():
             print ("Beginning provision/test jobs for topic %s" % current_job['topic'])
             current_job['local_repo'] = sets['local_repo']
             current_job['local_repo_ip'] = sets['local_repo_ip']
-            current_job['ext_bkr'] = ext_bkr
-            current_job['beaker_lab'] = sets['beaker_lab']
+            if 'beaker_lab' in sets:
+                current_job['beaker_lab'] = sets['beaker_lab']
             provision_and_test(current_job, cmdline)
     else:
         print ('Incompatible settings file.  Topics not found. Please update settings file format.')

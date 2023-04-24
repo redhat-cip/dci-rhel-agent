@@ -4,19 +4,7 @@
   gather_facts: false
   tags:
     - beaker
-    - update
   tasks:
-    - name: Ensure an ssh key exists
-      stat:
-        path: '/etc/dci-rhel-agent/secrets/id_rsa'
-      register: check_id_rsa
-
-    - name: Create an ssh keypair if one does not exist
-      openssh_keypair:
-        path: '/etc/dci-rhel-agent/secrets/id_rsa'
-        comment: 'self-generated@dci-rhel-agent'
-      when: check_id_rsa.stat.exists == False
-
     - name: Ensure tftp and tftp-server installed
       package:
         name: "{{ item }}"
@@ -41,7 +29,6 @@
         src: /usr/share/dci-rhel-agent/templates/beaker.conf.j2
         dest: /etc/NetworkManager/dnsmasq.d/beaker.conf
       register: dns_conf_update
-      when: hostvars.localhost.beaker_lab is defined
 
     - name: Setup network manager to run dnsmasq
       copy:
@@ -79,7 +66,7 @@
         --power-password={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_password }}
         --power-id={{ hostvars.localhost.beaker_lab.system_inventory[item.key].power_id | default(item.key) }}
         {{ item.key }}
-      when: (item.key in bkr_systems.stdout_lines) and (hostvars.localhost.beaker_lab is defined)
+      when: item.key in bkr_systems.stdout_lines
       become: true
       loop: "{{ q('dict', hostvars.localhost.beaker_lab.system_inventory | default({})) }}"
 
@@ -96,6 +83,6 @@
         --condition=Automated
         --release-action=LeaveOn
         {{ item.key }}
-      when: (item.key not in bkr_systems.stdout_lines) and (hostvars.localhost.beaker_lab is defined)
+      when: item.key not in bkr_systems.stdout_lines
       become: true
       loop: "{{ q('dict', hostvars.localhost.beaker_lab.system_inventory | default({})) }}"

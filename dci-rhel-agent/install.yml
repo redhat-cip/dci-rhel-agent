@@ -10,7 +10,6 @@
       harness: "{{ hostvars.localhost.harness }}"
       topic_name: "{{ hostvars.localhost.topic_name }}"
       efi_boot_command: "efi"
-      beaker_lab: "{{ hostvars.localhost.beaker_lab }}"
       system_arch: "{{ hostvars.localhost.system_arch }}"
   block:
     - include_vars: /etc/dci-rhel-agent/settings.yml
@@ -19,28 +18,32 @@
       set_fact:
         efi_boot_command: ""
       when:
-        - beaker_lab.system_inventory[fqdn].alternate_efi_boot_commands | default(false, true) | bool
+        - hostvars.localhost.beaker_lab is defined
+        - hostvars.localhost.beaker_lab.system_inventory[fqdn].alternate_efi_boot_commands | default(false, true) | bool
 
     - name: Use pxelinux.0 (x86)
       set_fact:
         netbootloader: "netbootloader='pxelinux.0'"
       when:
+        - hostvars.localhost.beaker_lab is defined
         - system_arch == 'x86_64'
-        - not beaker_lab.system_inventory[fqdn].efi | default(False, true) | bool
+        - not hostvars.localhost.beaker_lab.system_inventory[fqdn].efi | default(False, true) | bool
 
     - name: Use EFI bootloader image (x86 and aarch64)
       set_fact:
         use_boot_image: true
       when:
+        - hostvars.localhost.beaker_lab is defined
         - system_arch == 'x86_64' or system_arch == 'aarch64'
-        - beaker_lab.system_inventory[fqdn].efi | default(False, true) | bool
+        - hostvars.localhost.beaker_lab.system_inventory[fqdn].efi | default(False, true) | bool
 
     - name: Use powerpc-ieee1275 bootloader image (ppc64le)
       set_fact:
         use_boot_image: true
       when:
+        - hostvars.localhost.beaker_lab is defined
         - system_arch == 'ppc64le'
-        - not beaker_lab.system_inventory[fqdn].petitboot | default(False, true) | bool
+        - not hostvars.localhost.beaker_lab.system_inventory[fqdn].petitboot | default(False, true) | bool
 
     - name: Create a temporary file
       tempfile:
