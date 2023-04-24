@@ -77,7 +77,7 @@ class ComposeInfo(object):
                 try:
                     repo_path = os.path.join(compose_path,
                             variants[variant].paths.os_tree[self.arch])
-                    os.stat(repo_path)
+                    os.stat(os.path.join(repo_path,'repodata','repomd.xml'))
                     repos[variant] = repo_path
                 except (IOError, OSError):
                     pass
