@@ -3,6 +3,21 @@
   {% for variant, values  in compose_info.boot_variants.items() %}
     <recipeSet priority="Normal">
         <recipe ks_meta="selinux=--permissive autopart_type=plain skip_taskrepo=1 no_default_harness_repo harness='{{ harness }}' disabled_root_access=True {% if ks_meta is defined %}{{ ks_meta }}{% endif %}" whiteboard="" kernel_options="grub2_postfix='{{ efi_boot_command }}' {% if netbootloader is defined %}{{ netbootloader }} {% endif %}{% if kernel_options is defined %}{{ kernel_options }}{% endif %}">
+         <ks_appends>
+             <ks_append><![CDATA[
+%post
+mkdir -p /root/.ssh
+cat >>/root/.ssh/authorized_keys <<"__EOF__"
+{{ ssh_public_key }}
+__EOF__
+restorecon -R /root/.ssh
+chmod go-w /root /root/.ssh /root/.ssh/authorized_keys
+sed -i '/^#PermitRootLogin /s/^#//' /etc/ssh/sshd_config
+sed -i 's|PermitRootLogin .*|PermitRootLogin yes|' /etc/ssh/sshd_config
+systemctl restart sshd
+%end
+             ]]></ks_append>
+         </ks_appends>
 
             <distro>
                 <tree url="http://{{ local_repo_ip }}/{{ values.os_tree |replace('/data','dci') }}"/>

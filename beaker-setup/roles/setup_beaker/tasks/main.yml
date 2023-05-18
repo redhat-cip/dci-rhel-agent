@@ -38,7 +38,7 @@
     recurse: yes
   loop:
     - "{{ data_dir }}/mysql"
-    - "{{ data_dir }}/beaker"
+    - "{{ data_dir }}/beaker/dci"
     - "{{ data_dir }}/config"
 
 - name: Gather info about specific pods
