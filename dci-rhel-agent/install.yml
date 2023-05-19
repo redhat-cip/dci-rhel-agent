@@ -11,8 +11,16 @@
       topic_name: "{{ hostvars.localhost.topic_name }}"
       efi_boot_command: "efi"
       system_arch: "{{ hostvars.localhost.system_arch }}"
+      components: "{{ hostvars.localhost.components }}"
   block:
     - include_vars: /etc/dci-rhel-agent/settings.yml
+
+    - name: Verify correct component is downloaded
+      assert:
+        that:
+          - compose_info.compose_id == item.display_name
+      when: item.type == 'compose'
+      loop: "{{ components }}"
 
     - name: Alternate EFI
       set_fact:
