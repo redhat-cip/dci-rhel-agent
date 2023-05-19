@@ -8,7 +8,7 @@
       version: latest-8
     check:
       jobs:
-        - dci-build-and-push-container-job
+        - dci-build-container-job
         - dci-rpm-build-el8
         - dci-rpm-build-el9:
             voting: false
