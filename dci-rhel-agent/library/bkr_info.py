@@ -16,33 +16,34 @@ class BeakerTargets(object):
     def __init__(self, params, logger=None):
         # params from AnsibleModule argument_spec below
         self.jid = params['job_id']
-        self.task = params['task']
+        self.system = params['system']
 
         # set up beaker connection
         self.hub = HubProxy(logger=logger, conf=conf)
 
-    def get_job_status(self):
+    def get_recipe_status(self):
         """
         Returns the status of a Beaker job (jid)
         """
 
+        status = "Queued"
         myxml = self.hub.taskactions.to_xml(self.jid, False, True, True)
         myxml = myxml.encode('utf8')
         tree = etree.fromstring(myxml)
-        elt = tree.find(".//task[@name='%s']" % (self.task))
-        status = elt.get("status")
-
+        elt = tree.find(".//recipe[@system='%s']" % (self.system))
+        if elt:
+            status = elt.get("status")
         return status
 
 def main():
     mod = AnsibleModule(argument_spec={
         'job_id': {'type': 'str'},
-        'task': {'type': 'str'},
+        'system': {'type': 'str'},
     })
     beaker = BeakerTargets(mod.params)
     try:
-        results = beaker.get_job_status()
-        mod.exit_json(status=results, changed=True)
+        status = beaker.get_recipe_status()
+        mod.exit_json(status=status, changed=True)
     except Exception as ex:
         msg = ": For more details please check jobs on beaker"
         msg = str(ex) + msg

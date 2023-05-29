@@ -3,6 +3,7 @@
   hosts: beaker_server
   become: yes
   gather_facts: no
+  tags: conserver
   tasks:
     - name: Install required packages
       package:

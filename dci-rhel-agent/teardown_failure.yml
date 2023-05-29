@@ -6,6 +6,14 @@
     status: "failure"
   tags: dci
 
+- name: 'Release SUT in Beaker'
+  include_tasks: release.yml
+  loop: "{{ hostvars.localhost.systems | dict2items }}"
+  loop_control:
+    loop_var: system
+  when:
+    - hostvars.beaker_server.bkrjobid is defined
+
 - name: 'Failed job'
   fail:
     msg: 'Something went wrong. Review the log at: https://www.distributed-ci.io/jobs/{{ hostvars.localhost.job_id }}/jobStates'

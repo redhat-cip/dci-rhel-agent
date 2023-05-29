@@ -140,33 +140,40 @@ export DCI_CS_URL
 This YAML file includes the configuration for one or more `dci-rhel-agent` Jobs.
 The possible values are:
 
-| Variable                      | Required | Type           | Description                                                                                                                         |
-| ----------------------------- | -------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| topic                         | True     | String         | Name of the topic.                                                                                                                  |
-| dci_tags                      | False    | List           | List of tags to set on the job                                                                                                      |
-| dci_name                      | False    | String         | Name of the job                                                                                                                     |
-| dci_configuration             | False    | String         | String representing the configuration of the job                                                                                    |
-| dci_comment                   | False    | String         | Comment to associate with the job                                                                                                   |
-| dci_url                       | False    | URL            | URL to associate with the job                                                                                                       |
-| local_repo_ip                 | True     | IP             | DCI jumpbox static network IP.                                                                                                      |
-| local_repo                    | True     | String         | Path to store DCI artefacts (Local RHEL mirror that will be exposed to SUT by `httpd`). Default is `/var/www/html`.                 |
-| dci_rhel_agent_cert           | True     | True/False     | Enable or disable the HW certification tests suite.                                                                                 |
-| dci_rhel_agent_cki            | True     | True/False     | Enable or disable the CKI tests suite.                                                                                              |
-| systems                       | False    | List of string | List of all systems that will be deployed using RHEL from DCI.                                                                      |
-| beaker_xml                    | False    | String         | Path to a custom XML file to use with Beaker job.                                                                                   |
-| variants                      | False    | List of string | List of RHEL 8.x variant to enable (AppStream, BaseOS, CRB, HighAvailability, NFV, RT, ResilientStorage, SAP, SAPHANA and unified). |
-| archs                         | False    | List of string | CPU arch to enable (aarch64, ppc64le, s390x and x86_64).                                                                            |
-| with_debug                    | False    | True/False     | Use RPM with debug symbols.                                                                                                         |
-| beaker_lab.external_dns       | False    | True/False     | Boolean representing whether an external DNS server is in use.                                                                      |
-| beaker_lab.dns_server         | False    | IP             | IP address of DNS server to specify in beaker.conf (dnsmasq config)                                                                 |
-| beaker_lab.ntp_server         | False    | IP             | IP address of NTP server to specify in beaker.conf (dnsmasq config)                                                                 |
-| beaker_lab.domain             | False    | String         | Domain to append to hosts                                                                                                           |
-| beaker_lab.dhcp_start         | False    | IP             | Starting IP address range to assign to DCI test systems via DHCP.                                                                   |
-| beaker_lab.dhcp_end           | False    | IP             | Ending IP address range to assigne to DCI test systems via DHCP.                                                                    |
-| beaker_lab.jumpbox_fqdn       | False    | FQDN           | FQDN of DCI jumpbox.                                                                                                                |
-| beaker_lab.labcontroller_fqdn | False    | FQDN           | Public interface FQDN of Beaker lab controller.                                                                                     |
-| beaker_lab.router             | False    | IP             | Gateway address                                                                                                                     |
-| system_inventory              | False    | various        | List of all DCI tests systems and corresponding Beaker information                                                                  |
+| Variable                               | Required | Type           | Description                                                                                                                         |
+| -------------------------------------- | -------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| topic                                  | True     | String         | Name of the topic.                                                                                                                  |
+| dci_tags                               | False    | List           | List of tags to set on the job                                                                                                      |
+| dci_name                               | False    | String         | Name of the job                                                                                                                     |
+| dci_configuration                      | False    | String         | String representing the configuration of the job                                                                                    |
+| dci_comment                            | False    | String         | Comment to associate with the job                                                                                                   |
+| dci_url                                | False    | URL            | URL to associate with the job                                                                                                       |
+| local_repo_ip                          | True     | IP             | DCI jumpbox static network IP.                                                                                                      |
+| local_repo                             | True     | String         | Path to store DCI artefacts (Local RHEL mirror that will be exposed to SUT by `httpd`). Default is `/var/www/html`.                 |
+| dci_rhel_agent_cert                    | True     | True/False     | Enable or disable the HW certification tests suite.                                                                                 |
+| dci_rhel_agent_cki                     | True     | True/False     | Enable or disable the CKI tests suite.                                                                                              |
+| systems                                | False    | List of Dict   | List of all systems that will be deployed using RHEL from DCI.                                                                      |
+| systems[].fqdn                         | True     | String         | Fully qualified Domain name of System under Test.                                                                                   |
+| systems[].efi                          | False    | True/False     | Use efi netboot images instead of pxelinux.0                                                                                        |
+| systems[].alternate_efi_boot_commands  | False    | True/False     | Use alternate linux and initrd commands instead if linuxefi and initrdefi                                                           |
+| systems[].petitboot                    | False    | True/False     | Use alternate bootloader with ppc                                                                                                   |
+| systems[].ks_meta                      | False    | String         | Metadata to pass to anaconda kickstart templating                                                                                   |
+| systems[].kernel_options               | False    | String         | Arguments to pass to the install kernel                                                                                             |
+| systems[].sol_command                  | False    | String         | Command to use for serial console over lan                                                                                          |
+| beaker_xml                             | False    | String         | Path to a custom XML file to use with Beaker job.                                                                                   |
+| variants                               | False    | List of string | List of RHEL 8.x variant to enable (AppStream, BaseOS, CRB, HighAvailability, NFV, RT, ResilientStorage, SAP, SAPHANA and unified). |
+| archs                                  | False    | List of string | CPU arch to enable (aarch64, ppc64le, s390x and x86_64).                                                                            |
+| with_debug                             | False    | True/False     | Use RPM with debug symbols.                                                                                                         |
+| beaker_lab.external_dns                | False    | True/False     | Boolean representing whether an external DNS server is in use.                                                                      |
+| beaker_lab.dns_server                  | False    | IP             | IP address of DNS server to specify in beaker.conf (dnsmasq config)                                                                 |
+| beaker_lab.ntp_server                  | False    | IP             | IP address of NTP server to specify in beaker.conf (dnsmasq config)                                                                 |
+| beaker_lab.domain                      | False    | String         | Domain to append to hosts                                                                                                           |
+| beaker_lab.dhcp_start                  | False    | IP             | Starting IP address range to assign to DCI test systems via DHCP.                                                                   |
+| beaker_lab.dhcp_end                    | False    | IP             | Ending IP address range to assigne to DCI test systems via DHCP.                                                                    |
+| beaker_lab.jumpbox_fqdn                | False    | FQDN           | FQDN of DCI jumpbox.                                                                                                                |
+| beaker_lab.labcontroller_fqdn          | False    | FQDN           | Public interface FQDN of Beaker lab controller.                                                                                     |
+| beaker_lab.router                      | False    | IP             | Gateway address                                                                                                                     |
+| system_inventory                       | False    | various        | List of all DCI tests systems and corresponding Beaker information                                                                  |
 
 Example:
 
@@ -185,8 +192,11 @@ topics:
       - ppc64le
     with_debug: false
     systems:
-      - my.x86_64.system.local
-      - my.ppc64le.system.local
+      - fqdn: my.x86_64.system.local
+        efi: true
+        alternate_efi_boot_commands: true
+      - fqdn: my.ppc64le.system.local
+        petitboot: true
   - topic: RHEL-7.8
     dci_rhel_agent_cert: false
     dci_rhel_agent_cki: false
@@ -204,8 +214,8 @@ topics:
         reboot_watchdog_timeout: 14400
         install_watchdog_timeout: 28800
         install_wait_time: 180
-      - my.x86_64.system3.local
-      - my.x86_64.system4.local
+      - fqdn: my.x86_64.system3.local
+      - fqdn: my.x86_64.system4.local
 beaker_lab:
   dhcp_start: 192.168.1.20
   dhcp_end: 192.168.1.30
@@ -285,7 +295,7 @@ You can use the `systems` option in `settings.yml` to match a single server by c
 
 ```
 systems:
-  - labvm.local
+  - fqdn: labvm.local
 ```
 
 ##### Multiple systems
@@ -294,9 +304,9 @@ If you want to execute the DCI job on multiple servers, add all FQDN in the `sys
 
 ```
 systems:
-  - labvm.local
-  - labvm-2.local
-  - labvm-3.local
+  - fqdn: labvm.local
+  - fqdn: labvm-2.local
+  - fqdn: labvm-3.local
 ```
 
 Please note that all FQDN must resolve locally on the DCI jumpbox. If you don't have proper DNS records, please update `/etc/hosts` then reload `dnsmasq` service. Also, the supported architecture of the systems must be entered in Beaker in order for the agent to properly provision a system with the correct architecture.
@@ -375,8 +385,8 @@ For example:
       - fqdn: my.x86_64.system2.local
         kernel_options: "rd.iscsi.ibft=1"
         ks_meta: "ignoredisk=--only-use=sda"
-      - my.x86_64.system3.local
-      - my.x86_64.system4.local
+      - fqdn: my.x86_64.system3.local
+      - fqdn: my.x86_64.system4.local
 ```
 
 #### How to enable conserver ?
@@ -390,8 +400,8 @@ For example:
       - fqdn: my.x86_64.system2.local
         kernel_options: "console=ttyS1,115200n8"
         sol_command: "ipmitool -I lanplus -U root -P calvin -H my.x86_64.system2.local sol activate"
-      - my.x86_64.system3.local
-      - my.x86_64.system4.local
+      - fqdn: my.x86_64.system3.local
+      - fqdn: my.x86_64.system4.local
 ```
 
 #### How to extend the Beaker watchdog timeout for a system deployment?
@@ -493,10 +503,7 @@ If a user has a pre-provisioned system and would like to only run user-tests and
 ### I need to move our jumpbox and give it a new IP. How do we update our RHEL agent install?
 
 The new IP address should be updated in the following files:
-/etc/hosts (if applicable)
-/etc/dnsmasq.d/beaker.conf
-/etc/beaker/labcontroller.conf
-/etc/beaker/client.conf
+/etc/NetworkManager/dnsmasq.d/beaker.conf
 /etc/dci-rhel-agent/inventory
 /etc/dci-rhel-agent/settings.yml
 

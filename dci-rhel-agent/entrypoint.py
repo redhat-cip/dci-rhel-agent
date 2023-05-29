@@ -74,86 +74,34 @@ def provision_and_test(extravars, cmdline):
         print ('No hosts found in settings. Please add systems to provision and/or test to your settings file.')
         sys.exit(1)
 
-    # Setup conserver if a sol_command exist
-    if [system for system in extravars['systems'] if type(system) is dict and 'sol_command' in system.keys()]:
-        systems = {'systems' : [system for system in extravars['systems'] if type(system) is dict and 'sol_command' in system.keys()]}
-        r = ansible_runner.run(
-            private_data_dir="/usr/share/dci-rhel-agent/",
-            inventory="/etc/dci-rhel-agent/inventory",
-            verbosity=1,
-            playbook="conserver.yml",
-            extravars=systems,
-            quiet=False
-        )
-        if r.rc != 0:
-            print ("Conserver playbook failed. {}: {}".format(r.status, r.rc))
-            sys.exit(1)
-
-    threads_runners = {}
+    # Convert list of <str|dict> into dict of dicts
+    _systems = dict()
     for system in extravars['systems']:
-        if type(system) is dict and 'fqdn' in system :
-            extravars['fqdn'] = system['fqdn']
-            if 'kernel_options' in system:
-                extravars['kernel_options'] = system['kernel_options']
-            else:
-                extravars.pop('kernel_options', None)
-            if 'ks_meta' in system:
-                extravars['ks_meta'] = system['ks_meta']
-            else:
-                extravars.pop('ks_meta', None)
-            if 'sol_command' in system:
-                extravars['sol_command'] = system['sol_command']
-            else:
-                extravars.pop('sol_command', None)
-            if 'sut_password' in system:
-                extravars['sut_password'] = system['sut_password']
-            else:
-                extravars.pop('sut_password', None)
-            if 'reboot_watchdog_timeout' in system:
-                extravars['reboot_watchdog_timeout'] = system['reboot_watchdog_timeout']
-            else:
-                extravars.pop('reboot_watchdog_timeout', None)
-            if 'install_watchdog_timeout' in system:
-                extravars['install_watchdog_timeout'] = system['install_watchdog_timeout']
-            else:
-                extravars.pop('install_watchdog_timeout', None)
-            if 'install_wait_time' in system:
-                extravars['install_wait_time'] = system['install_wait_time']
-            else:
-                extravars.pop('install_wait_time', None)
+        if type(system) is dict and 'fqdn' in system:
+            _systems[system['fqdn']] = system
         else:
-            extravars['fqdn'] = system
-            #Remove any install options set for previous SUTs in this topic if they exist
-            extravars.pop('kernel_options', None)
-            extravars.pop('ks_meta', None)
-            extravars.pop('sol_command', None)
-            extravars.pop('reboot_watchdog_timeout', None)
-            extravars.pop('install_watchdog_timeout', None)
-            extravars.pop('install_wait_time', None)
-        print ("Starting job for %s." % extravars['fqdn'])
-        thread, runner = ansible_runner.run_async(
-            private_data_dir="/usr/share/dci-rhel-agent/",
-            inventory="/etc/dci-rhel-agent/inventory",
-            verbosity=int(environ.get('VERBOSITY')),
-            playbook="dci-rhel-agent.yml",
-            extravars=extravars,
-            quiet=False,
-            cmdline=cmdline
-        )
-        threads_runners[(thread, runner)] = extravars['fqdn']
+            _systems[system] = dict(fqdn=system)
+    extravars['systems'] = _systems
 
-    # wait for all jobs
-    for t, _ in threads_runners:
-        t.join()
-    print("All jobs terminated.")
+    if not [system for system in extravars['systems'].values() if 'sol_command' in system.keys()]:
+        cmdline += ' --skip-tags "conserver"'
+
+    print ("Starting job for %s." % extravars['topic'])
+    r = ansible_runner.run(
+        private_data_dir="/usr/share/dci-rhel-agent/",
+        inventory="/etc/dci-rhel-agent/inventory",
+        verbosity=int(environ.get('VERBOSITY')),
+        playbook="dci-rhel-agent.yml",
+        extravars=extravars,
+        quiet=False,
+        cmdline=cmdline
+    )
 
     global number_of_failed_jobs
     # check if some jobs failed
-    for t, r in threads_runners:
-        fqdn = threads_runners[(t, r)]
-        if r.rc != 0:
-            print("Job for %s failed, rc: %s, status: %s " % (fqdn, r.rc, r.status))
-            number_of_failed_jobs += 1
+    if r.rc != 0:
+        print("Job for %s failed, rc: %s, status: %s " % (extravars['topic'], r.rc, r.status))
+        number_of_failed_jobs += 1
 
 
 def main():
@@ -171,22 +119,6 @@ def main():
 
     # Read the settings file
     sets = load_settings()
-
-    if 'beaker_lab' in sets:
-        # Run the update playbook once before jobs.
-        # todo gvincent: move this in the main playbook
-        r = ansible_runner.run(
-            private_data_dir="/usr/share/dci-rhel-agent/",
-            inventory="/etc/dci-rhel-agent/inventory",
-            verbosity=1,
-            playbook="beaker-lab.yml",
-            extravars=sets,
-            quiet=False,
-            cmdline=cmdline
-        )
-        if r.rc != 0:
-            print ("Update playbook failed. {}: {}".format(r.status, r.rc))
-            sys.exit(1)
 
     # Check if the settings contain multiple topics and process accordingly
     if 'topics' in sets:

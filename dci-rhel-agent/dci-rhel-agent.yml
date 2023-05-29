@@ -65,6 +65,16 @@
         path: '/etc/dci-rhel-agent/hooks/user-tests.yml'
       register: check_user_tests_hook_file
 
+- import_playbook: beaker-lab.yml
+  when:
+    - beaker_lab is defined
+    - beaker_lab | length > 0
+
+- import_playbook: conserver.yml
+  when:
+    - beaker_lab is defined
+    - beaker_lab | length > 0
+
 - name: 'Prepare the jumpbox'
   hosts: localhost
   gather_facts: no
@@ -80,10 +90,6 @@
 
         - name: 'Create temp dir'
           include_tasks: create_temp_dir.yml
-
-        - name: 'Configure SUT'
-          include_tasks: sut.yml
-          tags: sut
 
         - name: 'Check pre-run hook file is present'
           stat:
@@ -106,9 +112,16 @@
   tasks:
     - block:
         - name: 'Download RHEL'
-          include_tasks: download.yml
-          tags: download
-
+          include_tasks:
+            file: download.yml
+            apply:
+              tags: download
+          tags: always
+        - name: 'Process Recipes'
+          include_tasks: process_recipe.yml
+          loop: "{{ systems | dict2items }}"
+          loop_control:
+            loop_var: system
         - name: 'Download harness'
           include_tasks: dci-harness.yml
       rescue:
@@ -133,6 +146,21 @@
 
         - name: 'Install RHEL on SUT'
           include_tasks: install.yml
+      rescue:
+        - name: Teardown failure
+          include_tasks: teardown_failure.yml
+
+- name: 'Monitor SUTs Install'
+  hosts: beaker_sut
+  gather_facts: False
+  strategy: free
+  tags:
+    - install
+    - beaker
+  tasks:
+    - block:
+        - name: 'Monitor SUT'
+          include_tasks: monitor_suts.yml
       rescue:
         - name: Teardown failure
           include_tasks: teardown_failure.yml
@@ -205,9 +233,6 @@
 
         - name: 'Upload Beaker logs to DCI Control server'
           include_tasks: logs.yml
-
-        - name: 'Release SUT in Beaker'
-          include_tasks: release.yml
 
       rescue:
         - name: Teardown failure

@@ -1,0 +1,53 @@
+{% for variant, values  in compose_info.boot_variants.items() %}
+    <recipeSet priority="Normal">
+        <recipe ks_meta="selinux=--permissive autopart_type=plain skip_taskrepo=1 no_default_harness_repo harness='{{ harness }}' disabled_root_access=True {{ system.value.ks_meta | default(ks_meta| default('')) }}" whiteboard="" kernel_options="grub2_postfix='{{ efi_boot_command }}' {{ netbootloader }}{{ system.value.kernel_options | default(kernel_options| default('')) }}">
+         <ks_appends>
+             <ks_append><![CDATA[
+%post
+mkdir -p /root/.ssh
+cat >>/root/.ssh/authorized_keys <<"__EOF__"
+{{ lookup('file', '/etc/dci-rhel-agent/secrets/id_rsa.pub') }}
+__EOF__
+restorecon -R /root/.ssh
+chmod go-w /root /root/.ssh /root/.ssh/authorized_keys
+sed -i '/^#PermitRootLogin /s/^#//' /etc/ssh/sshd_config
+sed -i 's|PermitRootLogin .*|PermitRootLogin yes|' /etc/ssh/sshd_config
+systemctl restart sshd
+%end
+             ]]></ks_append>
+         </ks_appends>
+            <distro>
+                <tree url="http://{{ local_repo_ip }}/{{ values.os_tree |replace('/data','dci') }}"/>
+                <initrd url="{{ values.pxe_images.initrd }}"/>
+                <kernel url="{{ values.pxe_images.kernel }}"/>
+                {% if use_boot_image |default(false, true) %}
+                <image url="{{ values.pxe_images.image }}"/>
+                {% endif %}
+                <arch value="{{ system_arch }}"/>
+                <osversion major="{{ compose_info.osmajor }}" minor="{{ compose_info.osminor }}"/>
+                <name value="{{ compose_info.compose_id }}"/>
+                <variant value="{{ variant }}"/>
+            </distro>
+            {% if system.value.fqdn is defined %}
+                    <hostRequires force="{{ system.value.fqdn }}" />
+            {% else %}
+            <hostRequires/>
+            {% endif %}
+            <repos>
+              {% for name, url in compose_info.repos.items() %}
+                <repo name="{{ name }}" url="http://{{ local_repo_ip }}/{{ url | replace('/data','dci') }}"/>
+              {% endfor %}
+            {% if 'RHEL-7' in topic_name %}
+              <repo name="extraos-local" url="http://{{ local_repo_ip }}/dci/{{ topic_name }}/extraos/Server/{{ system_arch }}/os"/>
+            {% endif %}
+              <repo name="harness" url="http://{{ local_repo_ip }}/dci/harness/{{ compose_info.osmajor }}/"/>
+            </repos>
+            <partitions/>
+            <task name="/distribution/check-install" role="STANDALONE">
+                <params>
+                </params>
+            </task>
+            <reservesys/>
+        </recipe>
+    </recipeSet>
+{% endfor %}
