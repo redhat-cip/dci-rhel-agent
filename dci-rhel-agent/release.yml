@@ -3,13 +3,13 @@
   tags: beaker
   block:
     - name: Check if SUT is reserved by Beaker
-      shell: "bkr system-status {{ fqdn }} --format json"
+      shell: "bkr system-status {{ system.value.fqdn }} --format json"
       delegate_to: beaker_server
       become: true
       register: bkr_system_status
 
     - name: Release SUT if it is currently reserved
-      shell: "bkr system-release {{ fqdn }}"
+      shell: "bkr system-release {{ system.value.fqdn }}"
       delegate_to: beaker_server
       retries: 3
       delay: 5

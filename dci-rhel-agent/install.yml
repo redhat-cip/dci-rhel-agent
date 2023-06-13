@@ -3,19 +3,19 @@
 # Tasks are included to run on beaker_server host,
 # Delegate_to: localhost when needed.
 #
-
 - name: Populate the Beaker XML job from template
+  environment:
+    - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
+    - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
+    - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
   vars:
       compose_info: "{{ hostvars.localhost.compose_info }}"
-      harness: "{{ hostvars.localhost.harness }}"
       topic_name: "{{ hostvars.localhost.topic_name }}"
-      efi_boot_command: "efi"
       system_arch: "{{ hostvars.localhost.system_arch }}"
       components: "{{ hostvars.localhost.components }}"
-      ssh_public_key: "{{ lookup('file', '/etc/dci-rhel-agent/secrets/id_rsa.pub') }}"
+      recipeSets: "{{ hostvars.localhost.recipeSets }}"
+      arch_tags: "{{ hostvars.localhost.arch_tags }}"
   block:
-    - include_vars: /etc/dci-rhel-agent/settings.yml
-
     - name: Verify correct component is downloaded
       assert:
         that:
@@ -23,110 +23,46 @@
       when: item.type == 'compose'
       loop: "{{ components }}"
 
-    - name: Alternate EFI
+    - name: 'Tag job with SUT arch'
+      dci_job:
+        id: "{{ hostvars.localhost.job_id }}"
+        tags: '{{ arch_tags | unique }}'
+
+    - name: Populate the Beaker XML job from template
+      block:
+        - name: Create a temporary file
+          tempfile:
+            state: file
+            suffix: xml
+          register: job_xml
+
+        - name: Create Beaker job.xml from template
+          template:
+            src: job.xml.j2
+            dest: "{{ job_xml.path }}"
+
+        - name: Configure fact to use XML from template
+          set_fact:
+            beaker_xml: "{{ job_xml.path }}"
+      when: beaker_xml is not defined
+
+    - name: Upload job.xml to DCI Control Server
+      dci_file:
+        path: "{{ beaker_xml }}"
+        name: 'job.xml'
+        mime: 'text/xml'
+        job_id: '{{ hostvars.localhost.job_id }}'
+
+    - name: Launch Beaker install
+      shell: "bkr job-submit {{ beaker_xml }}"
+      register: bkr_jobid
+      become: true
+
+    - name: Register Beaker Job ID
       set_fact:
-        efi_boot_command: ""
-      when:
-        - hostvars.localhost.beaker_lab is defined
-        - hostvars.localhost.beaker_lab.system_inventory[fqdn].alternate_efi_boot_commands | default(false, true) | bool
+        bkrjobid: "{{ bkr_jobid.stdout | regex_replace(\".*\\s\\[\\'(.*)\\'\\]\",'\\1') }}"
 
-    - name: Use pxelinux.0 (x86)
-      set_fact:
-        netbootloader: "netbootloader='pxelinux.0'"
-      when:
-        - hostvars.localhost.beaker_lab is defined
-        - system_arch == 'x86_64'
-        - not hostvars.localhost.beaker_lab.system_inventory[fqdn].efi | default(False, true) | bool
-
-    - name: Use EFI bootloader image (x86 and aarch64)
-      set_fact:
-        use_boot_image: true
-      when:
-        - hostvars.localhost.beaker_lab is defined
-        - system_arch == 'x86_64' or system_arch == 'aarch64'
-        - hostvars.localhost.beaker_lab.system_inventory[fqdn].efi | default(False, true) | bool
-
-    - name: Use powerpc-ieee1275 bootloader image (ppc64le)
-      set_fact:
-        use_boot_image: true
-      when:
-        - hostvars.localhost.beaker_lab is defined
-        - system_arch == 'ppc64le'
-        - not hostvars.localhost.beaker_lab.system_inventory[fqdn].petitboot | default(False, true) | bool
-
-    - name: Create a temporary file
-      tempfile:
-        state: file
-        suffix: xml
-      register: job_xml
-
-    - name: Create Beaker job.xml from template
-      template:
-        src: /usr/share/dci-rhel-agent/templates/job.xml.j2
-        dest: "{{ job_xml.path }}"
-  when: beaker_xml is not defined
-
-- name: Configure fact to use XML from template
-  set_fact:
-    beaker_xml: "{{ job_xml.path }}"
-  when: beaker_xml is not defined
-
-- name: Upload job.xml to DCI Control Server
-  environment:
-    - DCI_CLIENT_ID: "{{ hostvars.localhost.dci_client_id }}"
-    - DCI_API_SECRET: "{{ hostvars.localhost.dci_api_secret }}"
-    - DCI_CS_URL: "{{ hostvars.localhost.dci_cs_url }}"
-  dci_file:
-    path: "{{ beaker_xml }}"
-    name: 'job.xml'
-    mime: 'text/xml'
-    job_id: '{{ hostvars.localhost.job_id }}'
-
-- name: Launch Beaker install
-  shell: "bkr job-submit {{ beaker_xml }}"
-  register: bkr_jobid
-  become: true
-
-- name: Register Beaker Job ID
-  set_fact:
-    bkrjobid: "{{ bkr_jobid.stdout | regex_replace(\".*\\s\\[\\'(.*)\\'\\]\",'\\1') }}"
-
-- name: 'debug bkr_job_id'
-  debug:
-    msg: bkr_job_id:"{{ bkrjobid }}"
-
-# Beaker has an initial watchdog for reboot and installation start. The watchdog
-# is then updated for the installation time.  First check for the presence of an
-# installation log (anaconda.log) associated with the job before attempting to
-# update the installation watchdog.
-
-- name: Wait for reboot watchdog to be available for update
-  shell: "bkr watchdog-show {{ bkrjobid | regex_replace('J:') }}"
-  register: reboot_watchdog_availability
-  retries: 25
-  until: "'N/A' not in reboot_watchdog_availability.stdout"
-  when: reboot_watchdog_timeout is defined
-
-- name: Update Beaker reboot watchdog time if specified
-  shell: "bkr watchdog-extend --by {{ reboot_watchdog_timeout }} {{ bkrjobid | regex_replace('J:','R:') }}"
-  when: reboot_watchdog_timeout is defined
-
-- name: Wait for installation watchdog to be available for update
-  shell: "bkr job-logs {{ bkrjobid }}"
-  register: log_list
-  retries: "{{ (install_wait_time | default(12.5) * 2) |int}}"
-  delay: 30
-  until: "'anaconda.log' in log_list.stdout"
-  when: install_watchdog_timeout is defined
-
-- name: Update Beaker install watchdog time if specified
-  shell: "bkr watchdog-extend --by {{ install_watchdog_timeout }} {{ bkrjobid | regex_replace('J:','R:') }}"
-  when: install_watchdog_timeout is defined
-
-- name: Wait system to be installed
-  bkr_info:
-    job_id: "{{ bkrjobid }}"
-    task: "/distribution/check-install"
-  become: true
-  register: job_install
-  failed_when: job_install['status'] in ['Cancelled','Aborted']
+    - name: 'debug bkr_job_id'
+      debug:
+        msg: bkr_job_id:"{{ bkrjobid }}"
+...

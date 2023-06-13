@@ -4,9 +4,9 @@ Host {{ hostvars.beaker_server.ansible_host }}
   UserKnownHostsFile=/dev/null
   StrictHostKeyChecking=no
 
-Host {{ fqdn }}
+Host {{ system.value.fqdn }}
   User {{ sut_user | default('root') }}
-  Hostname {{ fqdn }}
+  Hostname {{ system.value.fqdn }}
   ProxyJump {{ hostvars.beaker_server.ansible_host }}
   ServerAliveInterval 60
   UserKnownHostsFile=/dev/null

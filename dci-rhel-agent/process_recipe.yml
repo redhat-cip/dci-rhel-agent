@@ -1,0 +1,104 @@
+---
+- name: 'Default to linuxefi'
+  set_fact:
+    use_boot_image: false
+    efi_boot_command: 'efi'
+    netbootloader: ''
+
+- name: 'Generate SSH config for SUT'
+  template:
+    src: ssh_config.conf.j2
+    dest: "/etc/dci-rhel-agent/secrets/ssh_config_{{ system.value.fqdn }}.cfg"
+
+- name: 'Upload ssh config to DCI'
+  dci_file:
+    path: "/etc/dci-rhel-agent/secrets/ssh_config_{{ system.value.fqdn }}.cfg"
+    name: 'ssh_config_{{ system.value.fqdn }}.txt'
+    mime: 'text/plain'
+    job_id: '{{ job_id }}'
+
+- name: 'Add SUT to the Ansible group'
+  add_host:
+    hostname: "{{ system.value.fqdn }}"
+    ansible_python_interpreter: "{{ '/usr/libexec/platform-python' if topic_name.startswith('RHEL-8') else 'python' }}"
+    ansible_ssh_host: "{{ system.value.fqdn }}"
+    ansible_ssh_port: "{{ beaker_sut_port | default('22') }}"
+    ansible_user: "{{ sut_user | default('root') }}"
+    ansible_password: "{{ sut_password | default('beaker') }}"
+    ansible_ssh_common_args: "-F /etc/dci-rhel-agent/secrets/ssh_config_{{ system.value.fqdn }}.cfg"
+    groups:
+      - beaker_sut
+
+- name: 'Get SUT details'
+  delegate_to: beaker_server
+  shell: "bkr system-details {{ system.value.fqdn }}"
+  register: system_details
+  become: true
+
+- name: 'Parse CPU arch from SUT details (XML)'
+  xml:
+    xmlstring: "{{ system_details.stdout }}"
+    xpath: inv:System/inv:supportsArch/inv:Arch/rdfs:label
+    namespaces:
+      inv: https://fedorahosted.org/beaker/rdfschema/inventory#
+      rdfs: http://www.w3.org/2000/01/rdf-schema#
+    content: text
+  register: supported_arch_info
+
+- name: 'Register SUT CPU arch variable'
+  set_fact:
+    system_arch: "{{ supported_arch_info.matches[0].values().pop() }}"
+
+- name: 'Arch tags'
+  set_fact:
+    arch_tags: "{{ arch_tags| default([]) + [ system_arch ] }}"
+
+- name: Process ComposeInfo
+  compose_info:
+    compose_path: "/data/{{ topic_name }}/compose"
+    arch: "{{ system_arch }}"
+  register: results
+
+- name: Set Composeinfo
+  set_fact:
+    compose_info: "{{ results.compose_info }}"
+    os_major_modified: "{{ results.compose_info.osmajor | replace('RedHatEnterpriseLinux9', 'RedHatEnterpriseLinux8') }}" # Use RHEL8 for RHEL9
+    harness: "restraint"
+
+- name: Don't add beakerlib for RHEL-9 or CentOS 9
+  set_fact:
+    harness: "{{ harness }} beakerlib"
+  when:
+    - os_major_modified != "CentOSStream9"
+
+- name: Alternate EFI
+  set_fact:
+    efi_boot_command: ""
+  when:
+    - system.value.alternate_efi_boot_commands| default(false, true) | bool
+
+- name: Use pxelinux.0 (x86)
+  set_fact:
+    netbootloader: "netbootloader='pxelinux.0'"
+  when:
+    - system_arch == 'x86_64'
+    - not system.value.efi | default(False, true) | bool
+
+- name: Use EFI bootloader image (x86 and aarch64)
+  set_fact:
+    use_boot_image: true
+  when:
+    - system_arch == 'x86_64' or system_arch == 'aarch64'
+    - system.value.efi | default(False, true) | bool
+
+- name: Use powerpc-ieee1275 bootloader image (ppc64le)
+  set_fact:
+    use_boot_image: true
+  when:
+    - system_arch == 'ppc64le'
+    - not system.value.petitboot | default(False, true) | bool
+
+- name: Create Beaker RecipeSet from template
+  set_fact:
+    recipeSets: "{{ recipeSets| default([]) + [ lookup('template', 'recipeSet.xml.j2') ] }}"
+...

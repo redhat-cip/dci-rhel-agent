@@ -12,7 +12,9 @@ topics:
     # dci_rhel_agent_cert: false
     # dci_rhel_agent_cki: false
     systems:
-      - sut1.local
+      - fqdn: sut1.local
+        efi: false
+        petitboot: false
 
 beaker_lab:
   external_dns: false
@@ -43,5 +45,3 @@ beaker_lab:
       # specified here
       #power_id:
       power_type: ipmilan
-      efi: false
-      petitboot: false

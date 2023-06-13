@@ -9,9 +9,11 @@ default * {
         logfile /var/consoles/&;
 }
 
-{% for system in systems %}
+{% for system_key, system in systems.items() %}
+{% if 'sol_command' in system %}
 console {{ system['fqdn'] }}{
         type exec;
         exec "{{ system['sol_command'] }}";
 }
+{% endif %}
 {% endfor %}

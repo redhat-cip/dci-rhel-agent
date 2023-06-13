@@ -6,6 +6,14 @@
     status: "success"
   tags: dci
 
+- name: 'Release SUT in Beaker'
+  include_tasks: release.yml
+  loop: "{{ hostvars.localhost.systems | dict2items }}"
+  loop_control:
+    loop_var: system
+  when:
+    - hostvars.beaker_server.bkrjobid is defined
+
 - name: Job successful
   debug:
     msg: 'The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/{{ hostvars.localhost.job_info.job.id }}/jobStates'

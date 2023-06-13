@@ -6,18 +6,6 @@
     mime: 'text/plain'
     job_id: '{{ job_id }}'
 
-- name: Process ComposeInfo
-  compose_info:
-    compose_path: "/data/{{ topic_name }}/compose"
-    arch: "{{ system_arch }}"
-  register: results
-
-- name: Set Composeinfo
-  set_fact:
-    compose_info: "{{ results.compose_info }}"
-    os_major_modified: "{{ results.compose_info.osmajor | replace('RedHatEnterpriseLinux9', 'RedHatEnterpriseLinux8') }}" # Use RHEL8 for RHEL9
-    harness: "restraint"
-
 - name: Don't add beakerlib for RHEL-9 or CentOS 9
   set_fact:
     harness: "{{ harness }} beakerlib"
