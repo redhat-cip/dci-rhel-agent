@@ -6,6 +6,7 @@ Host {{ hostvars.beaker_server.ansible_host }}
 
 Host {{ system.value.fqdn }}
   User {{ sut_user | default('root') }}
+  IdentityFile /etc/dci-rhel-agent/secrets/id_rsa
   Hostname {{ system.value.fqdn }}
   ProxyJump {{ hostvars.beaker_server.ansible_host }}
   ServerAliveInterval 60

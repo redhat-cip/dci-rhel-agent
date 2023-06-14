@@ -199,7 +199,8 @@
           import_role:
             name: dci-rhel-cki
           when:
-            - dci_rhel_agent_cki|bool and (hostvars.localhost.topic_name.startswith("RHEL-7") or hostvars.localhost.topic_name.startswith("RHEL-8"))
+            - dci_rhel_agent_cki| default(false) | bool == true
+            - cki_job_url is defined or hostvars.localhost.job_info.job.topic.data.cki_job_url is defined
           become: true
 
         - name: 'Launch RHEL HW Cert Tests'
