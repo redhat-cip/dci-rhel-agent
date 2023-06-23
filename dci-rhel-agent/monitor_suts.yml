@@ -6,5 +6,5 @@
   become: true
   delegate_to: beaker_server
   register: job_install
-  failed_when: job_install['status'] in ['Cancelled','Aborted']
+  failed_when: job_install['status'] in ['Cancelled','Aborted'] or job_install['result'] != 'Pass'
 ...

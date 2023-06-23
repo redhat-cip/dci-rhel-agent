@@ -27,13 +27,15 @@ class BeakerTargets(object):
         """
 
         status = "Queued"
+        result = "None"
         myxml = self.hub.taskactions.to_xml(self.jid, False, True, True)
         myxml = myxml.encode('utf8')
         tree = etree.fromstring(myxml)
         elt = tree.find(".//recipe[@system='%s']" % (self.system))
         if elt:
             status = elt.get("status")
-        return status
+            result = elt.get("result")
+        return (result, status)
 
 def main():
     mod = AnsibleModule(argument_spec={
@@ -42,8 +44,8 @@ def main():
     })
     beaker = BeakerTargets(mod.params)
     try:
-        status = beaker.get_recipe_status()
-        mod.exit_json(status=status, changed=True)
+        result, status = beaker.get_recipe_status()
+        mod.exit_json(status=status, result=result, changed=True)
     except Exception as ex:
         msg = ": For more details please check jobs on beaker"
         msg = str(ex) + msg
