@@ -7,7 +7,8 @@ topics:
     with_debug: false
     systems:
 {% for system in kvm_nodes %}
-      - {{ system.name }}.local
+      - fqdn: {{ system.name }}.local
+        efi: {{ (system.mode == 'efi') | ternary('True', 'False') }}
 {% endfor %}
 beaker_lab:
   dns_server: {{ machine_network_ip }}
@@ -23,7 +24,6 @@ beaker_lab:
       ip_address: {{ machine_network_cidr | nthhost(50 + loop.index) }}
       mac: {{ system.mac }}
       arch: x86_64
-      efi: {{ (system.mode == 'efi') | ternary('True', 'False') }}
       power_address: {{ machine_network_ip }}
       power_user: admin
       power_password: password
