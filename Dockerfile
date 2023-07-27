@@ -11,7 +11,7 @@ RUN yum upgrade -y && \
   yum-config-manager --add-repo https://beaker-project.org/yum/beaker-harness-CentOS.repo && \
   yum-config-manager --add-repo https://releases.ansible.com/ansible-runner/rpm/epel-7-x86_64/ && \
   yum-config-manager --save --setopt=releases.ansible.com_ansible-runner_rpm_epel-7-x86_64_.gpgkey=https://releases.ansible.com/keys/RPM-GPG-KEY-ansible-release.pub && \
-  yum -y install gcc ansible python python2-devel python2-pip \
+  yum -y install gcc ansible python python2-devel python2-pip python-lxml \
                  dci-ansible ansible-role-dci-rhel-certification rsync python2-ansible-runner \
                  ansible-role-dci-rhel-cki git restraint-client python-netaddr patch \
                  python2-productmd createrepo_c dnf-plugins-core dci-downloader dnf && \
