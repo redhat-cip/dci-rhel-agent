@@ -20,9 +20,9 @@
   with_items: '{{ rpms }}'
 
 - name: Upload Beaker default tasks
-  shell: bkr task-add /tmp/{{ item }} 2>&1 > /root/bkr_task_add_{{ item }}.log
+  shell: bkr task-add /tmp/{{ item }}
   args:
-    creates: /root/bkr_task_add_{{ item }}.log
+    creates: "{{ data_dir }}/beaker/rpms/{{ item }}"
   become: true
   with_items: '{{ rpms }}'
   ignore_errors: true

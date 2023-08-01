@@ -88,16 +88,16 @@ def main():
 
         # Start dci-rhel-agent
         volumes = {
-          hooks_path:'/etc/dci-rhel-agent/hooks',
-          '/etc/dci-rhel-agent/secrets':'/etc/dci-rhel-agent/secrets:z',
-          '/etc/dci-rhel-agent/inventory':'/etc/dci-rhel-agent/inventory',
-          settings_path:'/etc/dci-rhel-agent/settings.yml',
-          local_repo:'/data',
+                hooks_path:'/etc/dci-rhel-agent/hooks:z',
+                '/etc/dci-rhel-agent/secrets':'/etc/dci-rhel-agent/secrets:z',
+                '/etc/dci-rhel-agent/inventory':'/etc/dci-rhel-agent/inventory:z',
+                settings_path:'/etc/dci-rhel-agent/settings.yml:z',
+                local_repo:'/data:z',
         }
         # if "-l" is used, we want to override container code with local code (dev mode)
         if args.local:
           local_source_path = os.environ.get('LOCAL_SOURCE_PATH', './dci-rhel-agent')
-          volumes[local_source_path] = '/usr/share/dci-rhel-agent'
+          volumes[local_source_path] = '/usr/share/dci-rhel-agent:z'
 
         myCmd = 'source /etc/dci-rhel-agent/dcirc.sh && '
         myCmd = myCmd + 'podman run --rm -ti --network host -e DCI_CLIENT_ID -e DCI_API_SECRET -e DCI_CS_URL -e SKIP_DOWNLOAD=%s -e VERBOSITY=%s -e TESTS_ONLY=%s' % (args.skip_download, args.verbosity, args.tests_only)

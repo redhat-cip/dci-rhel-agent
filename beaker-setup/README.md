@@ -7,8 +7,8 @@
 
 ## Edit settings.yml
 
-Specify which dns_servers the beaker containers should use and what data directory
-to use.
+Copy the default settings.yml.dist to settings.yml and Specify which dns_servers the
+beaker containers should use and what data directory to use.
 
 There are other default settings that can be changed.  If you are curious you can see
 the defaults in roles/setup_beaker/defaults/main.yml

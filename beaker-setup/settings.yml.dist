@@ -14,3 +14,8 @@
 #
 #If you don't use a firewall you can disable setting up the firewall rules by settings this to false
 #firewall_enabled: false
+#
+#To test an alternate images
+#beaker_server_image: quay.io/distributedci/beaker-server:latest
+#beaker_lab_image: quay.io/distributedci/beaker-lab-controller:latest
+#beaker_mysql_image: registry.redhat.io/rhel8/mariadb-103
