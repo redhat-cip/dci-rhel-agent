@@ -1,0 +1,8 @@
+http_store_container_name: http_store
+http_store_pod_name: http_store_pod
+http_data_dir: /opt/http_store
+http_port: 80
+# Note if you change this you might have to change the env vars and volumes for podman task
+container_image: quay.io/distributedci/httpd-24-fedora38:latest
+file_owner: "{{ ansible_env.USER }}"
+file_group: "{{ file_owner }}"

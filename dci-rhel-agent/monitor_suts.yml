@@ -1,10 +1,10 @@
 ---
 - name: Wait for system to be installed
   bkr_info:
-    job_id: "{{ hostvars.beaker_server.bkrjobid }}"
+    job_id: "{{ hostvars.jumpbox.bkrjobid }}"
     system: "{{ inventory_hostname }}"
   become: true
-  delegate_to: beaker_server
+  delegate_to: jumpbox
   register: job_install
   failed_when: job_install['status'] in ['Cancelled','Aborted'] or job_install['result'] != 'Pass'
 ...

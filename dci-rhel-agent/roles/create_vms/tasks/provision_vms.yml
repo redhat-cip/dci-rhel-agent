@@ -1,0 +1,39 @@
+---
+- name: Provision Nodes
+  block:
+    - name: Create rng device XML file
+      template:
+        src: rng_device.xml.j2
+        dest: "{{ temp_dir.path }}/rng_device.xml"
+        mode: 0664
+
+    - name: Copy nvram for System to Support EFI Boot
+      copy:
+        src: /usr/share/edk2/ovmf/OVMF_VARS.fd
+        dest: /var/lib/libvirt/qemu/nvram/{{ item.key }}_VARS.fd
+        mode: 0755
+        remote_src: true
+      loop: "{{ q('dict', beaker_lab.system_inventory | default({})) }}"
+      when:
+        - item.value.virt is defined
+        - item.value.virt.mode| default('') == 'efi'
+
+    - name: Create vm creation_scripts
+      template:
+        # community.libvirt.virt doesn't define the qcow image so it was chosen to use
+        # virt-install. The reason we use a script is to aid with debugging on the host
+        src: create_vm.sh.j2
+        dest: "{{ temp_dir.path }}/{{ item.key }}_setup_vm.sh"
+        lstrip_blocks: true
+        mode: 0774
+      loop: "{{ q('dict', beaker_lab.system_inventory | default({})) }}"
+      when:
+        - item.value.virt is defined
+
+    - name: Run vm creation_scripts
+      shell: 
+        cmd: "/bin/bash {{ temp_dir.path }}/{{ item.key }}_setup_vm.sh"
+      loop: "{{ q('dict', beaker_lab.system_inventory | default({})) }}"
+      when:
+        - item.value.virt is defined
+

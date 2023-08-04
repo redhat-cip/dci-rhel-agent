@@ -1,0 +1,82 @@
+- name: Create temp dir
+  tempfile:
+    state: directory
+  register: config_file
+
+- name: Create directory to hold files
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: 0777
+    recurse: yes
+  loop:
+    - "{{ beaker_dir }}/mysql"
+    - "{{ beaker_dir }}/config"
+    - "{{ beaker_dir }}/data"
+
+- name: Gather info about specific pods
+  containers.podman.podman_pod_info:
+    name: "{{ beaker_pod_name }}"
+  register: bkr_pod_details
+
+- name: Remove Beaker Pod
+  containers.podman.podman_pod:
+    name: "{{ beaker_pod_name }}"
+    state: absent
+  when: (bkr_pod_details.pods | length) > 0
+
+- name: Process templates
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0644
+    trim_blocks: true
+    lstrip_blocks: true
+  loop:
+    - src: pod.yml.j2
+      dest: "{{ config_file.path }}/pod.yml"
+    - src: configmap.yml.j2
+      dest: "{{ config_file.path }}/configmap.yml"
+
+- name: Play kube file
+  containers.podman.podman_play:
+    kube_file: "{{ config_file.path }}/pod.yml"
+    configmap: "{{ config_file.path }}/configmap.yml"
+    recreate: true
+    state: created
+
+- name: Copy the systemd service file
+  copy:
+    content: |
+      [Unit]
+      Description=Podman beaker.service
+      After=syslog.target network.target
+      [Service]
+      Restart=no
+      ExecStart=/usr/bin/podman pod start {{ beaker_pod_name }}
+      ExecStop=/usr/bin/podman pod stop -t 10 {{ beaker_pod_name }}
+      KillMode=none
+      Type=forking
+      [Install]
+      WantedBy=default.target
+    dest: "/etc/systemd/system/beaker.service"
+    mode: 0644
+
+- name: Reload systemd service
+  systemd:
+    daemon_reexec: yes
+    scope: system
+
+- name: Enable beaker.service
+  systemd:
+    name: beaker
+    enabled: yes
+    scope: system
+
+- name: Start beaker.service
+  systemd:
+    name: beaker
+    state: started
+    scope: system

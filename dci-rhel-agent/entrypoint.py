@@ -3,8 +3,7 @@
 """
 Entrypoint for dci-rhel-agent.
 Example for settings.yml:
-local_repo: /var/www/html
-local_repo_ip: 192.168.1.1
+local_repo: /opt/dci
 topics:
   - topic: RHEL-7.9
     archs:
@@ -60,7 +59,7 @@ def load_settings():
 
 def provision_and_test(extravars, cmdline):
     # Path is static in the container
-    # local_repo = '/var/www/html'
+    # local_repo = '/opt/dci'
     # extravars['local_repo'] = local_repo
 
     if 'topic' in extravars.keys():
@@ -128,9 +127,10 @@ def main():
         for idx, current_job in enumerate(jobs):
             print ("Beginning provision/test jobs for topic %s" % current_job['topic'])
             current_job['local_repo'] = sets['local_repo']
-            current_job['local_repo_ip'] = sets['local_repo_ip']
-            if 'beaker_lab' in sets:
-                current_job['beaker_lab'] = sets['beaker_lab']
+            if 'jumpbox' in sets:
+                current_job['jumpbox'] = sets['jumpbox']
+            if 'domain' in sets:
+                current_job['domain'] = sets['domain']
             provision_and_test(current_job, cmdline)
     else:
         print ('Incompatible settings file.  Topics not found. Please update settings file format.')

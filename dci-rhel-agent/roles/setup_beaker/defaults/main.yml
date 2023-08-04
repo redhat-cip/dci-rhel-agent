@@ -1,0 +1,19 @@
+jumpbox: "{{ ansible_hostname }}"
+beaker_admin_login: admin
+beaker_admin_password: admin
+beaker_server_name: beaker_server
+beaker_lab_name: beaker_lab_controller
+beaker_pod_name: beaker
+beaker_dir: "{{ beaker_lab.beaker_dir }}"
+beaker_server_image: quay.io/distributedci/beaker-server:latest
+beaker_lab_image: quay.io/distributedci/beaker-lab-controller:latest
+beaker_mysql_image: mariadb:10.3
+mysql_database: beaker
+mysql_user: beaker
+mysql_password: beaker
+mysql_root_password: password
+mysql_charset: utf8
+file_owner: "{{ ansible_env.USER }}"
+file_group: "{{ file_owner }}"
+dns_servers: []
+beaker_extra_config: {}

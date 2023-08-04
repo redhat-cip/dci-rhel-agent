@@ -12,7 +12,7 @@
   loop_control:
     loop_var: system
   when:
-    - hostvars.beaker_server.bkrjobid is defined
+    - hostvars.jumpbox.bkrjobid is defined
 
 - name: 'Job in error'
   fail:

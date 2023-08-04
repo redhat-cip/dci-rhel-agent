@@ -1,5 +1,5 @@
 Name:             dci-rhel-agent
-Version:          0.5.0
+Version:          0.6.0
 Release:          1.VERS%{?dist}
 Summary:          The RHEL's DCI agent
 License:          ASL 2.0
@@ -45,6 +45,7 @@ install -p -D -m 644 hooks/user-tests.yml %{buildroot}%{_sysconfdir}/dci-rhel-ag
 install -p -D -m 644 hooks/tests.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/tests.yml
 install -p -D -m 644 hooks/pre-run.yml %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/pre-run.yml
 install -p -D -m 755 dci-rhel-agent-ctl %{buildroot}%{_bindir}/dci-rhel-agent-ctl
+install -p -D -m 755 dci-rhel-agent-setup %{buildroot}%{_bindir}/dci-rhel-agent-setup
 mkdir %{buildroot}%{_sysconfdir}/dci-rhel-agent/secrets
 mkdir %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/roles
 cp -r hooks/roles/ansible-role-dci-rhel-os-tests/ %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/roles/
@@ -52,8 +53,10 @@ rm -rf %{buildroot}%{_sysconfdir}/dci-rhel-agent/hooks/roles/ansible-role-dci-rh
 
 %if 0%{?rhel} && 0%{?rhel} < 8
 pathfix.py -pni "%{__python2}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
+pathfix.py -pni "%{__python2}" %{buildroot}%{_bindir}/dci-rhel-agent-setup
 %else
 pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
+pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-setup
 %endif
 
 %post
@@ -68,6 +71,7 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 %files
 %{_unitdir}/*
 %{_bindir}/dci-rhel-agent-ctl
+%{_bindir}/dci-rhel-agent-setup
 %{_sysconfdir}/dci-rhel-agent/dcirc.sh.dist
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/settings.yml
 %config(noreplace) %{_sysconfdir}/dci-rhel-agent/inventory
@@ -78,10 +82,11 @@ pathfix.py -pni "%{__python3}" %{buildroot}%{_bindir}/dci-rhel-agent-ctl
 %dir  %{_sysconfdir}/dci-rhel-agent/hooks/roles
 %{_sysconfdir}/dci-rhel-agent/hooks/roles/ansible-role-dci-rhel-os-tests/meta/*
 %{_sysconfdir}/dci-rhel-agent/hooks/roles/ansible-role-dci-rhel-os-tests/tasks/*
-%doc beaker-setup
-%doc virtual-setup
 
 %changelog
+* Mon Aug 14 2023 bpeck <bpeck@redhat.com> - 0.6.0-1.VERS
+- Containerize everything
+
 * Wed Nov 23 2022 hguemar <hguemar@lappy> - 0.5.0-1.VERS
 - Fix systemd scriptlet (failing EL9 build)
 

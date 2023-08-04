@@ -1,29 +1,68 @@
 ---
 #
-# Tasks are included to run on beaker_server host,
+# Tasks are included to run on jumpbox host,
 # Delegate_to: localhost when needed.
 #
 - name: Collect and Upload logs
-  when: hostvars.beaker_server.bkrjobid is defined
+  when: hostvars.jumpbox.bkrjobid is defined
   block:
+    - name: Get Job Results
+      command:
+        cmd: "bkr job-results --format=beaker-results-xml {{ hostvars.jumpbox.bkrjobid }}"
+      register: job_results
+
+    - name: Process XML
+      set_fact:
+          job_xml: "{{ job_results.stdout | ansible.utils.from_xml }}"
+
+    - name: Get Recipe
+      set_fact:
+        recipes: "{{ [job_xml.job.recipeSet.recipe] }}"
+      when:
+        - job_xml.job.recipeSet is not string
+        - job_xml.job.recipeSet is iterable
+        - job_xml.job.recipeSet is mapping
+
+    - name: Get Recipes
+      set_fact:
+        recipes: "{{ job_xml.job.recipeSet | map(attribute='recipe') | list}}"
+      when:
+        - job_xml.job.recipeSet is not string
+        - job_xml.job.recipeSet is iterable
+        - job_xml.job.recipeSet is not mapping
+
+    - name: Build recipes map table
+      set_fact:
+        recipe_to_host: "{{ recipe_to_host| default({})|combine({ 'recipes_' ~ item['@id']: item['@system']})}}"
+      loop: "{{ recipes }}"
+
     - name: List all logs files available for the Beaker Job
-      shell: 'bkr job-logs {{ hostvars.beaker_server.bkrjobid }}'
+      shell: 'bkr job-logs {{ hostvars.jumpbox.bkrjobid }}'
       register: bkr_files
       become: true
 
     - name: Download all logs files to Beaker server
       get_url:
         url: "{{ item }}"
-        dest: "{{ hostvars.beaker_server.job_logs.path }}"
-      with_items: "{{ bkr_files.stdout_lines }}"
+        dest: "{{ hostvars.jumpbox.job_logs.path }}/{{ local_file }}"
+        use_proxy: false
+      loop: "{{ bkr_files.stdout_lines }}"
+      delegate_to: localhost
+      vars:
+        recipe: "{{ item | regex_replace('.*\\/recipes\\/(\\d+)\\/.*','\\1') }}"
+        local_file: "{{ item.split('/bkr/')[1].replace('/','_').replace('recipes_' + recipe, recipe_to_host['recipes_' + recipe]) }}"
 
     - name: Download JUnit results to Beaker server
-      shell: bkr job-results --format=junit-xml {{ hostvars.beaker_server.bkrjobid }} > {{ beaker_results }}
+      command:
+        cmd: "bkr job-results --format=junit-xml {{ hostvars.jumpbox.bkrjobid }}"
       become: true
-      args:
-        creates: '{{ beaker_results }}'
-      vars:
-        beaker_results: '{{hostvars.beaker_server.job_artifacts.path }}/beaker-results.xml'
+      register: bkr_results
+
+    - name: Record Beaker results
+      copy:
+        content: "{{ bkr_results.stdout }}"
+        dest: "{{ hostvars.jumpbox.job_artifacts.path }}/beaker-results.xml"
+      delegate_to: localhost
 
     - name: Check if ansible log exists
       stat:
@@ -34,26 +73,9 @@
     #When Ansible verbosity is at levels 3 or 4, ansible copy module has checksum error due
     #to file changing between generation of initial checksum and final checksum after copy
     - name: Copy ansible.log file to logs directory
-      shell: 'cp /var/log/ansible.log {{ hostvars.beaker_server.job_logs.path }}'
+      shell: 'cp /var/log/ansible.log {{ hostvars.jumpbox.job_logs.path }}'
       delegate_to: localhost
       when: ansible_log_check.stat.exists
-
-    # This prevents failure in case dci-rhel-agent can't reach HTTP (private IP, ACL, ...)
-    - name: Synchronize logs directory from Beaker server to dci-rhel-agent
-      synchronize:
-        src: '{{ hostvars.beaker_server.job_logs.path }}'
-        dest: '/var/tmp'
-        mode: pull
-        private_key: '/etc/dci-rhel-agent/secrets/id_rsa'
-      delegate_to: localhost
-
-    - name: Synchronize artifacts directory from Beaker server to dci-rhel-agent
-      synchronize:
-        src: '{{ hostvars.beaker_server.job_artifacts.path }}'
-        dest: '/var/tmp'
-        mode: pull
-        private_key: '/etc/dci-rhel-agent/secrets/id_rsa'
-      delegate_to: localhost
 
     - name: Upload logs directory to DCI Control Server
       delegate_to: localhost
@@ -87,5 +109,5 @@
         state: absent
         path: "{{ item }}"
       with_items:
-        - "{{ hostvars.beaker_server.job_logs.path }}"
-        - "{{ hostvars.beaker_server.job_artifacts.path }}"
+        - "{{ hostvars.jumpbox.job_logs.path }}"
+        - "{{ hostvars.jumpbox.job_artifacts.path }}"

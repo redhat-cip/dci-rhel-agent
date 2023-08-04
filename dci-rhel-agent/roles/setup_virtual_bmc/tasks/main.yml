@@ -1,0 +1,86 @@
+---
+- name: Install packages required by virtualbmc
+  become: true
+  package:
+    name:
+      - python3-pip
+      - python3-setuptools
+      - python3-devel
+      - libvirt-devel
+      - gcc
+      - ipmitool
+      - libvirt-client
+
+- name: Upgrade pip
+  become: true
+  pip:
+    name: pip
+    executable: pip3
+    extra_args: --upgrade
+    state: latest
+
+- name: Install virtualbmc
+  become: true
+  pip:
+    name: virtualbmc
+    executable: pip3
+
+- name: Create directories needed by vbmc if it does not exist
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - /etc/virtualbmc
+    - /var/log/virtualbmc
+
+- name: Copy the vbmc configuration file
+  become: true
+  copy:
+    src: virtualbmc.conf
+    dest: /etc/virtualbmc
+
+- name: Add VirtualBMC as systemd service
+  become: true
+  copy:
+    mode: 0664
+    src: virtualbmc.service
+    dest: "/etc/systemd/system/virtualbmc.service"
+
+- name: Reload systemd
+  become: true
+  systemd:
+    daemon_reload: yes
+
+- name: Start VirtualBMC
+  become: true
+  systemd:
+    name: virtualbmc
+    state: started
+    enabled: yes
+
+- name: Remove sut from VirtualBMC
+  shell: >
+    /usr/local/bin/vbmc delete {{ item.key }}
+  loop: "{{ q('dict', beaker_lab.system_inventory | default({})) }}"
+  ignore_errors: yes
+  when:
+    - item.value.virt is defined
+
+- name: Add sut to VirtualBMC
+  shell: >
+    /usr/local/bin/vbmc add {{ item.key }} --username admin --password password 
+    --address {{ jumpbox }}.{{ domain }}
+    --port {{ item.value.power_id }} --libvirt-uri qemu:///system
+    && /usr/local/bin/vbmc start {{ item.key }}
+  loop: "{{ q('dict', beaker_lab.system_inventory | default({})) }}"
+  when:
+    - item.value.virt is defined
+
+- name: power off sut
+  shell: >
+    /usr/bin/ipmitool -I lanplus -U admin -P password -p {{ item.value.power_id }} -H {{ jumpbox }}.{{ domain }} power off
+  loop: "{{ q('dict', beaker_lab.system_inventory | default({})) }}"
+  when:
+    - item.value.virt is defined

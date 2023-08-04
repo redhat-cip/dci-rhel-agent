@@ -1,0 +1,6 @@
+- name: Destroy vm networks
+  import_tasks: destroy_networks.yml
+
+- name: Destroy vms
+  import_tasks: destroy_vms.yml
+  ignore_errors: yes

@@ -1,0 +1,14 @@
+- name: Destroy VM
+  community.libvirt.virt:
+    name: "{{ item.key }}"
+    state: destroyed
+  loop: "{{ q('dict', beaker_lab.system_inventory | default({})) }}"
+  when:
+    - item.value.virt is defined
+
+- name: Undefine VM # The 'loop' default will prevent action when none is needed.
+  shell:
+    cmd: "virsh undefine --remove-all-storage --nvram {{ item.key }}" # community.libvirt.virt undefine doesn't have the ability to specify --nvram
+  loop: "{{ q('dict', beaker_lab.system_inventory | default({})) }}"
+  when:
+    - item.value.virt is defined

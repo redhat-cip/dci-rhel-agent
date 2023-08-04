@@ -1,6 +1,6 @@
 ---
 #
-# Tasks are included to run on beaker_server host,
+# Tasks are included to run on jumpbox host,
 # Delegate_to: localhost when needed.
 #
 - name: Populate the Beaker XML job from template
@@ -24,6 +24,7 @@
       loop: "{{ components }}"
 
     - name: 'Tag job with SUT arch'
+      delegate_to: localhost
       dci_job:
         id: "{{ hostvars.localhost.job_id }}"
         tags: '{{ arch_tags | unique }}'
@@ -46,9 +47,17 @@
             beaker_xml: "{{ job_xml.path }}"
       when: beaker_xml is not defined
 
+    - name: Fetch beaker_xml local
+      fetch:
+        src: "{{ beaker_xml }}"
+        dest: "/tmp/{{ hostvars.localhost.job_id }}_beaker_xml"
+        mode: 0755
+        flat: true
+
     - name: Upload job.xml to DCI Control Server
+      delegate_to: localhost
       dci_file:
-        path: "{{ beaker_xml }}"
+        path: "/tmp/{{ hostvars.localhost.job_id }}_beaker_xml"
         name: 'job.xml'
         mime: 'text/xml'
         job_id: '{{ hostvars.localhost.job_id }}'

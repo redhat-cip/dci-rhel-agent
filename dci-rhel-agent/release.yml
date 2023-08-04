@@ -4,13 +4,13 @@
   block:
     - name: Check if SUT is reserved by Beaker
       shell: "bkr system-status {{ system.value.fqdn }} --format json"
-      delegate_to: beaker_server
+      delegate_to: jumpbox
       become: true
       register: bkr_system_status
 
     - name: Release SUT if it is currently reserved
       shell: "bkr system-release {{ system.value.fqdn }}"
-      delegate_to: beaker_server
+      delegate_to: jumpbox
       retries: 3
       delay: 5
       register: sut_release

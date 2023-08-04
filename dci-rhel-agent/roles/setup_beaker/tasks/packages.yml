@@ -1,0 +1,14 @@
+- name: Add Beaker Client Repo
+  ansible.builtin.yum_repository:
+    name: beaker-client
+    description: Beaker Client YUM repo
+    baseurl: https://beaker-project.org/yum/client/RedHatEnterpriseLinux$releasever/
+    gpgcheck: no
+
+- name: Install Required Packages
+  package:
+    name:
+      - podman
+      - tftp-server
+      - beaker-client
+    state: latest

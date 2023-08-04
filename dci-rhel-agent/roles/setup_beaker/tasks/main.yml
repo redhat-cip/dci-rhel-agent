@@ -1,0 +1,19 @@
+- name: Install Packages
+  include_tasks: packages.yml
+
+- name: Configure Netboot
+  include_tasks: configure_netboot.yml
+
+- name: Configure Pod
+  include_tasks: configure_pod.yml
+
+- name: Configure Beaker
+  include_tasks: configure_beaker.yml
+
+- name: Add SUT's
+  include_tasks: add_suts.yml
+
+- name: Add Firewall Ports
+  set_fact:
+    tcp_ports: "{{ tcp_ports| default([]) + [80, 8000] }}"
+    udp_ports: "{{ udp_ports| default([]) + [53, 67, 69] }}"

@@ -1,9 +1,0 @@
----
-- name: Setup Beaker
-  hosts: localhost
-  gather_facts: true
-  become: true
-  tasks:
-    - name: "Setup beaker"
-      include_role:
-        name: setup_beaker

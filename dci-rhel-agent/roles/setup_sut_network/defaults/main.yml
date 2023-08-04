@@ -1,0 +1,6 @@
+bridge_ip: "{{ machine_network_cidr | ipaddr('next_usable') }}"
+bridge_prefix: "{{ machine_network_cidr | ipaddr('prefix') }}"
+bridge_name: "dci-br"
+bridge_port_name: "{{ bridge_interface }}"
+vlan_name: "dci.100"
+nmstate_config_path: "/tmp/dci_nmstate.yml"

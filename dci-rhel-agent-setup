@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# dci-rhel-agent-ctl controls dci-rhel-agent (start, stop and kill).
+
+import argparse
+import subprocess
+import signal
+import sys
+import yaml
+import os
+
+# dci-rhel-agent-ctl default values
+default_value =	{
+  "settings_path": "/etc/dci-rhel-agent/settings.yml",
+  "dci_rhel_agent_url":"quay.io/distributedci/dci-rhel-agent:latest-8"
+}
+
+proc = None
+
+def sigterm_handler(signal, frame):
+  print('Exiting...')
+  proc.terminate()
+  sys.exit(0)
+
+signal.signal(signal.SIGTERM, sigterm_handler)
+signal.signal(signal.SIGINT, sigterm_handler)
+
+def load_settings(settings_path):
+  with open(settings_path, 'r') as settings:
+    try:
+      return yaml.safe_load(settings)
+    except yaml.YAMLError as exc:
+      print(exc)
+      sys.exit(1)
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--config', action='store', help="Path to config file. Default is `%s`." % default_value['settings_path'], default=default_value['settings_path'])
+    parser.add_argument('-u', '--url', action='store', help="Url for dci-rhel-agent. Default is `%s`." % default_value['dci_rhel_agent_url'], default=default_value['dci_rhel_agent_url'])
+    parser.add_argument('-l', '--local', action='store_true', help="[dev] Mount local directory `./dci-rhel-agent` in the container. This path can be overridden with env var `LOCAL_SOURCE_PATH`.")
+    parser.add_argument('--build', action='store_true', help="[dev] Build the dci-rhel-agent container.")
+    parser.add_argument('-v', '--verbosity', action='store', help="Verbosity level for Ansible log (0-4).  Default is 1", type=int, choices=range(5), default=1)
+
+    args = parser.parse_args()
+
+    global proc
+
+    if args.build:
+        myCmd = '/usr/bin/podman build -f Dockerfile -t dci-rhel-agent --no-cache'
+        proc = subprocess.Popen(myCmd, shell=True)
+        exit (proc.wait())
+
+    settings_path = args.config
+    dci_rhel_agent_url = args.url
+
+    entrypoint = "ansible-playbook -v -e @/etc/dci-rhel-agent/settings.yml -i /etc/dci-rhel-agent/inventory setup-jumpbox.yml"
+
+    settings = load_settings(settings_path)
+
+    # Start dci-rhel-agent
+    volumes = {
+            '/etc/dci-rhel-agent/secrets':'/etc/dci-rhel-agent/secrets:z',
+            '/etc/dci-rhel-agent/inventory':'/etc/dci-rhel-agent/inventory:z',
+            settings_path:'/etc/dci-rhel-agent/settings.yml:z',
+    }
+    # if "-l" is used, we want to override container code with local code (dev mode)
+    if args.local:
+      local_source_path = os.environ.get('LOCAL_SOURCE_PATH', './dci-rhel-agent')
+      volumes[local_source_path] = '/usr/share/dci-rhel-agent:z'
+
+    myCmd = 'podman run --rm -ti --network host'
+
+    for key, value in volumes.items():
+      myCmd = myCmd + ' -v ' + key + ':' + value
+
+    myCmd = myCmd + ' %s %s' % (dci_rhel_agent_url, entrypoint)
+    proc = subprocess.Popen(myCmd, shell=True)
+    proc.wait()
+    sys.exit(proc.returncode)
+
+if __name__ == "__main__":
+    main()
