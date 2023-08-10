@@ -112,7 +112,7 @@ def main():
     cmdline = ""
     tests_only = True if environ.get('TESTS_ONLY') == 'True' else False
     if tests_only:
-        cmdline += ' --skip-tags "sut,beaker"'
+        cmdline += ' --skip-tags "beaker"'
     skip_download = True if environ.get('SKIP_DOWNLOAD') == 'True' else False
     if skip_download:
         cmdline += ' --skip-tags "download"'

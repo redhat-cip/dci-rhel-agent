@@ -1,0 +1,25 @@
+---
+- name: 'Generate SSH config for SUT'
+  template:
+    src: ssh_config.conf.j2
+    dest: "/etc/dci-rhel-agent/secrets/ssh_config_{{ system.value.fqdn }}.cfg"
+
+- name: 'Upload ssh config to DCI'
+  dci_file:
+    path: "/etc/dci-rhel-agent/secrets/ssh_config_{{ system.value.fqdn }}.cfg"
+    name: 'ssh_config_{{ system.value.fqdn }}.txt'
+    mime: 'text/plain'
+    job_id: '{{ job_id }}'
+
+- name: 'Add SUT to the Ansible group'
+  add_host:
+    hostname: "{{ system.value.fqdn }}"
+    ansible_python_interpreter: "{{ '/usr/libexec/platform-python' if topic_name.startswith('RHEL-8') else 'python' }}"
+    ansible_ssh_host: "{{ system.value.fqdn }}"
+    ansible_ssh_port: "{{ beaker_sut_port | default('22') }}"
+    ansible_user: "{{ sut_user | default('root') }}"
+    ansible_password: "{{ sut_password | default('beaker') }}"
+    ansible_ssh_common_args: "-F /etc/dci-rhel-agent/secrets/ssh_config_{{ system.value.fqdn }}.cfg"
+    groups:
+      - beaker_sut
+...

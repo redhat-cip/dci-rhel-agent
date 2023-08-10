@@ -96,6 +96,12 @@
             path: '/etc/dci-rhel-agent/hooks/pre-run.yml'
           register: check_pre_run
 
+        - name: 'Process Suts'
+          include_tasks: process_suts.yml
+          loop: "{{ systems | dict2items }}"
+          loop_control:
+            loop_var: system
+
         - name: 'Run the pre-run hook if present'
           include_tasks: '/etc/dci-rhel-agent/hooks/pre-run.yml'
           when: check_pre_run.stat.exists
@@ -117,11 +123,13 @@
             apply:
               tags: download
           tags: always
+
         - name: 'Process Recipes'
           include_tasks: process_recipe.yml
           loop: "{{ systems | dict2items }}"
           loop_control:
             loop_var: system
+
         - name: 'Download harness'
           include_tasks: dci-harness.yml
       rescue:
@@ -190,7 +198,6 @@
   gather_facts: no
   tags:
     - tests
-    - beaker
     - sut
   tasks:
     - block:
