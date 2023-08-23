@@ -5,24 +5,21 @@
     vars:
       registry: quay.io
       tag: "distributedci/dci-rhel-agent"
+      version: "latest-8"
+
+    templates:
+      - dci-container
 
     check:
       jobs:
-        - dci-build-and-push-container-snapshot-job:
-            vars:
-              push_stable_tag: false
         - dci-rpm-build-el8
         - dci-rpm-build-el9:
             voting: false
     gate:
       jobs:
-        - dci-build-container-preview-job
         - dci-rpm-build-el8
     dci-post:
       jobs:
-        - dci-build-and-push-container-job:
-            vars:
-              version: "latest-8"
         - dci-rpm-build-el8
         - dci-rpm-build-doc-el8
         - dci-rpm-publish:
