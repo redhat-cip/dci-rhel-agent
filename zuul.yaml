@@ -8,17 +8,19 @@
 
     check:
       jobs:
-        - dci-build-and-push-container-snapshot-job
+        - dci-build-and-push-container-snapshot-job:
+            vars:
+              push_stable_tag: false
         - dci-rpm-build-el8
         - dci-rpm-build-el9:
             voting: false
     gate:
       jobs:
-        - dci-build-and-push-container-preview-job
+        - dci-build-container-preview-job
         - dci-rpm-build-el8
     dci-post:
       jobs:
-        - dci-promote-container-preview-tag-job:
+        - dci-build-and-push-container-job:
             vars:
               version: "latest-8"
         - dci-rpm-build-el8
