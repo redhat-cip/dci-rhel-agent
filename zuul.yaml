@@ -1,22 +1,24 @@
 ---
 - project:
     name: dci-rhel-agent
+    queue: dci
     vars:
       registry: quay.io
       tag: "distributedci/dci-rhel-agent"
-      version: latest-7
+      version: "latest-7"
+
+    templates:
+      - dci-container
+
     check:
       jobs:
-        - dci-build-container-job
         - dci-rpm-build
     gate:
       jobs:
-        - dci-build-container-job
         - dci-rpm-build
     dci-post:
       jobs:
         - dci-rpm-build
-        - dci-build-and-push-container-job
         - dci-rpm-publish:
             dependencies:
               - dci-rpm-build
