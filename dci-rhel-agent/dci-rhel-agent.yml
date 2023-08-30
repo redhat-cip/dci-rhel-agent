@@ -146,6 +146,10 @@
         - name: 'Create temp dir'
           include_tasks: create_temp_dir.yml
 
+        - name: Debug Jumpbox collected facts
+          debug:
+            var: hostvars[inventory_hostname]
+
         - name: 'Add job state running'
           delegate_to: localhost
           dci_job:
