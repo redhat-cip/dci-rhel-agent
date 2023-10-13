@@ -13,7 +13,7 @@ RUN yum upgrade -y && \
   yum-config-manager --save --setopt=releases.ansible.com_ansible-runner_rpm_epel-7-x86_64_.gpgkey=https://releases.ansible.com/keys/RPM-GPG-KEY-ansible-release.pub && \
   yum -y install gcc ansible python python2-devel python2-pip python-lxml \
                  dci-ansible ansible-role-dci-rhel-certification rsync python2-ansible-runner \
-                 ansible-role-dci-rhel-cki git restraint-client python-netaddr patch \
+                 ansible-role-dci-rhel-cki-0.0.2 git restraint-client python-netaddr patch \
                  python2-productmd createrepo_c dnf-plugins-core dci-downloader dnf && \
   yum clean all
 
