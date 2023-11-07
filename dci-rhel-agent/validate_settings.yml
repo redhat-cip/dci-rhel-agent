@@ -1,0 +1,39 @@
+---
+- name: Verify variables defined
+  assert:
+    that:
+      - jumpbox is defined
+      - domain is defined
+      - local_repo is defined
+
+- name: Verify Beaker lab settings
+  assert:
+    that:
+      - beaker_lab.beaker_dir is defined
+  when:
+    - beaker_lab is defined
+    - beaker_lab | length > 0
+
+# We don't include the domain in the key anymore since we use the domain variable
+# that is provided.  But if a sut includes a domain we verify that it matches
+# the overall domain.
+- name: Validate beaker_lab matches domain specified
+  assert:
+    that:
+      item.key.split('.')[1:] | join('.') == domain
+    msg: "domain doesn't match the domain in beaker_lab, please fix."
+  when:
+    - beaker_lab is defined
+    - beaker_lab | length > 0
+    - item.key.split('.') | length > 1
+  loop: "{{ q('dict', beaker_lab.system_inventory | default({})) }}"
+
+- name: Validate system fqdn under topics matches domain specified
+  assert:
+    that:
+      item.1.fqdn.split('.')[1:] | join('.') == domain
+    msg: "domain doesn't match the domain in topics..systems, please fix."
+  when:
+    - item.1.fqdn.split('.') | length > 1
+  loop: "{{ topics|subelements('systems') }}"
+...

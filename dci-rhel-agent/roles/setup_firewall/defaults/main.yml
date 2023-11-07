@@ -1,0 +1,4 @@
+tcp_ports: []
+udp_ports: []
+firewall_zones: []
+firewall_enabled: true

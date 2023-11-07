@@ -17,7 +17,7 @@ systemctl restart sshd
              ]]></ks_append>
          </ks_appends>
             <distro>
-                <tree url="http://{{ local_repo_ip }}/{{ values.os_tree |replace('/data','dci') }}"/>
+                <tree url="http://{{ jumpbox }}.{{ domain }}:{{ http_store_port }}/{{ values.os_tree |replace('/data','') }}"/>
                 <initrd url="{{ values.pxe_images.initrd }}"/>
                 <kernel url="{{ values.pxe_images.kernel }}"/>
                 {% if use_boot_image |default(false, true) %}
@@ -35,12 +35,12 @@ systemctl restart sshd
             {% endif %}
             <repos>
               {% for name, url in compose_info.repos.items() %}
-                <repo name="{{ name }}" url="http://{{ local_repo_ip }}/{{ url | replace('/data','dci') }}"/>
+                <repo name="{{ name }}" url="http://{{ jumpbox }}.{{ domain }}:{{ http_store_port }}/{{ url | replace('/data','') }}"/>
               {% endfor %}
             {% if 'RHEL-7' in topic_name %}
-              <repo name="extraos-local" url="http://{{ local_repo_ip }}/dci/{{ topic_name }}/extraos/Server/{{ system_arch }}/os"/>
+              <repo name="extraos-local" url="http://{{ jumpbox }}.{{ domain }}:{{ http_store_port }}/{{ topic_name }}/extraos/Server/{{ system_arch }}/os"/>
             {% endif %}
-              <repo name="harness" url="http://{{ local_repo_ip }}/dci/harness/{{ compose_info.osmajor }}/"/>
+              <repo name="harness" url="http://{{ jumpbox }}.{{ domain }}:{{ http_store_port }}/harness/{{ compose_info.osmajor }}/"/>
             </repos>
             <partitions/>
             <task name="/distribution/check-install" role="STANDALONE">

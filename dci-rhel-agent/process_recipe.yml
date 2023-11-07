@@ -6,7 +6,7 @@
     netbootloader: ''
 
 - name: 'Get SUT details'
-  delegate_to: beaker_server
+  delegate_to: jumpbox
   shell: "bkr system-details {{ system.value.fqdn }}"
   register: system_details
   become: true

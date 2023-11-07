@@ -1,0 +1,13 @@
+- name: Remove network
+  become: true
+  ignore_errors: yes
+  block:
+    - name: destroy network
+      community.libvirt.virt_net:
+        name: "{{ network_name }}"
+        command: destroy
+
+    - name: undefine network
+      community.libvirt.virt_net:
+        name: "{{ network_name }}"
+        command: undefine

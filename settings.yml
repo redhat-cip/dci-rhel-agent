@@ -1,6 +1,10 @@
 ---
-local_repo_ip: 192.168.1.1
-local_repo: /opt/beaker/dci
+jumpbox: dci-jumpbox
+domain: dci.local
+machine_network_cidr: 10.60.0.0/24
+machine_network_ip: "{{ machine_network_cidr | nthhost(190) }}"
+local_repo: /opt/dci
+
 topics:
   - topic: RHEL-8.*
     # variants:
@@ -12,36 +16,55 @@ topics:
     # dci_rhel_agent_cert: false
     # dci_rhel_agent_cki: false
     systems:
-      - fqdn: sut1.local
+      - fqdn: "sut1.{{ domain }}"
+        efi: true
+      - fqdn: "sut2.{{ domain }}"
         efi: false
-        petitboot: false
 
 beaker_lab:
-  external_dns: false
-  dns_server: 192.168.1.1
-  ntp_server: 192.168.1.1
-  domain: sample.domain.com
-  dhcp_start: 192.168.1.20
-  dhcp_end: 192.168.1.30
-  dhcp_netmask: 255.255.255.0
-  router: 192.168.1.1
-  listen_addresses:
-    - 127.0.0.1
-    - "{{ ansible_default_ipv4.address }}"
+  beaker_dir: /opt/beaker
+  dns_server: "{{ machine_network_ip }}"
+  router: "{{ machine_network_ip }}"
+  dhcp_start: "{{ machine_network_cidr | ipaddr('20') | ipaddr('address') }}"
+  dhcp_end: "{{ machine_network_cidr | ipaddr('100') | ipaddr('address') }}"
 
-  jumpbox_fqdn: dci-jumpbox
-  labcontroller_fqdn: machine-name.where.lab.controller.is.running
+  # By default we will build a bridge for the virtual systems in this example
+  # settings Uncomment and set the bridge_interface to your physical network
+  # interface which will have your Systems Under Test's.  If you set your
+  # network up outside of this you can set build_bridge to false.
+  build_bridge: true
+  #  bridge_interface: eno2
+  #
 
   system_inventory:
-    sut1.local:
-      ip_address: 192.168.1.20
-      mac: aa:bb:cc:dd:ee:ff
+    sut1:
+      ip_address: 10.60.0.51
+      mac: "52:54:00:EF:C0:2C"
       arch: x86_64
-      power_address: sut1.power.address
-      power_user: p_user1
-      power_password: p_pass1
-      # Power ID depends on which power type is selected.  Typically this field identifies
-      # a particular plug, socket, port, or virtual guest name. Defaults to fqdn when not
-      # specified here
-      #power_id:
-      power_type: ipmilan
+      power_address: "{{ jumpbox }}.{{ domain }}"
+      power_user: admin
+      power_password: password
+      power_id: 6230
+      power_type: ipmitool_lanplus
+      virt:
+        mode: efi
+        disks:
+          main: 150
+        memory: "16384"
+        vcpu: "4"
+
+    sut2:
+      ip_address: 10.60.0.52
+      mac: "52:54:00:EF:C0:2D"
+      arch: x86_64
+      power_address: "{{ jumpbox }}.{{ domain }}"
+      power_user: admin
+      power_password: password
+      power_id: 6231
+      power_type: ipmitool_lanplus
+      virt:
+        mode: legacy
+        disks:
+          main: 150
+        memory: "16384"
+        vcpu: "4"

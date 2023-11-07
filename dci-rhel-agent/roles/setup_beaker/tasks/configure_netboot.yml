@@ -1,0 +1,43 @@
+---
+- name: Generate /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: '{{ item.value.ip_address }} {{ item.key.split(".")| first }} {{ item.key.split(".")| first }}.{{ domain }}'
+  loop: "{{ q('dict', beaker_lab.system_inventory | default({})| combine({jumpbox: {'ip_address': machine_network_ip| default(local_repo_ip) }})) }}"
+
+- name: Ensure tftp and tftp-server installed
+  package:
+    name: "{{ item }}"
+  with_items:
+    - tftp
+    - tftp-server
+
+- name: Enable tftp server
+  ansible.builtin.systemd:
+    name: tftp
+    state: started
+    enabled: true
+
+- name: Set tftp_home_dir flag on and keep it persistent across reboots
+  seboolean:
+    name: tftp_home_dir
+    state: true
+    persistent: true
+
+- name: Update beaker.conf file
+  template:
+    src: beaker.conf.j2
+    dest: /etc/dnsmasq.d/beaker.conf
+  register: dns_conf_update
+
+- name: Make sure dnsmasq is enabled
+  ansible.builtin.systemd:
+    name: dnsmasq
+    state: started
+    enabled: true
+
+- name: Restart dnsmasq if any config files were changed
+  ansible.builtin.systemd:
+    name: dnsmasq
+    state: restarted
+  when: dns_conf_update.changed | default('false') | bool

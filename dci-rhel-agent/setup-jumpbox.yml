@@ -1,0 +1,66 @@
+---
+- name: Setup DCI JumpBox
+  hosts: jumpbox
+  gather_facts: true
+  vars:
+    virtual_sut: false
+  tasks:
+    - name: Validate Settings
+      include_tasks: validate_settings.yml
+
+    - name: Setup DCI Web Server
+      include_role:
+        name: setup_http_store
+      vars:
+        http_data_dir: "{{ local_repo }}"
+        http_port: "{{ http_store_port }}"
+        http_store_container_name: "dci-store"
+
+    - name: Populate network_config
+      set_fact:
+        network_config: "{{ beaker_lab.network_config }}"
+      when:
+        beaker_lab.network_config is defined
+
+    - name: Populate bridge_interface
+      set_fact:
+        bridge_interface: "{{ beaker_lab.bridge_interface }}"
+      when:
+        beaker_lab.bridge_interface is defined
+
+    - name: Setup SUT Network
+      include_tasks: setup-sut.yml
+      vars:
+        bridge_ip: "{{ machine_network_ip }}"
+        bridge_prefix: "{{ machine_network_cidr | ipaddr('prefix') }}"
+      when:
+        - beaker_lab is defined
+        - beaker_lab | length > 0
+        - beaker_lab.build_bridge | default(false)
+
+    - name: "Setup Beaker Provisioner"
+      include_role:
+        name: setup_beaker
+      when:
+        - beaker_lab is defined
+        - beaker_lab | length > 0
+
+    - name: Check for Virtual SUT's
+      set_fact:
+        virtual_sut: true
+      loop: "{{ q('dict', beaker_lab.system_inventory | default({})) }}"
+      when:
+        - beaker_lab is defined
+        - beaker_lab | length > 0
+        - item.value.virt is defined
+
+    - name: Setup Virtual SUT's
+      include_tasks: setup-virtual.yml
+      when:
+        - beaker_lab is defined
+        - beaker_lab | length > 0
+        - virtual_sut
+
+    - name: "Setup Firewall"
+      include_role:
+        name: setup_firewall

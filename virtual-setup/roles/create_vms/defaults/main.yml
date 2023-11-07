@@ -1,3 +1,0 @@
-network_name: "net-dci"
-images_dir: /var/lib/libvirt/images/
-mode: "legacy"

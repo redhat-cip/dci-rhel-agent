@@ -1,0 +1,68 @@
+- name: Wait for beaker
+  uri:
+    url: http://localhost/bkr
+    method: GET
+    status_code: 200
+  retries: 18
+  delay: 10
+  register: result
+  until: result.status == 200
+
+- name: Wait for Lab Controller
+  uri:
+    url: "http://localhost/bkr/labcontrollers/{{ jumpbox }}.{{ domain }}"
+    method: GET
+    status_code: 200
+  retries: 18
+  delay: 10
+  register: result
+  until: result.status == 200
+
+- name: Generate beaker client config
+  copy:
+    content: |
+      # Base URL of the Beaker server (without trailing slash!)
+      HUB_URL = "http://localhost/bkr"
+
+      # Hub authentication method
+      AUTH_METHOD = "password"
+
+      # Username and password
+      USERNAME = "{{ beaker_admin_login }}"
+      PASSWORD = "{{ beaker_admin_password }}"
+    dest: /etc/beaker/client.conf
+    mode: 0640
+
+- name: Generate a token from beaker
+  uri:
+    url: http://localhost/bkr/login
+    method: POST
+    body:
+      user_name: "{{ beaker_admin_login }}"
+      password: "{{ beaker_admin_password }}"
+      login: 1
+    body_format: form-urlencoded
+    status_code: 302
+  register: login
+
+- name: Add the ipmitool_lanplus, redfish, and apc_snmp_container powertypes
+  uri:
+    url: http://localhost/bkr/powertypes/
+    method: POST
+    body:
+      name: "{{ item }}"
+    body_format: json
+    headers:
+      Accept: application/json
+      Content-Type: application/json
+      Cookie: "{{ login.set_cookie }}"
+    status_code: [201, 409]
+  changed_when: powertypes.status == 201
+  register: powertypes
+  loop:
+    - ipmitool_lanplus
+    - apc_snmp_container
+    - redfish
+
+#- name: Import beaker tasks
+#  include_tasks: beaker_tasks.yml

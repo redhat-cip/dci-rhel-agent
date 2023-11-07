@@ -1,0 +1,40 @@
+- name: Create network_config
+  include_tasks: make_network_config.yml
+  when: network_config is not defined
+
+- name: process network_config
+  import_role:
+    name: process_nmstate
+
+- name: apply nmstate config
+  import_role:
+    name: apply_nmstate
+
+- name: Configure firewall for bridge_zone
+  block:
+  - name: Move bridge to designated firewall zone
+    community.general.nmcli:
+      conn_name: "{{ bridge_name }}"
+      state: present
+      zone: "{{ bridge_zone }}"
+    become: true
+
+  - name: Create Iptables NAT chain
+    iptables:
+      table: nat
+      chain: POSTROUTING
+      source: '{{ machine_network_cidr }}'
+      destination: '! {{ machine_network_cidr }}'
+      jump: MASQUERADE
+      protocol: all
+      comment: Ansible NAT Masquerade
+
+  - name: Manage IPv4 forwarding
+    sysctl:
+      name: net.ipv4.ip_forward
+      value: '1'
+      state: present
+      reload: True
+  when:
+    - bridge_zone is defined
+

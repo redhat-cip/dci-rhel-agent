@@ -1,0 +1,6 @@
+---
+- name: Setup SUT host network
+  include_role:
+    name: setup_sut_network
+
+...

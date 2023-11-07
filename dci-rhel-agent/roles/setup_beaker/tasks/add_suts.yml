@@ -1,0 +1,42 @@
+---
+- name: Query systems list
+  command: bkr system-list
+  register: bkr_systems
+  changed_when: false
+  become: true
+  failed_when: false
+
+- debug:
+    msg: "Current Beaker Systems: {{ bkr_systems.stdout_lines }}"
+
+- name: Update power settings for each existing test system (requires Beaker 28+)
+  command: >
+    bkr system-modify
+    --power-type={{ item.value.power_type }}
+    --power-address={{ item.value.power_address }}
+    --power-user={{ item.value.power_user }}
+    --power-password={{ item.value.power_password }}
+    --power-id={{ item.value.power_id| default('') }}
+    {{ item.key.split('.')| first }}.{{ domain }}
+  when:
+    - item.key.split('.')[0] + "." + domain in bkr_systems.stdout_lines
+  become: true
+  loop: "{{ q('dict', beaker_lab.system_inventory | default({})) }}"
+
+- name: Create any systems in Beaker which were not already present
+  command: >
+    bkr system-create
+    --lab-controller={{ jumpbox }}.{{ domain }}
+    --arch={{ item.value.arch }}
+    --power-type={{ item.value.power_type }}
+    --power-address={{ item.value.power_address }}
+    --power-user={{ item.value.power_user }}
+    --power-password={{ item.value.power_password }}
+    --power-id={{ item.value.power_id| default('') }}
+    --condition=Automated
+    --release-action=LeaveOn
+    {{ item.key.split('.')| first }}.{{ domain }}
+  when:
+    - item.key.split('.')[0] + "." + domain not in bkr_systems.stdout_lines
+  become: true
+  loop: "{{ q('dict', beaker_lab.system_inventory | default({})) }}"

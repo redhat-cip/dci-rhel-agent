@@ -1,0 +1,30 @@
+except-interface=lo
+bind-dynamic
+#interface={{ bridge_name }}
+listen-address={{ machine_network_ip| default(local_repo_ip) }}
+
+resolv-file=/etc/resolv.conf
+dhcp-range={{ beaker_lab.dhcp_start }},{{ beaker_lab.dhcp_end }}
+dhcp-ignore=tag:!known
+dhcp-option=option:router,{{ beaker_lab.router|default(machine_network_ip| default(local_repo_ip),true) }}
+
+# Use this server as a time and name server for machines in the lab
+dhcp-option=option:dns-server,{{ beaker_lab.dns_server|default('0.0.0.0',true) }}
+dhcp-option=option:ntp-server,{{ beaker_lab.ntp_server|default('0.0.0.0', true) }}
+{% if domain is defined %}
+domain={{ domain }}
+{% endif %}
+tftp-root=/var/lib/tftpboot
+dhcp-boot=pxelinux.0
+
+# Use a combination of /etc/ethers & /etc/hosts instead of this ?
+{% for system, value in beaker_lab.system_inventory.items() %}
+dhcp-boot=tag:{{ system }}_boot,bootloader/{{ system.split('.')| first }}.{{ domain }}/image,{{ machine_network_ip| default(local_repo_ip) }}
+{% endfor %}
+
+{% for system, value in beaker_lab.system_inventory.items() %}
+dhcp-host={{ value.mac }},{{ system }},{{ value.ip_address }},set:{{ system }}_boot
+address=/{{ system.split('.')| first }}.{{ domain }}/{{ value.ip_address }}
+{% endfor %}
+
+# vim: set ft=dnsmasq:

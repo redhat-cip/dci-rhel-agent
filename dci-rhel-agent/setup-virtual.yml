@@ -1,0 +1,21 @@
+---
+- name: Destroy vms
+  include_role:
+    name: destroy_vms
+
+- name: Setup VM host software
+  include_role:
+    name: setup_vm_host_software
+
+- name: Create vms
+  include_role:
+    name: create_vms
+
+- name: Setup Virtual BMC
+  include_role:
+    name: setup_virtual_bmc
+
+- name: Specify Firewall zone
+  set_fact:
+    firewall_zones: "{{ firewall_zones | default([]) + ['libvirt'] }}"
+...

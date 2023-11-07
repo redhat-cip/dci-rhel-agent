@@ -1,0 +1,31 @@
+#! /bin/bash
+
+virt-install \
+    --virt-type=kvm \
+    --name "{{ item.key }}" \
+    --uuid="{{ item.value.virt.uuid| default(99999999 | random | to_uuid) }}" \
+    --memory {{ item.value.virt.memory }} \
+    --vcpus={{ item.value.virt.vcpu }} \
+    --os-variant=rhel8.3 \
+    --os-type linux \
+    --network=bridge:{{ bridge_name }},mac="{{ item.value.mac }}" \
+    {% for disk_name, disk_size in item.value.virt.disks.items() %}
+    --disk path={{ libvirt_images_dir }}/{{ item.key }}_{{ disk_name }}.qcow2,size={{ disk_size }},format=qcow2 \
+    {% endfor %}
+    --graphics vnc \
+    --noautoconsole \
+    --wait=-1 \
+    {% if item.value.virt.mode == 'secure' %}
+    --boot uefi,network,hd \
+    {% elif item.value.virt.mode == 'efi' %}
+    --boot loader=/usr/share/edk2/ovmf/OVMF_CODE.cc.fd,loader.readonly=yes,loader.secure='no',loader.type=pflash,nvram=/var/lib/libvirt/qemu/nvram/{{ item.key }}_VARS.fd,network,hd \
+    {% else %}
+    --boot network,hd \
+    {% endif %}
+    --events on_reboot=restart \
+    --autostart \
+    --print-xml > {{ temp_dir.path }}/{{item.key}}.xml
+
+virsh define --file {{ temp_dir.path }}/{{item.key}}.xml
+
+virsh detach-device {{ item.key }} {{ temp_dir.path }}/rng_device.xml --config

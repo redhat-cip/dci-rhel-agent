@@ -65,16 +65,6 @@
         path: '/etc/dci-rhel-agent/hooks/user-tests.yml'
       register: check_user_tests_hook_file
 
-- import_playbook: beaker-lab.yml
-  when:
-    - beaker_lab is defined
-    - beaker_lab | length > 0
-
-- import_playbook: conserver.yml
-  when:
-    - beaker_lab is defined
-    - beaker_lab | length > 0
-
 - name: 'Prepare the jumpbox'
   hosts: localhost
   gather_facts: no
@@ -137,7 +127,7 @@
           include_tasks: teardown_error.yml
 
 - name: 'Launch install'
-  hosts: beaker_server
+  hosts: jumpbox
   tags:
     - install
     - beaker
@@ -230,7 +220,7 @@
           include_tasks: teardown_failure.yml
 
 - name: 'Grab logs and release SUTs'
-  hosts: beaker_server
+  hosts: jumpbox
   gather_facts: no
   tags:
     - post-run
