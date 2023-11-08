@@ -9,21 +9,14 @@
 
     templates:
       - dci-container
-
+      - dci-agent
     check:
       jobs:
-        - dci-rpm-build-el8
-        - dci-rpm-build-el9:
-            voting: false
-    gate:
+        - dci-agent-syntax-check:
+            voting: false  # RHEL agent doesn't work currently
+    dci-gate:
       jobs:
-        - dci-rpm-build-el8
-    dci-post:
-      jobs:
-        - dci-rpm-build-el8
-        - dci-rpm-build-doc-el8
-        - dci-rpm-publish:
-            dependencies:
-              - dci-rpm-build-el8
-              - dci-rpm-build-doc-el8
+        - dci-agent-syntax-check:
+            voting: false  # RHEL agent doesn't work currently
+
 ...
