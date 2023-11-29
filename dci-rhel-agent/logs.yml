@@ -53,8 +53,9 @@
         local_file: "{{ item.split('/bkr/')[1].replace('/','_').replace('recipes_' + recipe, recipe_to_host['recipes_' + recipe]) }}"
 
     - name: Download JUnit results to Beaker server
-      command:
-        cmd: "bkr job-results --format=junit-xml {{ hostvars.jumpbox.bkrjobid }}"
+      # The output of the bkr job-results command is a binary raw value.
+      # This script escape the output into a proper xml value.
+      script: ./workaround/get_beaker_result.py --bkrjobid {{ hostvars.jumpbox.bkrjobid }}
       become: true
       register: bkr_results
 
