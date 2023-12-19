@@ -11,7 +11,11 @@ __EOF__
 restorecon -R /root/.ssh
 chmod go-w /root /root/.ssh /root/.ssh/authorized_keys
 sed -i '/^#PermitRootLogin /s/^#//' /etc/ssh/sshd_config
+{% if disable_root_login_pw |default(false,true) %}
+sed -i 's|PermitRootLogin .*|PermitRootLogin prohibit-password|' /etc/ssh/sshd_config
+{% else %}
 sed -i 's|PermitRootLogin .*|PermitRootLogin yes|' /etc/ssh/sshd_config
+{% endif %}
 systemctl restart sshd
 %end
              ]]></ks_append>

@@ -109,6 +109,7 @@ The possible values are:
 | libvirt_images_dir                     | False    | String         | Path to store libvirt images for virtual hosts. Default is `/opt/libvirt/images`.                      |
 | dci_rhel_agent_cert                    | True     | True/False     | Enable or disable the HW certification tests suite.                                                                                 |
 | dci_rhel_agent_cki                     | True     | True/False     | Enable or disable the CKI tests suite.                                                                                              |
+| disable_root_login_pw                  | False    | True/False     | When set to true, disables password based logins for root user setup by Beaker.  Key based logins only (setup by agent).
 | machine_network_cidr                   | True     | String         | The private network to use for your Systems Under Test,  This is managed by dci.  The default is 10.60.0.0/24.                      |
 | systems                                | False    | List of Dict   | List of all systems that will be deployed using RHEL from DCI.                                                                      |
 | systems[].fqdn                         | True     | String         | Fully qualified Domain name of System under Test.                                                                                   |
@@ -160,6 +161,7 @@ topics:
   - topic: RHEL-7.8
     dci_rhel_agent_cert: false
     dci_rhel_agent_cki: false
+    disable_root_login_pw: true
     variants:
       - Server
     archs:
