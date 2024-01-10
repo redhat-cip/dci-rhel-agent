@@ -12,11 +12,9 @@
       - dci-agent
     check:
       jobs:
-        - dci-agent-syntax-check:
-            voting: false  # RHEL agent doesn't work currently
+        - dci-agent-syntax-check
     dci-gate:
       jobs:
-        - dci-agent-syntax-check:
-            voting: false  # RHEL agent doesn't work currently
+        - dci-agent-syntax-check
 
 ...
