@@ -21,9 +21,7 @@ RUN ansible-galaxy collection install 'containers.podman:<1.10.3' && \
     ansible-galaxy collection install ansible.posix && \
     ansible-galaxy collection install community.general && \
     ansible-galaxy collection install community.libvirt && \
-    ansible-galaxy collection install ansible.utils && \
-    rm /root/.ansible/collections/ansible_collections/ansible/utils/plugins/filter/param_list_compare.py \
-       /root/.ansible/collections/ansible_collections/ansible/utils/plugins/filter/validate.py
+    ansible-galaxy collection install ansible.utils:2.10.3
 
 ADD dci-rhel-agent /usr/share/dci-rhel-agent/
 

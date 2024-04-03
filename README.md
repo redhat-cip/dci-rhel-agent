@@ -117,6 +117,7 @@ The possible values are:
 | systems[].alternate_efi_boot_commands  | False    | True/False     | Use alternate linux and initrd commands instead if linuxefi and initrdefi                                                           |
 | systems[].petitboot                    | False    | True/False     | Use alternate bootloader with ppc                                                                                                   |
 | systems[].ks_meta                      | False    | String         | Metadata to pass to anaconda kickstart templating                                                                                   |
+| systems[].ks_append                    | False    | String         | Appends custom commands to default kickstart used to provision test system
 | systems[].kernel_options               | False    | String         | Arguments to pass to the install kernel                                                                                             |
 | systems[].sol_command                  | False    | String         | Command to use for serial console over lan                                                                                          |
 | beaker_xml                             | False    | String         | Path to a custom XML file to use with Beaker job.                                                                                   |
@@ -170,7 +171,11 @@ topics:
     systems:
       - fqdn: sut1.{{ domain }}
         kernel_options: "rd.iscsi.ibft=1"
-        ks_meta: "ignoredisk=--only-use=sda"
+        ks_meta: "ignoredisk=--only-use=sda no autopart
+        ks_append: |
+          part /boot --recommended
+          part /home --size=20480
+          part / --grow
         sol_command: "ipmitool -I lanplus -U root -P calvin -H my.x86_64.system2.local sol activate"
         sut_password: sut_pw
         reboot_watchdog_timeout: 14400
