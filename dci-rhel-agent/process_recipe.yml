@@ -38,14 +38,26 @@
 - name: Set Composeinfo
   set_fact:
     compose_info: "{{ results.compose_info }}"
-    os_major_modified: "{{ results.compose_info.osmajor | replace('RedHatEnterpriseLinux9', 'RedHatEnterpriseLinux8') }}" # Use RHEL8 for RHEL9
+
+- name: Set os_major_modified and harness
+  set_fact:
+    os_major_modified: "{{ compose_info.osmajor }}"
     harness: "restraint"
 
-- name: Don't add beakerlib for RHEL-9 or CentOS 9
+- name: Use RHEL8 harness for RHEL9 and RHEL10
+  set_fact:
+    os_major_modified: "RedHatEnterpriseLinux8"
+  when:
+    - compose_info.osmajor == "RedHatEnterpriseLinux9" or
+      compose_info.osmajor == "RedHatEnterpriseLinux10"
+
+- name: Don't add beakerlib for RHEL-9, CentOS-9, RHEL-10, or CentOS-10
   set_fact:
     harness: "{{ harness }} beakerlib"
   when:
-    - os_major_modified != "CentOSStream9"
+    - compose_info.osmajor not in ["CentOSStream9", "CentOSStream10",
+                                   "RedHatEnterpriseLinux9",
+                                   "RedHatEnterpriseLinux10"]
 
 - name: Alternate EFI
   set_fact:
