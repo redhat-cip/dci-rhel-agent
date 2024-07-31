@@ -10,11 +10,4 @@
     templates:
       - dci-container
       - dci-agent
-    check:
-      jobs:
-        - dci-agent-syntax-check
-    dci-gate:
-      jobs:
-        - dci-agent-syntax-check
-
 ...

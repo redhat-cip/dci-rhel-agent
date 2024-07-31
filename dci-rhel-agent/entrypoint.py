@@ -92,6 +92,7 @@ def provision_and_test(extravars, cmdline):
         verbosity=int(environ.get('VERBOSITY')),
         playbook="dci-rhel-agent.yml",
         extravars=extravars,
+        envvars={'ANSIBLE_CALLBACK_PLUGINS': "/usr/share/dci/callback"},
         quiet=False,
         cmdline=cmdline
     )
