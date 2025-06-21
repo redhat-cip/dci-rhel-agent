@@ -82,7 +82,7 @@ ansible-playbook -i inventory playbook.yml
 
 ## Configuration
 
-In order to ensure the agent is able to connect to all applicable hosts, please copy the ssh key located in /etc/dci-rhel-agent/secrets/id_rsa to the hosts running Beaker and dnsmasq. Normally, these will be on the same machine running the agent.
+In order to ensure the agent is able to connect to all applicable hosts, please copy the ssh key located in `/etc/dci-rhel-agent/secrets/id_rsa` to the hosts running Beaker and dnsmasq. Normally, these will be on the same machine running the agent.
 
 ```console
 ssh-copy-id -i /etc/dci-rhel-agent/secrets/id_rsa <user>@<host>
@@ -92,7 +92,7 @@ There are two configuration files for `dci-rhel-agent`: `/etc/dci-rhel-agent/dci
 
 - `/etc/dci-rhel-agent/dcirc.sh`
 
-Note: The initial copy of `dcirc.sh` is shipped as `/etc/dci-rhel-agent/dcirc.sh.dist`. Copy this to `/etc/rhel-agent/dcirc.sh` to get started.
+Note: The initial copy of `dcirc.sh` is shipped as `/etc/dci-rhel-agent/dcirc.sh.dist`. Copy this to `/etc/dci-rhel-agent/dcirc.sh` to get started.
 
 This file has the credential associated to the jumpbox (also kwnown as a `Remoteci` in the [DCI web dashboard](https://www.distributed-ci.io). The partner team administrator has to create a Remote CI in the DCI web dashboard, copy the relative credential and paste it locally on the jumpbox to `/etc/dci-rhel-agent/dcirc.sh`.
 
@@ -371,7 +371,7 @@ For example:
 
 #### How to extend the Beaker watchdog timeout for a system deployment?
 
-If deployment of systems is timing out due to Beaker's watchdog timeout expiring, the timeout for a test system can be set to a user-specified amount in the settings file. There is a watchdog which monitors the time from reboot to system installation start (reboot_watchdog_timeout), and a watchdog which monitors the time from installation start (install_watchdog_timeout). Either or both can be modified from the settings file.  The amount of time the agent waits for the installation to start is defaulted to 12.5 minutes (25 retries, 30 seconds apart).  This wait time can be adjusted in the settings file (specified in minutes) to allow for more time as is sometimes needed when provisioning large VMs for example.
+If deployment of systems is timing out due to Beaker's watchdog timeout expiring, the timeout for a test system can be set to a user-specified amount in the settings file. There is a watchdog which monitors the time from reboot to system installation start (`reboot_watchdog_timeout`), and a watchdog which monitors the time from installation start (`install_watchdog_timeout`). Either or both can be modified from the settings file.  The amount of time the agent waits for the installation to start is defaulted to 12.5 minutes (25 retries, 30 seconds apart).  This wait time can be adjusted in the settings file (specified in minutes) to allow for more time as is sometimes needed when provisioning large VMs for example.
 
 For example, the following will cause the agent to wait 3 hours for the installation to start, set the reboot watchdog timeout to 4 hours and the install watchdog timeout to 8 hours (after installation begins) for any deployment jobs on the my.x86_64.system.local test machine:
 
@@ -430,7 +430,7 @@ You can include any tasks that will be run on the jumpbox
 
 You can include any tasks that will be run on each SUTs
 
-To use any existing Ansible roles in your tests, copy the role directory to /etc/dci-rhel-agent/hooks/roles. The role can then be imported into your hooks file.
+To use any existing Ansible roles in your tests, copy the role directory to `/etc/dci-rhel-agent/hooks/roles`. The role can then be imported into your hooks file.
 
 Please note, that it is possible at this point to use DCI Ansible bindings (see in the container `/usr/share/dci/modules/`) in tasks.
 In the following example, the task uploads Junit files (your tests results) into DCI Web dashboard.
@@ -482,7 +482,7 @@ The DCI team is reachable via distributed-ci@redhat.com. When contacting DCI reg
 
 ### My job is hanging at the dci-downloader task.
 
-There could be .lock files in your local_repo (usually /var/www/html unless overridden in settings) which are not being cleared. Check in your local_repo/<topic_name> and manually delete any .lock files if present.
+There could be .lock files in your local_repo (usually `/var/www/html` unless overridden in settings) which are not being cleared. Check in your `local_repo/<topic_name>` and manually delete any .lock files if present.
 
 ### I have a new test system I would like to add to my DCI Beaker Lab.
 
