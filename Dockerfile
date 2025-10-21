@@ -34,7 +34,7 @@ RUN rpm -ivh --nodeps dci-ansible*.rpm
 
 ENV LC_ALL="C.UTF-8"
 
-ADD dci-rhel-agent /usr/share/dci-rhel-agent/
+COPY dci-rhel-agent /usr/share/dci-rhel-agent/
 
 WORKDIR /usr/share/dci-rhel-agent
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
