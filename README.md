@@ -72,7 +72,7 @@ There are two configuration files for `dci-rhel-agent`: `/etc/dci-rhel-agent/dci
 
 - `/etc/dci-rhel-agent/dcirc.sh`
 
-Note: The initial copy of `dcirc.sh` is shipped as `/etc/dci-rhel-agent/dcirc.sh.dist`. Copy this to `/etc/rhel-agent/dcirc.sh` to get started.
+Note: The initial copy of `dcirc.sh` is shipped as `/etc/dci-rhel-agent/dcirc.sh.dist`. Copy this to `/etc/dci-rhel-agent/dcirc.sh` to get started.
 
 This file has the credential associated to the jumpbox (also kwnown as a `Remoteci` in the [DCI web dashboard](https://www.distributed-ci.io). The partner team administrator has to create a Remote CI in the DCI web dashboard, copy the relative credential and paste it locally on the jumpbox to `/etc/dci-rhel-agent/dcirc.sh`.
 
@@ -245,14 +245,14 @@ beaker_lab:
 
 ## Setup of Containerized beaker and example virtual systems
 
-The dci-rhel-agent-setup program will read your /etc/dci-rhel-agent/settings.yml file and setup the beaker containers and two virtual systems.  This will give you a fully working environment capable of downloading RHEL components from DCI and installing them on the virtual systems.
+The dci-rhel-agent-setup program will read your `/etc/dci-rhel-agent/settings.yml` file and setup the beaker containers and two virtual systems.  This will give you a fully working environment capable of downloading RHEL components from DCI and installing them on the virtual systems.
 
-Setting the port.name under beaker_lab.network_config to the network interface that hosts your systems under test will allow you to test bare metal systems.  You will need to add entries for every test system under the beaker_lab section of the settings.yml file.  This includes mandatory fields like ip address, mac address, ipmi settings for power cycling.  There are also some optional settings.  Please see the table above for a complete list.
+Setting the `port.name` under `beaker_lab.network_config` to the network interface that hosts your systems under test will allow you to test bare metal systems.  You will need to add entries for every test system under the `beaker_lab` section of the `settings.yml` file.  This includes mandatory fields like ip address, mac address, ipmi settings for power cycling.  There are also some optional settings.  Please see the table above for a complete list.
 
 Since the virtual setup is self contained it can uncover issues with the main installation before adding in external hosts.  External hosts present their own issues.
 
 Edit the inventory, by default it creates two Systems Under Test
-make sure libvirt_images_dir, local_repo and beaker_lab.beaker_dir points to a location with enough disk space
+make sure `libvirt_images_dir`, `local_repo` and `beaker_lab.beaker_dir` points to a location with enough disk space
 
 ```bash
 dci-rhel-agent-setup
@@ -274,15 +274,15 @@ http://<hostname>/bkr
 
 ### Upgrading from Version 0.5.0
 
-If you have changed the /etc/dci-rhel-agent/inventory file you will need to change the beaker_server entry to jumpbox.
+If you have changed the `/etc/dci-rhel-agent/inventory` file you will need to change the `beaker_server` entry to jumpbox.
 
-The following settings in /etc/dci-rhel-agent/settings.yml have changed:
+The following settings in `/etc/dci-rhel-agent/settings.yml` have changed:
 
-local_repo_ip has been replaced with machine_network_ip.
+`local_repo_ip` has been replaced with `machine_network_ip`.
 
-Both beaker_lab.jumpbox_fqdn and beaker_lab.labcontroller_fqdn have been dropped.
+Both `beaker_lab.jumpbox_fqdn` and `beaker_lab.labcontroller_fqdn` have been dropped.
 
-The dnsmasq configuration for the Test Network is now stored in /etc/dnsmasq.d  The playbooks will create the new config automatically but you will need to remove the entries in /etc/NetworkManager/dnsmasq.d
+The dnsmasq configuration for the Test Network is now stored in `/etc/dnsmasq.d`  The playbooks will create the new config automatically but you will need to remove the entries in `/etc/NetworkManager/dnsmasq.d`
 
 ### Further settings
 
@@ -312,7 +312,7 @@ systems:
 If you use the default settings and allow dci-rhel-agent-setup to configure the test network then all dns should work.
 If you setup your network yourself make sure all FQDN must resolve locally on the DCI jumpbox. If you don't have proper DNS records, please update `/etc/hosts` then reload `dnsmasq` service. Also, the supported architecture of the systems must be entered in Beaker in order for the agent to properly provision a system with the correct architecture.
 
-All provision jobs in the same topic will run concurrently, but each topic will run consecutively. Running two instances of the agent simultaneously with different settings files is possible.  If you do this a best practice is to separate the settings by topic.  ie: settings-rhel8.yml and settings-rhel9.yml and run them with --config settings-rhel8.yml for example.
+All provision jobs in the same topic will run concurrently, but each topic will run consecutively. Running two instances of the agent simultaneously with different settings files is possible.  If you do this a best practice is to separate the settings by topic.  ie: `settings-rhel8.yml` and `settings-rhel9.yml` and run them with `--config settings-rhel8.yml` for example.
 
 #### Red Hat HW Certification tests
 
@@ -352,7 +352,7 @@ The debug tag prevents jobs results to be compiled in DCI trends.
 
 #### How to use an external Beaker service ?
 
-It is possible to configure the `dci-rhel-agent` to use an external Beaker service (therefore not to use the Beaker service that runs in a container on the `dci-jumpbox`).  This is as simple as updating the beaker client config on the jumpbox to use this external beaker (/etc/beaker/client.conf).  Please see Beaker's documentation for further details.
+It is possible to configure the `dci-rhel-agent` to use an external Beaker service (therefore not to use the Beaker service that runs in a container on the `dci-jumpbox`).  This is as simple as updating the beaker client config on the jumpbox to use this external beaker (`/etc/beaker/client.conf`).  Please see Beaker's documentation for further details.
 
 #### How to customize the system deployment ?
 
@@ -386,7 +386,7 @@ For example:
 
 #### How to extend the Beaker watchdog timeout for a system deployment?
 
-If deployment of systems is timing out due to Beaker's watchdog timeout expiring, the timeout for a test system can be set to a user-specified amount in the settings file. There is a watchdog which monitors the time from reboot to system installation start (reboot_watchdog_timeout), and a watchdog which monitors the time from installation start (install_watchdog_timeout). Either or both can be modified from the settings file.  The amount of time the agent waits for the installation to start is defaulted to 12.5 minutes (25 retries, 30 seconds apart).  This wait time can be adjusted in the settings file (specified in minutes) to allow for more time as is sometimes needed when provisioning large VMs for example.
+If deployment of systems is timing out due to Beaker's watchdog timeout expiring, the timeout for a test system can be set to a user-specified amount in the settings file. There is a watchdog which monitors the time from reboot to system installation start (`reboot_watchdog_timeout`), and a watchdog which monitors the time from installation start (`install_watchdog_timeout`). Either or both can be modified from the settings file.  The amount of time the agent waits for the installation to start is defaulted to 12.5 minutes (25 retries, 30 seconds apart).  This wait time can be adjusted in the settings file (specified in minutes) to allow for more time as is sometimes needed when provisioning large VMs for example.
 
 For example, the following will cause the agent to wait 3 hours for the installation to start, set the reboot watchdog timeout to 4 hours and the install watchdog timeout to 8 hours (after installation begins) for any deployment jobs on the my.x86_64.system.local test machine:
 
@@ -511,13 +511,13 @@ The RHEL agent provides an option which can be supplied when it is started to sk
 
 ### My EFI system does not recognize the default "linuxefi" and "initrdefi" commands supplied in the grub.cfg by the RHEL agent.
 
-The linuxefi and initrdefi commands are supplied by default in the grub.cfg constructed by the agent for EFI systems.  These can be swapped with the linux and initrd commands by supplying a boolean in the system inventory for that system:
+The linuxefi and initrdefi commands are supplied by default in the `grub.cfg` constructed by the agent for EFI systems.  These can be swapped with the linux and initrd commands by supplying a boolean in the system inventory for that system:
 
     alternate_efi_boot_commands: true
 
 ### My system times out waiting before install starts
 
-There is a known bug, BZ 1785663.  This can be worked around by adding rd.net.timeout.carrier=10 to that systems kernel_options
+There is a known bug, BZ 1785663.  This can be worked around by adding `rd.net.timeout.carrier=10` to that systems `kernel_options`
 
     kernel_options: rd.net.timeout.carrier=10
 
