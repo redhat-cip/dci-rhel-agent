@@ -1,3 +1,6 @@
+⚠️ **Note:** This project has been migrated to a new repository.
+Please visit the new location [here](https://github.com/distributedci/dci-rhel-agent).
+
 # DCI RHEL Agent
 
 `dci-rhel-agent` provides Red Hat Enterprise Linux (RHEL) in Red Hat Distributed CI service.
